@@ -90,7 +90,7 @@ public class MovingStatChart
         if (this.scatterPlot)
         {
             chart = ChartFactory
-                    .createScatterPlot( this.testplan + " - " + this.bladeId + " - " + this.event + "( moving period " +
+                    .createScatterPlot( getBasicTitle() + " ( moving period " +
                                                 statisticalPeriod + "ms )",
                                         // chart title
                                         Messages.CallChart_Time(), // x axis label
@@ -103,10 +103,11 @@ public class MovingStatChart
         }
         else
         {
-            chart = ChartFactory.createXYLineChart( this.testplan + " - " + this.bladeId + " - " + this.event,
+            chart = ChartFactory.createXYLineChart( getBasicTitle() + " ( moving period " +
+                                                            statisticalPeriod + "ms )",
                                                     // chart title
                                                     Messages.CallChart_Time(), // x axis label
-                                                    this.event, // y axis label
+                                                    this.chartId.getEvent(), // y axis label
                                                     movingDataset, // data
                                                     PlotOrientation.VERTICAL, false, // include legend
                                                     true, // tooltips
@@ -127,7 +128,7 @@ public class MovingStatChart
         renderer.setSeriesPaint( 0, Color.BLUE );
         renderer.setSeriesStroke( 0, new BasicStroke( 1 ) );
         renderer.setSeriesShapesVisible( 1, false );
-        renderer.setSeriesPaint( 0, Color.RED );
+        renderer.setSeriesPaint( 1, Color.RED );
         renderer.setSeriesStroke( 1, new BasicStroke( 2 ) );
         renderer.setSeriesShapesVisible( 2, false );
         renderer.setSeriesPaint( 2, Color.GREEN );

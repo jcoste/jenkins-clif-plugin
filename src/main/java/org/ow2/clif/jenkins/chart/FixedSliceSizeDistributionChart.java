@@ -57,7 +57,7 @@ public class FixedSliceSizeDistributionChart
         super( "FixedSliceSizeDistribution", bladeId, testplan, event );
 
         this.sliceSize = slices;
-        this.data = new SimpleHistogramDataset( this.event );
+        this.data = new SimpleHistogramDataset( this.chartId.getEvent() );
     }
 
     public void addData( double[] values, double min, double max )
@@ -82,7 +82,7 @@ public class FixedSliceSizeDistributionChart
     @Override
     protected JFreeChart createChart()
     {
-        JFreeChart chart = ChartFactory.createHistogram( this.testplan + " - " + this.bladeId + " - " + this.event,
+        JFreeChart chart = ChartFactory.createHistogram( getBasicTitle(),
                                                          Messages.FixedSliceSizeDistributionChart_ResponseTime(),
                                                          Messages.FixedSliceSizeDistributionChart_NumberOfCalls(), data,
                                                          PlotOrientation.VERTICAL, true, true, false );

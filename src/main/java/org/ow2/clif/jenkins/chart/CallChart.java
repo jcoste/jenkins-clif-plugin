@@ -72,7 +72,7 @@ public class CallChart
         JFreeChart chart;
         if (this.scatterPlot)
         {
-            chart = ChartFactory.createScatterPlot( this.testplan + " - " + this.bladeId + " - " + this.event + ")",
+            chart = ChartFactory.createScatterPlot( getBasicTitle(),
                                                     // chart title
                                                     Messages.CallChart_Time(), // x axis label
                                                     Messages.CallChart_ResponseTime(), // y axis label
@@ -84,10 +84,10 @@ public class CallChart
         }
         else
         {
-            chart = ChartFactory.createXYLineChart( this.testplan + " - " + this.bladeId + " - " + this.event,
+            chart = ChartFactory.createXYLineChart( getBasicTitle(),
                                                     // chart title
                                                     Messages.CallChart_Time(), // x axis label
-                                                    this.event, // y axis label
+                                                    this.chartId.getEvent(), // y axis label
                                                     dataset, // data
                                                     PlotOrientation.VERTICAL, false, // include legend
                                                     true, // tooltips
@@ -111,9 +111,14 @@ public class CallChart
         renderer.setSeriesShape( 0, cross );
         plot.setRenderer( renderer );
 
+        // Force the 0 on vertical axis
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setAutoRangeIncludesZero( true );
         rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
+
+        // Force the 0 on horizontal axis
+        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+        domainAxis.setAutoRangeIncludesZero( true );
         return chart;
     }
 

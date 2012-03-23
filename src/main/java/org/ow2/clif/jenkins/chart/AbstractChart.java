@@ -45,6 +45,11 @@ public abstract class AbstractChart
         this.chartId = new ChartId( chartType, testplan, bladeId, event );
     }
 
+    protected String getBasicTitle()
+    {
+        return this.chartId.getTestplan() + " - " + this.chartId.getBladeId() + " - " + this.chartId.getEvent();
+    }
+
     private void saveImageFile( File imageFile, BufferedImage bImage )
     {
         try

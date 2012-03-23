@@ -53,14 +53,14 @@ public class QuantileDistributionChart
     {
         for ( int i = 5; i <= 100; i += 5 )
         {
-            this.data.addValue( stat.getPercentile( i ), event, "" + i );
+            this.data.addValue( stat.getPercentile( i ), this.chartId.getEvent(), "" + i );
         }
     }
 
     @Override
     protected JFreeChart createChart()
     {
-        JFreeChart chart = ChartFactory.createBarChart( this.testplan + " - " + this.bladeId + " - " + this.event,
+        JFreeChart chart = ChartFactory.createBarChart( getBasicTitle(),
                                                         Messages.QuantileDistributionChart_PercentageOfRequests(),
                                                         Messages.QuantileDistributionChart_ResponseTime(), data,
                                                         PlotOrientation.VERTICAL, true, true, false );

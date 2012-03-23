@@ -27,4 +27,23 @@ public class ChartId
         return DigestUtils.shaHex( chartType + testplan + bladeId + event );
     }
 
+    public String getBladeId()
+    {
+        return bladeId;
+    }
+
+    public String getChartType()
+    {
+        return chartType;
+    }
+
+    public String getEvent()
+    {
+        return event;
+    }
+
+    public String getTestplan()
+    {
+        return testplan;
+    }
 }

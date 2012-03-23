@@ -62,14 +62,14 @@ public class FixedSliceNumberDistributionChart
     {
         if (values != null && values.length > 0)
         {
-            data.addSeries( this.event, values, this.slices );
+            data.addSeries( this.chartId.getEvent(), values, this.slices );
         }
     }
 
     @Override
     protected JFreeChart createChart()
     {
-        JFreeChart chart = ChartFactory.createHistogram( this.testplan + " - " + this.bladeId + " - " + this.event,
+        JFreeChart chart = ChartFactory.createHistogram( getBasicTitle(),
                                                          Messages.FixedSliceNumberDistributionChart_ResponseTime(),
                                                          Messages.FixedSliceNumberDistributionChart_NumberOfCalls(),
                                                          data, PlotOrientation.VERTICAL, true, true, false );
