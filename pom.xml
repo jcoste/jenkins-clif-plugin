@@ -1,49 +1,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.jenkins-ci.plugins</groupId>
-        <artifactId>plugin</artifactId>
-        <version>1.424</version>
-        <!-- which version of Jenkins is this plugin built against? -->
-    </parent>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>plugin</artifactId>
+    <version>1.456</version>
+  </parent>
 
-    <groupId>org.ow2.clif</groupId>
-    <artifactId>jenkins-clif-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>hpi</packaging>
-    <name>Clif Jenkins Plugin</name>
-    <description>This plugin enables to use CLIF in Jenkins</description>
+  <groupId>org.ow2.clif</groupId>
+  <artifactId>jenkins-clif-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>hpi</packaging>
+  <name>Clif Jenkins Plugin</name>
+  <description>This plugin enables to use CLIF in Jenkins</description>
 
-    <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </repository>
-    </repositories>
+  <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.ow2.clif</groupId>
-            <artifactId>clif-core</artifactId>
-            <version>2.0.7</version>
-        </dependency>
-
-        <!-- dependance ajoutée sinon maven ne trouve pas le plugnio hpi-->
-        <dependency>
-            <groupId>org.jenkins-ci.main</groupId>
-            <artifactId>maven-plugin</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
-
-
+  <dependencies>
+    <dependency>
+      <groupId>org.ow2.clif</groupId>
+      <artifactId>clif-core</artifactId>
+      <version>2.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.1</version>
+    </dependency>
+  </dependencies>
 </project>
