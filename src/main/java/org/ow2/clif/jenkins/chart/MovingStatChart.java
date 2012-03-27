@@ -29,6 +29,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
+import org.ow2.clif.jenkins.chart.movingstatistics.*;
 import org.ow2.clif.jenkins.parser.clif.Messages;
 
 import java.awt.*;
@@ -41,8 +42,6 @@ import java.awt.*;
 public class MovingStatChart
         extends AbstractChart
 {
-
-    protected boolean scatterPlot;
     protected long statisticalPeriod;
 
     protected XYSeries eventSerie;
@@ -54,11 +53,12 @@ public class MovingStatChart
         this.eventSerie = new XYSeries( event );
     }
 
-    public void setScatterPlot( boolean scatterPlot )
-    {
-        this.scatterPlot = scatterPlot;
-    }
 
+    /**
+     * Set the statistical period (in seconds)
+     *
+     * @param statisticalPeriod the statistical period
+     */
     public void setStatisticalPeriod( long statisticalPeriod )
     {
         this.statisticalPeriod = statisticalPeriod;
@@ -75,45 +75,43 @@ public class MovingStatChart
         XYSeriesCollection coreDataset = new XYSeriesCollection();
         coreDataset.addSeries( this.eventSerie );
 
-        XYSeries movingSeries = MovingAverage.createMovingAverage( coreDataset, 0, " Moving Average", statisticalPeriod,
-                                                                   statisticalPeriod );
-        XYSeries maxSeries = MovingAverage.createMovingMax( coreDataset, 0, " Moving Max", statisticalPeriod,
-                                                            statisticalPeriod );
-        XYSeries minSeries = MovingAverage.createMovingMin( coreDataset, 0, " Moving Min", statisticalPeriod,
-                                                            statisticalPeriod );
+        MovingAverageStat averageStat = new MovingAverageStat();
+        long statisticalPeriodInMs = statisticalPeriod * 1000;
+        XYSeries movingSeries =
+                averageStat.calculateMovingStat( coreDataset, 0, " Moving Average", statisticalPeriodInMs,
+                                                 0 );
+        MovingMaxStat maxStat = new MovingMaxStat();
+        XYSeries maxSeries = maxStat.calculateMovingStat( coreDataset, 0, " Moving Max", statisticalPeriodInMs,
+                                                          0 );
+        MovingMinStat minStat = new MovingMinStat();
+        XYSeries minSeries = minStat.calculateMovingStat( coreDataset, 0, " Moving Min", statisticalPeriodInMs,
+                                                          0 );
+        MovingMedianStat medianStat = new MovingMedianStat();
+        XYSeries medianSeries = medianStat.calculateMovingStat( coreDataset, 0, " Moving Median", statisticalPeriodInMs,
+                                                                0 );
+
+        MovingStdDevStat stdDevStat = new MovingStdDevStat();
+        XYSeries stdDevSeries = stdDevStat.calculateMovingStat( coreDataset, 0, " Moving StdDev", statisticalPeriodInMs,
+                                                                0 );
+
         XYSeriesCollection movingDataset = new XYSeriesCollection();
         movingDataset.addSeries( movingSeries );
         movingDataset.addSeries( maxSeries );
         movingDataset.addSeries( minSeries );
+        movingDataset.addSeries( medianSeries );
+        movingDataset.addSeries( stdDevSeries );
 
         JFreeChart chart;
-        if (this.scatterPlot)
-        {
-            chart = ChartFactory
-                    .createScatterPlot( getBasicTitle() + " ( moving period " +
-                                                statisticalPeriod + "ms )",
-                                        // chart title
-                                        Messages.CallChart_Time(), // x axis label
-                                        Messages.CallChart_ResponseTime(), // y axis label
-                                        movingDataset, // data
-                                        PlotOrientation.VERTICAL, true, // include legend
-                                        true, // tooltips
-                                        false // urls
-                    );
-        }
-        else
-        {
-            chart = ChartFactory.createXYLineChart( getBasicTitle() + " ( moving period " +
-                                                            statisticalPeriod + "ms )",
-                                                    // chart title
-                                                    Messages.CallChart_Time(), // x axis label
-                                                    this.chartId.getEvent(), // y axis label
-                                                    movingDataset, // data
-                                                    PlotOrientation.VERTICAL, false, // include legend
-                                                    true, // tooltips
-                                                    false // urls
-            );
-        }
+        chart = ChartFactory.createXYLineChart(
+                getBasicTitle() + " " + Messages.MovingChart_StatisticalPeriod( statisticalPeriod ),
+                // chart title
+                Messages.MovingChart_Time(), // x axis label
+                Messages.MovingChart_ResponseTime(), // y axis label
+                movingDataset, // data
+                PlotOrientation.VERTICAL, true, // include legend
+                true, // tooltips
+                false // urls
+        );
 
         chart.setBackgroundPaint( Color.white );
         // get a reference to the plot for further customisation...
@@ -133,6 +131,12 @@ public class MovingStatChart
         renderer.setSeriesShapesVisible( 2, false );
         renderer.setSeriesPaint( 2, Color.GREEN );
         renderer.setSeriesStroke( 2, new BasicStroke( 2 ) );
+        renderer.setSeriesShapesVisible( 3, false );
+        renderer.setSeriesPaint( 3, Color.YELLOW );
+        renderer.setSeriesStroke( 3, new BasicStroke( 1 ) );
+        renderer.setSeriesShapesVisible( 4, false );
+        renderer.setSeriesPaint( 4, Color.ORANGE );
+        renderer.setSeriesStroke( 4, new BasicStroke( 1 ) );
         plot.setRenderer( renderer );
 
         // Force the 0 on vertical axis

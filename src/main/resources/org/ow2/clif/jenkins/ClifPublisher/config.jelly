@@ -120,7 +120,7 @@
                 <f:entry title="${%Statistical period}">
                     <f:textbox name="clif.statisticalPeriod"
                                value="${instance.statisticalPeriod}"
-                               default="5000"
+                               default="5"
                                checkUrl="'${rootURL}/publisher/ClifPublisher/checkStatisticalPeriod?value='+escape(this.value)"/>
                 </f:entry>
             </table>

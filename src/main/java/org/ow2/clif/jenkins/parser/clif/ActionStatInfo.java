@@ -336,7 +336,6 @@ public class ActionStatInfo
         MovingStatChart chart =
                 new MovingStatChart( context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(),
                                      this.statisticalPeriod );
-        chart.setScatterPlot( context.getBlade().isInjector() );
 
         for ( int i = 0; i < valuesArray.length; i++ )
         {
