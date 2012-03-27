@@ -17,9 +17,8 @@ public class ZipTest {
 	@Test
 	public void namesCanBeFiltered() throws Exception {
 		zip = new Zip("src/test/files/sources.zip");
-		// OH! "rb$" does not match
+		// OH! "foo.rb" does not match /rb$/
 		// it does in rb, erl, js
-		// stupid java!
 		assertThat(zip.names(".*rb$"))
 				.containsExactly("foo.rb", "get.rb");
 	}

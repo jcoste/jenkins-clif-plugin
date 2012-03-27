@@ -13,6 +13,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.ow2.clif.jenkins.helper.Configurer;
 import org.ow2.clif.jenkins.zip.Zip;
 
 import java.io.IOException;
@@ -22,12 +23,15 @@ import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 
 @Extension
-public class ZipImporter implements RootAction {
+public class ImportZipAction implements RootAction {
+	Configurer clif;
 	Jenkins jenkins;
 	String whiteList;
 
-	public ZipImporter() {
-		tendedBy(Jenkins.getInstance());
+
+	public ImportZipAction() {
+		clif = new Configurer();
+		with(Jenkins.getInstance());
 		whiteList = "(.*)\\.ctp$";
 	}
 
@@ -40,7 +44,7 @@ public class ZipImporter implements RootAction {
 	}
 
 	public String getUrlName() {
-		return "bar";
+		return "clif";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,7 +55,12 @@ public class ZipImporter implements RootAction {
 				.parseRequest(req);
 
 		for (FileItem item : items) {
-			createProjectInJenkinsForEachFileInZipMatchingFilter(new Zip(item.getInputStream()), whiteList);
+			Zip zip = new Zip(item.getInputStream());
+			List<FreeStyleProject> projects =
+					newProjectForEachFileInZipMatchingFilter(zip, whiteList);
+			for (FreeStyleProject project : projects) {
+	      jenkins.putItem(project);
+      }
 		}
 
 		res.sendRedirect2("/");
@@ -59,6 +68,7 @@ public class ZipImporter implements RootAction {
 
 
 	/**
+	 *
 	 * @param name
 	 * @param zip
 	 * @param filter regular expression as a string
@@ -66,22 +76,21 @@ public class ZipImporter implements RootAction {
 	 * @throws IOException wish I could use a list comprehension!
 	 */
 	List<FreeStyleProject>
-	createProjectInJenkinsForEachFileInZipMatchingFilter(Zip zip, String filter)
+	newProjectForEachFileInZipMatchingFilter(Zip zip, String filter)
 			throws IOException, InterruptedException {
 		List<FreeStyleProject> projects = Lists.newArrayList();
 		for (String fileName : zip.names(filter)) {
-			projects.add(createProjectInJenkins(fileName));
+			projects.add(clif.configure(newProject(fileName), fileName));
 		}
 		return projects;
 	}
 
-	FreeStyleProject createProjectInJenkins(String fileName)
+	FreeStyleProject newProject(String fileName)
 			throws IOException, InterruptedException {
 		FreeStyleProject project = new FreeStyleProject(
 				(ItemGroup<? extends Item>) jenkins,
 				nameThatProject(fileName)
 		);
-		jenkins.putItem(project);
 		return project;
 	}
 
@@ -89,12 +98,12 @@ public class ZipImporter implements RootAction {
 		return removeExtension(fileName.replace('/', '-'));
 	}
 
-	ZipImporter tendedBy(Jenkins tender) {
-		this.jenkins = tender;
+	ImportZipAction with(Jenkins jenkins) {
+		this.jenkins = jenkins;
 		return this;
 	}
 
-	ZipImporter whiteList(String whiteList) {
+	ImportZipAction whiteList(String whiteList) {
 		this.whiteList = whiteList;
 		return this;
 	}
