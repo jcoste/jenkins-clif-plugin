@@ -3,7 +3,7 @@
 	<f:entry title="${%ClifReportDirectory}" help="/plugin/jenkins-clif-plugin/help-projectConfig-clifdir.html">
 		<f:textbox name="clif.clifReportDirectory"
 		           value="${instance.clifReportDirectory}"
-		           default="clif-reports"
+		           default="report"
 		           checkUrl="'${rootURL}/publisher/ClifPublisher/checkClifReportDirectory?value='+escape(this.value)"/>
 	</f:entry>
 	<f:advanced>

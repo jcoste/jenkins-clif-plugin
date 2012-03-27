@@ -41,7 +41,7 @@
 			<f:expandableTextbox name="clif.clifOpts" value="${instance.clifOpts}"/>
 		</f:entry>
 		<f:entry title="${%Clif report directory}">
-			<f:textbox name="reportDir" value="${instance.reportDir}" default="clif-reports"
+			<f:textbox name="reportDir" value="${instance.reportDir}" default="report"
 			           checkUrl="'${rootURL}/builder/ClifBuilder/checkReportDir?value='+escape(this.value)"/>
 		</f:entry>
 	</f:advanced>
