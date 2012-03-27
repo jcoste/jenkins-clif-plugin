@@ -73,16 +73,6 @@ public class ClifParser {
 
 	protected Map<String, Pattern> actionAliasPatterns = new HashMap<String, Pattern>();
 
-/*	private int chartWidth = 900;
-
-	private int chartHeight = 600;
-
-	private int distributionSliceSize = 20;
-
-	private int distributionSliceNumber = 20;
-
-	private int statisticalPeriod = 20;*/
-
 	private ChartConfiguration chartConfiguration;
 
 	protected ParsingContext context = new ParsingContext();
@@ -184,21 +174,27 @@ public class ClifParser {
 			aggregatedStatsByAction = new HashMap<String, ActionStatInfo>();
 
 			for (BladeDescriptor bladeDescriptor : blades) {
-				context.setBlade(bladeDescriptor);
-				if (bladeDescriptor.isProbe()) {
-					analyzeProbe(testPlan);
-				}
-				else if (bladeDescriptor.isInjector()) {
-					analyzeInjector(testPlan);
-				}
+				analyseBlade(testPlan, bladeDescriptor);
 			}
 
 			// Add aggregated measures
 			for (Map.Entry<String, ActionStatInfo> entry : aggregatedStatsByAction.entrySet()) {
 				Measure m = createInjectorMeasure(entry.getKey(), entry.getValue());
 				testPlan.addAggregatedMeasure(m);
+				entry.getValue().generateCharts(this.ouputDirectory);
 			}
 		}
+	}
+
+	protected void analyseBlade(TestPlan testPlan, BladeDescriptor bladeDescriptor) throws ClifException {
+		context.setBlade(bladeDescriptor);
+		if (bladeDescriptor.isProbe()) {
+			analyzeProbe(testPlan);
+		}
+		else if (bladeDescriptor.isInjector()) {
+			analyzeInjector(testPlan);
+		}
+		context.setBlade(null);
 	}
 
 	protected static String extractTestPlanName(String clifTestPlanName) {
@@ -241,6 +237,7 @@ public class ClifParser {
 			if (!eventTypeToExclude.contains(eventType)) {
 				context.setEventType(eventType);
 				analyzeEventType(probe);
+				context.setEventType(null);
 			}
 
 			if (ALARM_EVENT_TYPE.equals(eventType)) {
@@ -266,6 +263,7 @@ public class ClifParser {
 			if (!eventTypeToExclude.contains(eventType)) {
 				context.setEventType(eventType);
 				analyzeEventType(injector);
+				context.setEventType(null);
 			}
 
 			if (ALARM_EVENT_TYPE.equals(eventType)) {
@@ -295,7 +293,7 @@ public class ClifParser {
 
 		for (int i = 1; i < labels.length; i++) {
 			context.setEventType(labels[i]);
-			statsInfo[i] = new ActionStatInfo(context);
+			statsInfo[i] = new ActionStatInfo(context, this.chartConfiguration);
 		}
 
 		// Parsing bladeEvents to compute stats and build charts
@@ -315,7 +313,7 @@ public class ClifParser {
 			context.setEventType(labels[i]);
 			Measure m = createProbeMeasure(labels[i], statsInfo[i]);
 			probe.addMeasure(m);
-			statsInfo[i].generateCharts(this.ouputDirectory, this.chartConfiguration.getChartWidth(), this.chartConfiguration.getChartHeight());
+			statsInfo[i].generateCharts(this.ouputDirectory);
 		}
 	}
 
@@ -348,14 +346,14 @@ public class ClifParser {
 			Measure m = createInjectorMeasure(entry.getKey(), entry.getValue());
 			injector.addMeasure(m);
 
-			entry.getValue().generateCharts(this.ouputDirectory, this.chartConfiguration.getChartWidth(), this.chartConfiguration.getChartHeight());
+			entry.getValue().generateCharts(this.ouputDirectory);
 		}
 	}
 
 	protected void addError(String action) {
 		ActionStatInfo statInfo = statsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, chartConfiguration);
+			statInfo = new ActionStatInfo(context, this.chartConfiguration);
 			statsByAction.put(action, statInfo);
 		}
 		statInfo.incrementErrors();
@@ -365,7 +363,10 @@ public class ClifParser {
 	private void addAggregatedError(String action) {
 		ActionStatInfo statInfo = aggregatedStatsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, chartConfiguration);
+			BladeDescriptor currentBlade = context.getBlade();
+			context.setBlade(null);
+			statInfo = new ActionStatInfo(context, this.chartConfiguration);
+			context.setBlade(currentBlade);
 			aggregatedStatsByAction.put(action, statInfo);
 		}
 
@@ -375,7 +376,7 @@ public class ClifParser {
 	protected void addEventToStat(String action, BladeEvent actionEvent) {
 		ActionStatInfo statInfo = statsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, chartConfiguration);
+			statInfo = new ActionStatInfo(context, this.chartConfiguration);
 			statsByAction.put(action, statInfo);
 		}
 
@@ -389,7 +390,10 @@ public class ClifParser {
 	protected void addEventToAggregatedStat(String action, long date, int duration) {
 		ActionStatInfo statInfo = aggregatedStatsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, chartConfiguration);
+			BladeDescriptor currentBlade = context.getBlade();
+			context.setBlade(null);
+			statInfo = new ActionStatInfo(context, this.chartConfiguration);
+			context.setBlade(currentBlade);
 			aggregatedStatsByAction.put(action, statInfo);
 		}
 

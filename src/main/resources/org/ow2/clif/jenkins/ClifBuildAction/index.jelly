@@ -77,7 +77,8 @@
 								<g:injectorHeader/>
 								<tbody>
 									<j:forEach var="measure" items="${testPlan.aggregatedMeasures}">
-										<g:injectorTable it="${measure}" loadAction="${it}"/>
+										<g:injectorTable it="${measure}" loadAction="${it}"
+										                 testPlanName="${testPlan.name}" bladeId="aggregated"/>
 									</j:forEach>
 								</tbody>
 							</table>

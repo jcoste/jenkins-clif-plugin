@@ -77,10 +77,10 @@ public class ActionStatInfo {
 		lastCall = Long.MIN_VALUE;
 	}
 
-	public ActionStatInfo(ParsingContext context) {
+/*	public ActionStatInfo(ParsingContext context) {
 		this.context = new ParsingContext(context);
 		onTheFlyStat = new SummaryStatisticsImpl();
-	}
+	}*/
 
 	public ActionStatInfo(ParsingContext context, ChartConfiguration chartConfiguration) {
 		this.context = new ParsingContext(context);
@@ -163,7 +163,7 @@ public class ActionStatInfo {
 		valuesArray = values.getElements();
 		datesArray = dates.getElements();
 
-		if (context.dataCleanup && context.getBlade().isInjector()) {
+		if (context.dataCleanup && (context.getBlade() == null || context.getBlade().isInjector())) {
 			dataCleanup();
 		}
 
@@ -175,7 +175,7 @@ public class ActionStatInfo {
 
 		// Build detailled graph
 		callChart = createCallChart();
-		if (context.getBlade().isInjector()) {
+		if (context.getBlade() == null || context.getBlade().isInjector()) {
 			movingStatChart = createMovingStatChart();
 			// Build distribution graph
 			fixedSliceNumberDistributionChart = createFixedSliceNumberDistributionChart();
@@ -290,13 +290,20 @@ public class ActionStatInfo {
 	 */
 	private MovingStatChart createMovingStatChart() {
 		MovingStatChart chart =
-				new MovingStatChart(context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(),
+				new MovingStatChart(context.getTestPlanShortName(), getBladeId(context), context.getEventType(),
 				                    chartConfiguration);
 
 		for (int i = 0; i < valuesArray.length; i++) {
 			chart.addData(datesArray[i], valuesArray[i]);
 		}
 		return chart;
+	}
+
+	private String getBladeId(ParsingContext context) {
+		if (context.getBlade() == null) {
+			return "aggregated";
+		}
+		return context.getBlade().getId();
 	}
 
 	/**
@@ -306,8 +313,11 @@ public class ActionStatInfo {
 	 */
 	private CallChart createCallChart() {
 		CallChart chart =
-				new CallChart(context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(), this.chartConfiguration);
-		chart.setScatterPlot(context.getBlade().isInjector());
+				new CallChart(context.getTestPlanShortName(), getBladeId(context), context.getEventType(),
+				              this.chartConfiguration);
+		if (context.getBlade() != null && context.getBlade().isInjector()) {
+			chart.setScatterPlot(true);
+		}
 
 		for (int i = 0; i < valuesArray.length; i++) {
 			chart.addData(datesArray[i], valuesArray[i]);
@@ -323,7 +333,7 @@ public class ActionStatInfo {
 	private FixedSliceNumberDistributionChart createFixedSliceNumberDistributionChart() {
 
 		FixedSliceNumberDistributionChart chart =
-				new FixedSliceNumberDistributionChart(context.getTestPlanShortName(), context.getBlade().getId(),
+				new FixedSliceNumberDistributionChart(context.getTestPlanShortName(), getBladeId(context),
 				                                      context.getEventType(), chartConfiguration);
 		chart.addData(valuesArray);
 		return chart;
@@ -337,7 +347,7 @@ public class ActionStatInfo {
 	private FixedSliceSizeDistributionChart createFixedSliceSizeDistributionChart() {
 
 		FixedSliceSizeDistributionChart chart =
-				new FixedSliceSizeDistributionChart(context.getTestPlanShortName(), context.getBlade().getId(),
+				new FixedSliceSizeDistributionChart(context.getTestPlanShortName(), getBladeId(context),
 				                                    context.getEventType(), chartConfiguration);
 		chart.addData(valuesArray, stat.getMin(), stat.getMax());
 		return chart;
@@ -350,26 +360,26 @@ public class ActionStatInfo {
 	 */
 	private QuantileDistributionChart createQuantileDistributionChart() {
 		QuantileDistributionChart chart =
-				new QuantileDistributionChart(context.getTestPlanShortName(), context.getBlade().getId(),
+				new QuantileDistributionChart(context.getTestPlanShortName(), getBladeId(context),
 				                              context.getEventType(), this.chartConfiguration);
 
 		chart.addData(stat);
 		return chart;
 	}
 
-	public void generateCharts(File rootDir, int chartWidth, int chartHeight) {
-		callChart.createChart(rootDir, chartWidth, chartHeight);
+	public void generateCharts(File rootDir) {
+		callChart.createChart(rootDir);
 		if (movingStatChart != null) {
-			movingStatChart.createChart(rootDir, chartWidth, chartHeight);
+			movingStatChart.createChart(rootDir);
 		}
 		if (fixedSliceNumberDistributionChart != null) {
-			fixedSliceNumberDistributionChart.createChart(rootDir, chartWidth, chartHeight);
+			fixedSliceNumberDistributionChart.createChart(rootDir);
 		}
 		if (fixedSliceSizeDistributionChart != null) {
-			fixedSliceSizeDistributionChart.createChart(rootDir, chartWidth, chartHeight);
+			fixedSliceSizeDistributionChart.createChart(rootDir);
 		}
 		if (quantileDistributionChart != null) {
-			quantileDistributionChart.createChart(rootDir, chartWidth, chartHeight);
+			quantileDistributionChart.createChart(rootDir);
 		}
 	}
 

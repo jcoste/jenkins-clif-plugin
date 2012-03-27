@@ -138,11 +138,11 @@ public abstract class AbstractChart {
 
 	}
 
-	public void createChart(File rootDir, int chartWidth, int chartHeight) {
+	public void createChart(File rootDir) {
 		JFreeChart chart = createChart();
 
 		File imageFile = getImageFile(rootDir);
-		BufferedImage bImage = chart.createBufferedImage(chartWidth, chartHeight);
+		BufferedImage bImage = chart.createBufferedImage(this.chartConfiguration.getChartWidth(), this.chartConfiguration.getChartHeight());
 		saveImageFile(imageFile, bImage);
 
 	}
