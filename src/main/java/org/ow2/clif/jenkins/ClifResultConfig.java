@@ -28,44 +28,44 @@ import java.io.Serializable;
  * @author Julien Coste
  */
 public class ClifResultConfig
-        implements Serializable
+		implements Serializable
 {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    protected String actionType;
+	protected String actionType;
 
-    protected String patternSuccessfulResult;
+	protected String patternSuccessfulResult;
 
-    public ClifResultConfig()
-    {
-    }
+	public ClifResultConfig()
+	{
+	}
 
-    @DataBoundConstructor
-    public ClifResultConfig( String actionType, String patternSuccessfulResult )
-    {
-        super();
-        this.actionType = actionType;
-        this.patternSuccessfulResult = patternSuccessfulResult;
-    }
+	@DataBoundConstructor
+	public ClifResultConfig( String actionType, String patternSuccessfulResult )
+	{
+		super();
+		this.actionType = actionType;
+		this.patternSuccessfulResult = patternSuccessfulResult;
+	}
 
-    public String getActionType()
-    {
-        return actionType;
-    }
+	public String getActionType()
+	{
+		return actionType;
+	}
 
-    public String getPatternSuccessfulResult()
-    {
-        return patternSuccessfulResult;
-    }
+	public String getPatternSuccessfulResult()
+	{
+		return patternSuccessfulResult;
+	}
 
-    public void setActionType( String actionType )
-    {
-        this.actionType = actionType;
-    }
+	public void setActionType( String actionType )
+	{
+		this.actionType = actionType;
+	}
 
-    public void setPatternSuccessfulResult( String patternSuccessfulResult )
-    {
-        this.patternSuccessfulResult = patternSuccessfulResult;
-    }
+	public void setPatternSuccessfulResult( String patternSuccessfulResult )
+	{
+		this.patternSuccessfulResult = patternSuccessfulResult;
+	}
 }

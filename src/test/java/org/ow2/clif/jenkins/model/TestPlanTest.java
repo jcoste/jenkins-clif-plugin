@@ -34,73 +34,73 @@ import static org.junit.Assert.*;
  */
 public class TestPlanTest
 {
-    private TestPlan tp1;
-    private Probe cpu;
-    private Injector action;
-    private Injector uri;
-    private Measure uri2;
+	private TestPlan tp1;
+	private Probe cpu;
+	private Injector action;
+	private Injector uri;
+	private Measure uri2;
 
-    @Before
-    public void initData()
-    {
-        tp1 = new TestPlan( "TestPlan1", new Date() );
+	@Before
+	public void initData()
+	{
+		tp1 = new TestPlan( "TestPlan1", new Date() );
 
-        cpu = new Probe( "0", "CPU", "localhost", "60 1000", "CPU", "" );
-        Measure cpuPercent = new Measure( "% CPU", 10, 5, 6, 1, 10, 0.4, 0, 0 );
-        cpu.addMeasure( cpuPercent );
-        Measure cpuPercentKernel = new Measure( "% CPU Kernel", 11, 6, 7, 2, 11, 0.5, 0, 1 );
-        cpu.addMeasure( cpuPercentKernel );
+		cpu = new Probe( "0", "CPU", "localhost", "60 1000", "CPU", "" );
+		Measure cpuPercent = new Measure( "% CPU", 10, 5, 6, 1, 10, 0.4, 0, 0 );
+		cpu.addMeasure( cpuPercent );
+		Measure cpuPercentKernel = new Measure( "% CPU Kernel", 11, 6, 7, 2, 11, 0.5, 0, 1 );
+		cpu.addMeasure( cpuPercentKernel );
 
-        tp1.addProbe( cpu );
+		tp1.addProbe( cpu );
 
-        action = new Injector( "1", "Action", "localhost", "60 1000", "scenario", "" );
-        Measure action1 = new Measure( "URI1", 10, 5, 6, 1, 10, 0.4, 0, 0 );
-        action.addMeasure( action1 );
-        Measure action2 = new Measure( "RUI2", 11, 6, 7, 2, 11, 0.5, 0, 1 );
-        action.addMeasure( action2 );
+		action = new Injector( "1", "Action", "localhost", "60 1000", "scenario", "" );
+		Measure action1 = new Measure( "URI1", 10, 5, 6, 1, 10, 0.4, 0, 0 );
+		action.addMeasure( action1 );
+		Measure action2 = new Measure( "RUI2", 11, 6, 7, 2, 11, 0.5, 0, 1 );
+		action.addMeasure( action2 );
 
-        tp1.addInjector( action );
+		tp1.addInjector( action );
 
-        uri = new Injector( "2", "Action", "server2", "60 1000", "scenario", "" );
-        Measure uri1 = new Measure( "URI1", 10, 5, 6, 1, 10, 0.4, 0, 0 );
-        uri.addMeasure( uri1 );
-        uri2 = new Measure( "RUI2", 11, 6, 7, 2, 11, 0.5, 0, 1 );
-        uri.addMeasure( uri2 );
+		uri = new Injector( "2", "Action", "server2", "60 1000", "scenario", "" );
+		Measure uri1 = new Measure( "URI1", 10, 5, 6, 1, 10, 0.4, 0, 0 );
+		uri.addMeasure( uri1 );
+		uri2 = new Measure( "RUI2", 11, 6, 7, 2, 11, 0.5, 0, 1 );
+		uri.addMeasure( uri2 );
 
-        tp1.addInjector( uri );
-    }
+		tp1.addInjector( uri );
+	}
 
-    @Test
-    public void test_getServers()
-    {
-        Set<String> servers = tp1.getServers();
-        assertNotNull( servers );
-        assertEquals( 2, servers.size() );
-        assertTrue( servers.contains( "localhost" ) );
-        assertTrue( servers.contains( "server2" ) );
-    }
+	@Test
+	public void test_getServers()
+	{
+		Set<String> servers = tp1.getServers();
+		assertNotNull( servers );
+		assertEquals( 2, servers.size() );
+		assertTrue( servers.contains( "localhost" ) );
+		assertTrue( servers.contains( "server2" ) );
+	}
 
-    @Test
-    public void test_getInjectorsByServer()
-    {
-        List<Injector> injectors = tp1.getInjectorsByServer( "localhost" );
-        assertNotNull( injectors );
-        assertEquals( 1, injectors.size() );
-        assertTrue( injectors.contains( action ) );
+	@Test
+	public void test_getInjectorsByServer()
+	{
+		List<Injector> injectors = tp1.getInjectorsByServer( "localhost" );
+		assertNotNull( injectors );
+		assertEquals( 1, injectors.size() );
+		assertTrue( injectors.contains( action ) );
 
-        injectors = tp1.getInjectorsByServer( "server2" );
-        assertNotNull( injectors );
-        assertEquals( 1, injectors.size() );
-        assertTrue( injectors.contains( uri ) );
-    }
+		injectors = tp1.getInjectorsByServer( "server2" );
+		assertNotNull( injectors );
+		assertEquals( 1, injectors.size() );
+		assertTrue( injectors.contains( uri ) );
+	}
 
-    @Test
-    public void test_getProbesByServer()
-    {
-        List<Probe> probes = tp1.getProbesByServer( "localhost" );
-        assertNotNull( probes );
-        assertEquals( 1, probes.size() );
-        assertTrue( probes.contains( cpu ) );
-    }
+	@Test
+	public void test_getProbesByServer()
+	{
+		List<Probe> probes = tp1.getProbesByServer( "localhost" );
+		assertNotNull( probes );
+		assertEquals( 1, probes.size() );
+		assertTrue( probes.contains( cpu ) );
+	}
 
 }

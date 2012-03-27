@@ -26,63 +26,63 @@ package org.ow2.clif.jenkins;
 public class ClifGraphParam
 {
 
-    protected String chartId;
+	protected String chartId;
 
-    protected String testPlan;
+	protected String testPlan;
 
-    protected String server;
+	protected String server;
 
-    protected String bladeId;
+	protected String bladeId;
 
-    protected String label;
+	protected String label;
 
-    public String getChartId()
-    {
-        return chartId;
-    }
+	public String getChartId()
+	{
+		return chartId;
+	}
 
-    public void setChartId( String chartId )
-    {
-        this.chartId = chartId;
-    }
+	public void setChartId( String chartId )
+	{
+		this.chartId = chartId;
+	}
 
-    public String getTestPlan()
-    {
-        return testPlan;
-    }
+	public String getTestPlan()
+	{
+		return testPlan;
+	}
 
-    public void setTestPlan( String testPlan )
-    {
-        this.testPlan = testPlan;
-    }
+	public void setTestPlan( String testPlan )
+	{
+		this.testPlan = testPlan;
+	}
 
-    public String getServer()
-    {
-        return server;
-    }
+	public String getServer()
+	{
+		return server;
+	}
 
-    public void setServer( String server )
-    {
-        this.server = server;
-    }
+	public void setServer( String server )
+	{
+		this.server = server;
+	}
 
-    public String getBladeId()
-    {
-        return bladeId;
-    }
+	public String getBladeId()
+	{
+		return bladeId;
+	}
 
-    public void setBladeId( String bladeId )
-    {
-        this.bladeId = bladeId;
-    }
+	public void setBladeId( String bladeId )
+	{
+		this.bladeId = bladeId;
+	}
 
-    public String getLabel()
-    {
-        return label;
-    }
+	public String getLabel()
+	{
+		return label;
+	}
 
-    public void setLabel( String label )
-    {
-        this.label = label;
-    }
+	public void setLabel( String label )
+	{
+		this.label = label;
+	}
 }

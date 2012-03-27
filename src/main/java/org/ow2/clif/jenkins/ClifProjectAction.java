@@ -55,251 +55,251 @@ import java.util.List;
  * @author Julien Coste
  */
 public class ClifProjectAction
-        extends AbstractClifAction
+		extends AbstractClifAction
 {
 
-    private final Project project;
+	private final Project project;
 
-    public Map<String, Set<String>> getActionsAvailable()
-    {
-        return computeActionsAvailable();
-    }
+	public Map<String, Set<String>> getActionsAvailable()
+	{
+		return computeActionsAvailable();
+	}
 
-    public ClifProjectAction( Project project )
-    {
-        this.project = project;
+	public ClifProjectAction( Project project )
+	{
+		this.project = project;
 
-    }
+	}
 
-    private Map<String, Set<String>> computeActionsAvailable()
-    {
-        Map<String, Set<String>> res = new HashMap<String, Set<String>>();
-        List<?> builds = getProject().getBuilds();
-        for ( Iterator<?> iterator = builds.iterator(); iterator.hasNext(); )
-        {
-            AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
-            ClifBuildAction clifBuildAction = currentBuild.getAction( ClifBuildAction.class );
-            if (clifBuildAction == null)
-            {
-                continue;
-            }
-            ClifReport clifReport = clifBuildAction.getReport();
-            if (clifReport == null)
-            {
-                continue;
-            }
-            for ( TestPlan tp : clifReport.getTestplans() )
-            {
-                Set<String> actions = res.get( tp.getName() );
-                if (actions == null)
-                {
-                    actions = new HashSet<String>();
-                    res.put( tp.getName(), actions );
-                }
-                if (tp.getAggregatedMeasures() != null)
-                {
-                    for ( Measure m : tp.getAggregatedMeasures() )
-                    {
-                        actions.add( m.getName() );
-                    }
-                }
-            }
-        }
-        return res;
-    }
+	private Map<String, Set<String>> computeActionsAvailable()
+	{
+		Map<String, Set<String>> res = new HashMap<String, Set<String>>();
+		List<?> builds = getProject().getBuilds();
+		for ( Iterator<?> iterator = builds.iterator(); iterator.hasNext(); )
+		{
+			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
+			ClifBuildAction clifBuildAction = currentBuild.getAction( ClifBuildAction.class );
+			if (clifBuildAction == null)
+			{
+				continue;
+			}
+			ClifReport clifReport = clifBuildAction.getReport();
+			if (clifReport == null)
+			{
+				continue;
+			}
+			for ( TestPlan tp : clifReport.getTestplans() )
+			{
+				Set<String> actions = res.get( tp.getName() );
+				if (actions == null)
+				{
+					actions = new HashSet<String>();
+					res.put( tp.getName(), actions );
+				}
+				if (tp.getAggregatedMeasures() != null)
+				{
+					for ( Measure m : tp.getAggregatedMeasures() )
+					{
+						actions.add( m.getName() );
+					}
+				}
+			}
+		}
+		return res;
+	}
 
-    public Project getProject()
-    {
-        return project;
-    }
+	public Project getProject()
+	{
+		return project;
+	}
 
-    @Override
-    public String getDisplayName()
-    {
-        return Messages.ProjectAction_DisplayName();
-    }
+	@Override
+	public String getDisplayName()
+	{
+		return Messages.ProjectAction_DisplayName();
+	}
 
-    public ClifBuildAction getActionByBuildNumber( int number )
-    {
-        return project.getBuildByNumber( number ).getAction( ClifBuildAction.class );
-    }
+	public ClifBuildAction getActionByBuildNumber( int number )
+	{
+		return project.getBuildByNumber( number ).getAction( ClifBuildAction.class );
+	}
 
-    public void doActionGraph( StaplerRequest request, StaplerResponse response )
-            throws IOException
-    {
+	public void doActionGraph( StaplerRequest request, StaplerResponse response )
+			throws IOException
+	{
 
-        ClifGraphParam params = new ClifGraphParam();
-        request.bindParameters( params );
+		ClifGraphParam params = new ClifGraphParam();
+		request.bindParameters( params );
 
-        if (shouldReloadGraph( request, response ))
-        {
-            ChartUtil.generateGraph( request, response, createActionGraph( params ), 400, 250 );
-        }
-    }
+		if (shouldReloadGraph( request, response ))
+		{
+			ChartUtil.generateGraph( request, response, createActionGraph( params ), 400, 250 );
+		}
+	}
 
-    public void doActionErrorGraph( StaplerRequest request, StaplerResponse response )
-            throws IOException
-    {
+	public void doActionErrorGraph( StaplerRequest request, StaplerResponse response )
+			throws IOException
+	{
 
-        ClifGraphParam params = new ClifGraphParam();
-        request.bindParameters( params );
+		ClifGraphParam params = new ClifGraphParam();
+		request.bindParameters( params );
 
-        if (shouldReloadGraph( request, response ))
-        {
-            ChartUtil.generateGraph( request, response, createActionErrorGraph( params ), 400, 250 );
-        }
-    }
+		if (shouldReloadGraph( request, response ))
+		{
+			ChartUtil.generateGraph( request, response, createActionErrorGraph( params ), 400, 250 );
+		}
+	}
 
-    private JFreeChart createActionGraph( ClifGraphParam params )
-    {
-        DefaultStatisticalCategoryDataset timeDS = new DefaultStatisticalCategoryDataset();
-        DataSetBuilder<String, NumberOnlyBuildLabel> minmaxDS = new DataSetBuilder<String, NumberOnlyBuildLabel>();
+	private JFreeChart createActionGraph( ClifGraphParam params )
+	{
+		DefaultStatisticalCategoryDataset timeDS = new DefaultStatisticalCategoryDataset();
+		DataSetBuilder<String, NumberOnlyBuildLabel> minmaxDS = new DataSetBuilder<String, NumberOnlyBuildLabel>();
 
-        List builds = getProject().getBuilds();
-        Collections.sort( builds );
-        for ( Iterator<?> iterator = builds.iterator(); iterator.hasNext(); )
-        {
-            AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
+		List builds = getProject().getBuilds();
+		Collections.sort( builds );
+		for ( Iterator<?> iterator = builds.iterator(); iterator.hasNext(); )
+		{
+			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
 
-            if (!currentBuild.isBuilding() && currentBuild.getResult().isBetterOrEqualTo( Result.SUCCESS ))
-            {
+			if (!currentBuild.isBuilding() && currentBuild.getResult().isBetterOrEqualTo( Result.SUCCESS ))
+			{
 
-                NumberOnlyBuildLabel label = new NumberOnlyBuildLabel( currentBuild );
-                ClifBuildAction clifBuildAction = currentBuild.getAction( ClifBuildAction.class );
-                if (clifBuildAction == null)
-                {
-                    continue;
-                }
-                ClifReport clifReport = clifBuildAction.getReport();
-                if (clifReport == null)
-                {
-                    continue;
-                }
-                TestPlan tp = clifReport.getTestplan( params.getTestPlan() );
-                if (tp == null)
-                {
-                    continue;
-                }
-                if (tp.getAggregatedMeasures() != null)
-                {
-                    Measure m = tp.getAggregatedMeasure( params.getLabel() );
-                    if (m == null)
-                    {
-                        continue;
-                    }
-                    timeDS.add( m.getAverage(), m.getStdDev(), Messages.ProjectAction_Mean(), label );
-                    minmaxDS.add( m.getMax(), Messages.ProjectAction_Max(), label );
-                    minmaxDS.add( m.getMin(), Messages.ProjectAction_Min(), label );
-                }
-            }
-        }
+				NumberOnlyBuildLabel label = new NumberOnlyBuildLabel( currentBuild );
+				ClifBuildAction clifBuildAction = currentBuild.getAction( ClifBuildAction.class );
+				if (clifBuildAction == null)
+				{
+					continue;
+				}
+				ClifReport clifReport = clifBuildAction.getReport();
+				if (clifReport == null)
+				{
+					continue;
+				}
+				TestPlan tp = clifReport.getTestplan( params.getTestPlan() );
+				if (tp == null)
+				{
+					continue;
+				}
+				if (tp.getAggregatedMeasures() != null)
+				{
+					Measure m = tp.getAggregatedMeasure( params.getLabel() );
+					if (m == null)
+					{
+						continue;
+					}
+					timeDS.add( m.getAverage(), m.getStdDev(), Messages.ProjectAction_Mean(), label );
+					minmaxDS.add( m.getMax(), Messages.ProjectAction_Max(), label );
+					minmaxDS.add( m.getMin(), Messages.ProjectAction_Min(), label );
+				}
+			}
+		}
 
-        final CategoryAxis xAxis = new CategoryAxis( Messages.ProjectAction_BuildAxis() );
-        xAxis.setLowerMargin( 0.01 );
-        xAxis.setUpperMargin( 0.01 );
-        xAxis.setCategoryLabelPositions( CategoryLabelPositions.UP_90 );
-        xAxis.setMaximumCategoryLabelLines( 3 );
+		final CategoryAxis xAxis = new CategoryAxis( Messages.ProjectAction_BuildAxis() );
+		xAxis.setLowerMargin( 0.01 );
+		xAxis.setUpperMargin( 0.01 );
+		xAxis.setCategoryLabelPositions( CategoryLabelPositions.UP_90 );
+		xAxis.setMaximumCategoryLabelLines( 3 );
 
-        final ValueAxis timeAxis = new NumberAxis( Messages.ProjectAction_TimeAxis() );
-        timeAxis.setUpperMargin( 0.1 );
-        // final ValueAxis minmaxTimeAxis = new NumberAxis("Time (ms)");
-        final BarRenderer timeRenderer = new StatisticalBarRenderer();
-        timeRenderer.setSeriesPaint( 2, ColorPalette.RED );
-        timeRenderer.setSeriesPaint( 1, ColorPalette.YELLOW );
-        timeRenderer.setSeriesPaint( 0, ColorPalette.BLUE );
-        timeRenderer.setItemMargin( 0.0 );
+		final ValueAxis timeAxis = new NumberAxis( Messages.ProjectAction_TimeAxis() );
+		timeAxis.setUpperMargin( 0.1 );
+		// final ValueAxis minmaxTimeAxis = new NumberAxis("Time (ms)");
+		final BarRenderer timeRenderer = new StatisticalBarRenderer();
+		timeRenderer.setSeriesPaint( 2, ColorPalette.RED );
+		timeRenderer.setSeriesPaint( 1, ColorPalette.YELLOW );
+		timeRenderer.setSeriesPaint( 0, ColorPalette.BLUE );
+		timeRenderer.setItemMargin( 0.0 );
 
-        final CategoryPlot plot = new CategoryPlot( timeDS, xAxis, timeAxis, timeRenderer );
-        plot.setBackgroundPaint( Color.WHITE );
-        plot.setOutlinePaint( null );
-        plot.setForegroundAlpha( 0.8f );
-        plot.setRangeGridlinesVisible( true );
-        plot.setRangeGridlinePaint( Color.black );
+		final CategoryPlot plot = new CategoryPlot( timeDS, xAxis, timeAxis, timeRenderer );
+		plot.setBackgroundPaint( Color.WHITE );
+		plot.setOutlinePaint( null );
+		plot.setForegroundAlpha( 0.8f );
+		plot.setRangeGridlinesVisible( true );
+		plot.setRangeGridlinePaint( Color.black );
 
-        final CategoryItemRenderer minmaxRenderer = new LineAndShapeRenderer();
-        // plot.setRangeAxis(1, timeAxis);
-        plot.setDataset( 1, minmaxDS.build() );
-        plot.mapDatasetToRangeAxis( 1, 0 );
-        plot.setRenderer( 1, minmaxRenderer );
+		final CategoryItemRenderer minmaxRenderer = new LineAndShapeRenderer();
+		// plot.setRangeAxis(1, timeAxis);
+		plot.setDataset( 1, minmaxDS.build() );
+		plot.mapDatasetToRangeAxis( 1, 0 );
+		plot.setRenderer( 1, minmaxRenderer );
 
-        JFreeChart chart = new JFreeChart( params.getLabel(), plot );
-        chart.setBackgroundPaint( Color.WHITE );
+		JFreeChart chart = new JFreeChart( params.getLabel(), plot );
+		chart.setBackgroundPaint( Color.WHITE );
 
-        return chart;
-    }
+		return chart;
+	}
 
-    private JFreeChart createActionErrorGraph( ClifGraphParam params )
-    {
-        DataSetBuilder<String, NumberOnlyBuildLabel> errorsDS = new DataSetBuilder<String, NumberOnlyBuildLabel>();
+	private JFreeChart createActionErrorGraph( ClifGraphParam params )
+	{
+		DataSetBuilder<String, NumberOnlyBuildLabel> errorsDS = new DataSetBuilder<String, NumberOnlyBuildLabel>();
 
-        List builds = getProject().getBuilds();
-        Collections.sort( builds );
-        for ( Iterator<?> iterator = builds.iterator(); iterator.hasNext(); )
-        {
-            AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
+		List builds = getProject().getBuilds();
+		Collections.sort( builds );
+		for ( Iterator<?> iterator = builds.iterator(); iterator.hasNext(); )
+		{
+			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
 
-            if (!currentBuild.isBuilding() && currentBuild.getResult().isBetterOrEqualTo( Result.SUCCESS ))
-            {
+			if (!currentBuild.isBuilding() && currentBuild.getResult().isBetterOrEqualTo( Result.SUCCESS ))
+			{
 
-                NumberOnlyBuildLabel label = new NumberOnlyBuildLabel( currentBuild );
-                ClifBuildAction clifBuildAction = currentBuild.getAction( ClifBuildAction.class );
-                if (clifBuildAction == null)
-                {
-                    continue;
-                }
-                ClifReport clifReport = clifBuildAction.getReport();
-                if (clifReport == null)
-                {
-                    continue;
-                }
-                TestPlan tp = clifReport.getTestplan( params.getTestPlan() );
-                if (tp == null)
-                {
-                    continue;
-                }
-                if (tp.getAggregatedMeasures() != null)
-                {
-                    Measure m = tp.getAggregatedMeasure( params.getLabel() );
-                    if (m == null)
-                    {
-                        continue;
-                    }
-                    errorsDS.add( m.errorPercent() * 100, Messages.ProjectAction_Errors(), label );
-                }
-            }
+				NumberOnlyBuildLabel label = new NumberOnlyBuildLabel( currentBuild );
+				ClifBuildAction clifBuildAction = currentBuild.getAction( ClifBuildAction.class );
+				if (clifBuildAction == null)
+				{
+					continue;
+				}
+				ClifReport clifReport = clifBuildAction.getReport();
+				if (clifReport == null)
+				{
+					continue;
+				}
+				TestPlan tp = clifReport.getTestplan( params.getTestPlan() );
+				if (tp == null)
+				{
+					continue;
+				}
+				if (tp.getAggregatedMeasures() != null)
+				{
+					Measure m = tp.getAggregatedMeasure( params.getLabel() );
+					if (m == null)
+					{
+						continue;
+					}
+					errorsDS.add( m.errorPercent() * 100, Messages.ProjectAction_Errors(), label );
+				}
+			}
 
-        }
+		}
 
-        final CategoryAxis xAxis = new CategoryAxis( Messages.ProjectAction_BuildAxis() );
-        xAxis.setLowerMargin( 0.01 );
-        xAxis.setUpperMargin( 0.01 );
-        xAxis.setCategoryLabelPositions( CategoryLabelPositions.UP_90 );
-        xAxis.setMaximumCategoryLabelLines( 3 );
+		final CategoryAxis xAxis = new CategoryAxis( Messages.ProjectAction_BuildAxis() );
+		xAxis.setLowerMargin( 0.01 );
+		xAxis.setUpperMargin( 0.01 );
+		xAxis.setCategoryLabelPositions( CategoryLabelPositions.UP_90 );
+		xAxis.setMaximumCategoryLabelLines( 3 );
 
-        final ValueAxis errorsAxis = new NumberAxis( Messages.ProjectAction_ErrorAxis() );
-        errorsAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
-        errorsAxis.setUpperMargin( 0.1 );
+		final ValueAxis errorsAxis = new NumberAxis( Messages.ProjectAction_ErrorAxis() );
+		errorsAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
+		errorsAxis.setUpperMargin( 0.1 );
 
-        final LineAndShapeRenderer errorRenderer = new LineAndShapeRenderer();
-        errorRenderer.setItemMargin( 0.0 );
+		final LineAndShapeRenderer errorRenderer = new LineAndShapeRenderer();
+		errorRenderer.setItemMargin( 0.0 );
 
-        final CategoryPlot plot = new CategoryPlot( errorsDS.build(), xAxis, errorsAxis, errorRenderer );
-        plot.setBackgroundPaint( Color.WHITE );
-        plot.setOutlinePaint( null );
-        plot.setForegroundAlpha( 0.8f );
-        plot.setRangeGridlinesVisible( true );
-        plot.setRangeGridlinePaint( Color.black );
+		final CategoryPlot plot = new CategoryPlot( errorsDS.build(), xAxis, errorsAxis, errorRenderer );
+		plot.setBackgroundPaint( Color.WHITE );
+		plot.setOutlinePaint( null );
+		plot.setForegroundAlpha( 0.8f );
+		plot.setRangeGridlinesVisible( true );
+		plot.setRangeGridlinePaint( Color.black );
 
-        JFreeChart chart = new JFreeChart( Messages.ProjectAction_PercentageOfErrors(), plot );
-        chart.setBackgroundPaint( Color.WHITE );
+		JFreeChart chart = new JFreeChart( Messages.ProjectAction_PercentageOfErrors(), plot );
+		chart.setBackgroundPaint( Color.WHITE );
 
-        return chart;
-    }
+		return chart;
+	}
 
-    private boolean shouldReloadGraph( StaplerRequest request, StaplerResponse response )
-            throws IOException
-    {
-        return true; // shouldReloadGraph(request, response,
-        // project.getLastSuccessfulBuild());
-    }
+	private boolean shouldReloadGraph( StaplerRequest request, StaplerResponse response )
+			throws IOException
+	{
+		return true; // shouldReloadGraph(request, response,
+		// project.getLastSuccessfulBuild());
+	}
 }

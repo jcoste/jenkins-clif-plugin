@@ -35,397 +35,397 @@ import java.io.File;
 public class ActionStatInfo
 {
 
-    protected static int MIN_SIZE_OF_STATISTICAL_DATA = 30;
+	protected static int MIN_SIZE_OF_STATISTICAL_DATA = 30;
 
-    // Used to compute statistics (Mean, Sum, Min,  Max)
-    protected SummaryStatistics onTheFlyStat;
+	// Used to compute statistics (Mean, Sum, Min,  Max)
+	protected SummaryStatistics onTheFlyStat;
 
-    protected ResizableDoubleArray values = new ResizableDoubleArray();
+	protected ResizableDoubleArray values = new ResizableDoubleArray();
 
-    protected ResizableDoubleArray dates = new ResizableDoubleArray();
+	protected ResizableDoubleArray dates = new ResizableDoubleArray();
 
-    protected double[] valuesArray;
+	protected double[] valuesArray;
 
-    protected double[] datesArray;
+	protected double[] datesArray;
 
 
-    private long errors;
+	private long errors;
 
-    protected ParsingContext context;
+	protected ParsingContext context;
 
-    protected boolean statsAvailable;
+	protected boolean statsAvailable;
 
-    private DescriptiveStatistics stat;
+	private DescriptiveStatistics stat;
 
-    private CallChart callChart;
+	private CallChart callChart;
 
-    private MovingStatChart movingStatChart;
+	private MovingStatChart movingStatChart;
 
-    private FixedSliceNumberDistributionChart fixedSliceNumberDistributionChart;
+	private FixedSliceNumberDistributionChart fixedSliceNumberDistributionChart;
 
-    private FixedSliceSizeDistributionChart fixedSliceSizeDistributionChart;
+	private FixedSliceSizeDistributionChart fixedSliceSizeDistributionChart;
 
-    private QuantileDistributionChart quantileDistributionChart;
+	private QuantileDistributionChart quantileDistributionChart;
 
-    private static long firstCall = Long.MAX_VALUE;
+	private static long firstCall = Long.MAX_VALUE;
 
-    private static long lastCall = Long.MIN_VALUE;
+	private static long lastCall = Long.MIN_VALUE;
 
-    private int sliceNumber = 20;
+	private int sliceNumber = 20;
 
-    private int sliceSize = 20;
+	private int sliceSize = 20;
 
-    private int statisticalPeriod = 20;
+	private int statisticalPeriod = 20;
 
-    public static void resetTime()
-    {
-        firstCall = Long.MAX_VALUE;
-        lastCall = Long.MIN_VALUE;
-    }
+	public static void resetTime()
+	{
+		firstCall = Long.MAX_VALUE;
+		lastCall = Long.MIN_VALUE;
+	}
 
-    public ActionStatInfo( ParsingContext context )
-    {
-        this.context = new ParsingContext( context );
-        onTheFlyStat = new SummaryStatisticsImpl();
-    }
+	public ActionStatInfo( ParsingContext context )
+	{
+		this.context = new ParsingContext( context );
+		onTheFlyStat = new SummaryStatisticsImpl();
+	}
 
-    public ActionStatInfo( ParsingContext context, int sliceNumber, int sliceSize, int statisticalPeriod )
-    {
-        this.context = new ParsingContext( context );
-        onTheFlyStat = new SummaryStatisticsImpl();
-        this.sliceNumber = sliceNumber;
-        this.sliceSize = sliceSize;
-        this.statisticalPeriod = statisticalPeriod;
-    }
+	public ActionStatInfo( ParsingContext context, int sliceNumber, int sliceSize, int statisticalPeriod )
+	{
+		this.context = new ParsingContext( context );
+		onTheFlyStat = new SummaryStatisticsImpl();
+		this.sliceNumber = sliceNumber;
+		this.sliceSize = sliceSize;
+		this.statisticalPeriod = statisticalPeriod;
+	}
 
 
-    public void addStat( long date, double value )
-    {
-        // Store values
-        values.addElement( value );
-        dates.addElement( date );
+	public void addStat( long date, double value )
+	{
+		// Store values
+		values.addElement( value );
+		dates.addElement( date );
 
-        onTheFlyStat.addValue( value );
+		onTheFlyStat.addValue( value );
 
-        // Calculate test period
-        if (date < firstCall)
-        {
-            firstCall = date;
-        }
-        if (date > lastCall)
-        {
-            lastCall = date;
-        }
-
-    }
-
-    public void incrementErrors()
-    {
-        errors++;
-    }
-
-
-    public long getErrors()
-    {
-        return errors;
-    }
-
-
-    public double getThroughput()
-    {
-        checkState();
-        if (lastCall == firstCall)
-        {
-            return -1;
-        }
-        return ((double) (stat.getN() * 1000)) / (lastCall - firstCall);
-    }
-
-
-    public double getMean()
-    {
-        checkState();
-        return stat.getMean();
-    }
-
-    public double getStandardDeviation()
-    {
-        checkState();
-        return stat.getStandardDeviation();
-    }
-
-    public double getMax()
-    {
-        checkState();
-        return stat.getMax();
-    }
-
-    public double getMin()
-    {
-        checkState();
-        return stat.getMin();
-    }
-
-    public long getN()
-    {
-        checkState();
-        return stat.getN();
-    }
-
-    public double getPercentile( double p )
-    {
-        checkState();
-        return stat.getPercentile( p );
-    }
-
-    /**
-     * Compute statistics and build associated graphs
-     */
-    public void compute()
-    {
-        // get double arrays
-        valuesArray = values.getElements();
-        datesArray = dates.getElements();
-
-        if (context.dataCleanup && context.getBlade().isInjector())
-        {
-            dataCleanup();
-        }
-
-        // Build stat objet
-        stat = new DescriptiveStatisticsImpl();
-        for ( int i = 0; i < valuesArray.length; i++ )
-        {
-            stat.addValue( valuesArray[i] );
-        }
-
-        // Build detailled graph
-        callChart = createCallChart();
-        if (context.getBlade().isInjector())
-        {
-            movingStatChart = createMovingStatChart();
-            // Build distribution graph
-            fixedSliceNumberDistributionChart = createFixedSliceNumberDistributionChart();
-            fixedSliceSizeDistributionChart = createFixedSliceSizeDistributionChart();
-            quantileDistributionChart = createQuantileDistributionChart();
-        }
-        statsAvailable = true;
-    }
-
-    /**
-     * Throw an {@link IllegalStateException} if stats have not been computed.
-     */
-    private void checkState()
-    {
-        if (!this.statsAvailable)
-        {
-            throw new IllegalStateException( "Statistics have not been computed" );
-        }
-    }
-
-    protected void dataCleanup()
-    {
-        int count;
-        int statNb = (int) onTheFlyStat.getN();
-        int minStatIndex = 0;
-        int maxStatIndex = statNb - 1;
-        if (statNb < 3)
-        {
-            return;
-        }
-
-        // apply statistical rejection only if the number of values is
-        // greater than statisticalSortPercentage % of initial data number and
-        // in respect of MIN_SIZE_OF_STATISTICAL_DATA
-        int minSize = (int) Math.ceil( (context.getKeepPercentage() * statNb / 100) );
-        if (minSize < MIN_SIZE_OF_STATISTICAL_DATA)
-        {
-            minSize = MIN_SIZE_OF_STATISTICAL_DATA;
-        }
-        // ready to reject value(s) out of statistical range
-        double statMean = onTheFlyStat.getMean();
-        double statStd = onTheFlyStat.getStandardDeviation();
-        double statSum = onTheFlyStat.getSum();
-        double statDev = onTheFlyStat.getSumsq();
-
-        DoubleArraySorter.sort( valuesArray, datesArray );
-
-        double[] data = valuesArray;
-        while ( statNb > minSize )
-        {
-            double minVal = data[minStatIndex];
-            double maxVal = data[maxStatIndex];
-            double lowerOutOfRange = Math.round( Math.ceil( statMean - context.getKeepFactor() * statStd ) ) - minVal;
-            double upperOutOfRange = maxVal - Math.round( Math.floor( statMean + context.getKeepFactor() * statStd ) );
-            // checks if statistical rejection must be applied
-            if (lowerOutOfRange > upperOutOfRange)
-            {
-                if (lowerOutOfRange > 0)
-                {
-                    // statistical rejection can be applied
-                    // try to include all-same value in the current removing
-                    for ( count = 1, minStatIndex++; data[minStatIndex] == minVal; minStatIndex++ )
-                    {
-                        count++;
-                    }
-                    // check if count doesn't pass the min size
-                    if (count > (statNb - minSize))
-                    {
-                        minStatIndex -= count + minSize - statNb;
-                        count = statNb - minSize;
-                    }
-                    statSum -= count * minVal;
-                    statDev -= count * minVal * minVal;
-                    statNb -= count;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else
-            {
-                if (upperOutOfRange > 0)
-                {
-                    // statistical rejection can be applied
-                    // try to include all-same value in the current removing
-                    for ( count = 1, maxStatIndex--; data[maxStatIndex] == maxVal; maxStatIndex-- )
-                    {
-                        count++;
-                    }
-                    // check if count doesn't pass the min size
-                    if (count > (statNb - minSize))
-                    {
-                        maxStatIndex += count + minSize - statNb;
-                        count = statNb - minSize;
-                    }
-                    statSum -= count * maxVal;
-                    statDev -= count * maxVal * maxVal;
-                    statNb -= count;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            // then (if no break) compute new statistical values for next loop
-            statMean = statSum / statNb;
-            statStd = (statDev - (statSum * statSum / statNb)) / (statNb - 1);
-            statStd = Math.sqrt( statStd );
-        }
-
-        int newLength = maxStatIndex - minStatIndex + 1;
-        double[] newValuesArray = new double[newLength];
-        double[] newDatesArray = new double[newLength];
-
-        System.arraycopy( valuesArray, minStatIndex, newValuesArray, 0, newLength );
-        System.arraycopy( datesArray, minStatIndex, newDatesArray, 0, newLength );
-
-        valuesArray = newValuesArray;
-        datesArray = newDatesArray;
-    }
-
-
-    /**
-     * Create a {@link MovingStatChart} and populate the chart
-     *
-     * @return Chart build from the context and collected values
-     */
-    private MovingStatChart createMovingStatChart()
-    {
-        MovingStatChart chart =
-                new MovingStatChart( context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(),
-                                     this.statisticalPeriod );
-
-        for ( int i = 0; i < valuesArray.length; i++ )
-        {
-            chart.addData( datesArray[i], valuesArray[i] );
-        }
-        return chart;
-    }
-
-    /**
-     * Create a {@link CallChart} and populate the chart
-     *
-     * @return Chart build from the context and collected values
-     */
-    private CallChart createCallChart()
-    {
-        CallChart chart =
-                new CallChart( context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType() );
-        chart.setScatterPlot( context.getBlade().isInjector() );
-
-        for ( int i = 0; i < valuesArray.length; i++ )
-        {
-            chart.addData( datesArray[i], valuesArray[i] );
-        }
-        return chart;
-    }
-
-    /**
-     * Create a {@link FixedSliceNumberDistributionChart} and populate the chart
-     *
-     * @return Chart build from the context and collected values
-     */
-    private FixedSliceNumberDistributionChart createFixedSliceNumberDistributionChart()
-    {
-
-        FixedSliceNumberDistributionChart chart =
-                new FixedSliceNumberDistributionChart( context.getTestPlanShortName(), context.getBlade().getId(),
-                                                       context.getEventType(), sliceNumber );
-        chart.addData( valuesArray );
-        return chart;
-    }
-
-    /**
-     * Create a {@link FixedSliceSizeDistributionChart} and populate the chart
-     *
-     * @return Chart build from the context and collected values
-     */
-    private FixedSliceSizeDistributionChart createFixedSliceSizeDistributionChart()
-    {
-
-        FixedSliceSizeDistributionChart chart =
-                new FixedSliceSizeDistributionChart( context.getTestPlanShortName(), context.getBlade().getId(),
-                                                     context.getEventType(), sliceSize );
-        chart.addData( valuesArray, stat.getMin(), stat.getMax() );
-        return chart;
-    }
-
-    /**
-     * Create a {@link QuantileDistributionChart} and populate the chart
-     *
-     * @return Chart build from the context and collected values
-     */
-    private QuantileDistributionChart createQuantileDistributionChart()
-    {
-        QuantileDistributionChart chart =
-                new QuantileDistributionChart( context.getTestPlanShortName(), context.getBlade().getId(),
-                                               context.getEventType() );
-
-        chart.addData( stat );
-        return chart;
-    }
-
-    public void generateCharts( File rootDir, int chartWidth, int chartHeight )
-    {
-        callChart.createChart( rootDir, chartWidth, chartHeight );
-        if (movingStatChart != null)
-        {
-            movingStatChart.createChart( rootDir, chartWidth, chartHeight );
-        }
-        if (fixedSliceNumberDistributionChart != null)
-        {
-            fixedSliceNumberDistributionChart.createChart( rootDir, chartWidth, chartHeight );
-        }
-        if (fixedSliceSizeDistributionChart != null)
-        {
-            fixedSliceSizeDistributionChart.createChart( rootDir, chartWidth, chartHeight );
-        }
-        if (quantileDistributionChart != null)
-        {
-            quantileDistributionChart.createChart( rootDir, chartWidth, chartHeight );
-        }
-    }
+		// Calculate test period
+		if (date < firstCall)
+		{
+			firstCall = date;
+		}
+		if (date > lastCall)
+		{
+			lastCall = date;
+		}
+
+	}
+
+	public void incrementErrors()
+	{
+		errors++;
+	}
+
+
+	public long getErrors()
+	{
+		return errors;
+	}
+
+
+	public double getThroughput()
+	{
+		checkState();
+		if (lastCall == firstCall)
+		{
+			return -1;
+		}
+		return ((double) (stat.getN() * 1000)) / (lastCall - firstCall);
+	}
+
+
+	public double getMean()
+	{
+		checkState();
+		return stat.getMean();
+	}
+
+	public double getStandardDeviation()
+	{
+		checkState();
+		return stat.getStandardDeviation();
+	}
+
+	public double getMax()
+	{
+		checkState();
+		return stat.getMax();
+	}
+
+	public double getMin()
+	{
+		checkState();
+		return stat.getMin();
+	}
+
+	public long getN()
+	{
+		checkState();
+		return stat.getN();
+	}
+
+	public double getPercentile( double p )
+	{
+		checkState();
+		return stat.getPercentile( p );
+	}
+
+	/**
+	 * Compute statistics and build associated graphs
+	 */
+	public void compute()
+	{
+		// get double arrays
+		valuesArray = values.getElements();
+		datesArray = dates.getElements();
+
+		if (context.dataCleanup && context.getBlade().isInjector())
+		{
+			dataCleanup();
+		}
+
+		// Build stat objet
+		stat = new DescriptiveStatisticsImpl();
+		for ( int i = 0; i < valuesArray.length; i++ )
+		{
+			stat.addValue( valuesArray[i] );
+		}
+
+		// Build detailled graph
+		callChart = createCallChart();
+		if (context.getBlade().isInjector())
+		{
+			movingStatChart = createMovingStatChart();
+			// Build distribution graph
+			fixedSliceNumberDistributionChart = createFixedSliceNumberDistributionChart();
+			fixedSliceSizeDistributionChart = createFixedSliceSizeDistributionChart();
+			quantileDistributionChart = createQuantileDistributionChart();
+		}
+		statsAvailable = true;
+	}
+
+	/**
+	 * Throw an {@link IllegalStateException} if stats have not been computed.
+	 */
+	private void checkState()
+	{
+		if (!this.statsAvailable)
+		{
+			throw new IllegalStateException( "Statistics have not been computed" );
+		}
+	}
+
+	protected void dataCleanup()
+	{
+		int count;
+		int statNb = (int) onTheFlyStat.getN();
+		int minStatIndex = 0;
+		int maxStatIndex = statNb - 1;
+		if (statNb < 3)
+		{
+			return;
+		}
+
+		// apply statistical rejection only if the number of values is
+		// greater than statisticalSortPercentage % of initial data number and
+		// in respect of MIN_SIZE_OF_STATISTICAL_DATA
+		int minSize = (int) Math.ceil( (context.getKeepPercentage() * statNb / 100) );
+		if (minSize < MIN_SIZE_OF_STATISTICAL_DATA)
+		{
+			minSize = MIN_SIZE_OF_STATISTICAL_DATA;
+		}
+		// ready to reject value(s) out of statistical range
+		double statMean = onTheFlyStat.getMean();
+		double statStd = onTheFlyStat.getStandardDeviation();
+		double statSum = onTheFlyStat.getSum();
+		double statDev = onTheFlyStat.getSumsq();
+
+		DoubleArraySorter.sort( valuesArray, datesArray );
+
+		double[] data = valuesArray;
+		while ( statNb > minSize )
+		{
+			double minVal = data[minStatIndex];
+			double maxVal = data[maxStatIndex];
+			double lowerOutOfRange = Math.round( Math.ceil( statMean - context.getKeepFactor() * statStd ) ) - minVal;
+			double upperOutOfRange = maxVal - Math.round( Math.floor( statMean + context.getKeepFactor() * statStd ) );
+			// checks if statistical rejection must be applied
+			if (lowerOutOfRange > upperOutOfRange)
+			{
+				if (lowerOutOfRange > 0)
+				{
+					// statistical rejection can be applied
+					// try to include all-same value in the current removing
+					for ( count = 1, minStatIndex++; data[minStatIndex] == minVal; minStatIndex++ )
+					{
+						count++;
+					}
+					// check if count doesn't pass the min size
+					if (count > (statNb - minSize))
+					{
+						minStatIndex -= count + minSize - statNb;
+						count = statNb - minSize;
+					}
+					statSum -= count * minVal;
+					statDev -= count * minVal * minVal;
+					statNb -= count;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				if (upperOutOfRange > 0)
+				{
+					// statistical rejection can be applied
+					// try to include all-same value in the current removing
+					for ( count = 1, maxStatIndex--; data[maxStatIndex] == maxVal; maxStatIndex-- )
+					{
+						count++;
+					}
+					// check if count doesn't pass the min size
+					if (count > (statNb - minSize))
+					{
+						maxStatIndex += count + minSize - statNb;
+						count = statNb - minSize;
+					}
+					statSum -= count * maxVal;
+					statDev -= count * maxVal * maxVal;
+					statNb -= count;
+				}
+				else
+				{
+					break;
+				}
+			}
+			// then (if no break) compute new statistical values for next loop
+			statMean = statSum / statNb;
+			statStd = (statDev - (statSum * statSum / statNb)) / (statNb - 1);
+			statStd = Math.sqrt( statStd );
+		}
+
+		int newLength = maxStatIndex - minStatIndex + 1;
+		double[] newValuesArray = new double[newLength];
+		double[] newDatesArray = new double[newLength];
+
+		System.arraycopy( valuesArray, minStatIndex, newValuesArray, 0, newLength );
+		System.arraycopy( datesArray, minStatIndex, newDatesArray, 0, newLength );
+
+		valuesArray = newValuesArray;
+		datesArray = newDatesArray;
+	}
+
+
+	/**
+	 * Create a {@link MovingStatChart} and populate the chart
+	 *
+	 * @return Chart build from the context and collected values
+	 */
+	private MovingStatChart createMovingStatChart()
+	{
+		MovingStatChart chart =
+				new MovingStatChart( context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(),
+				                     this.statisticalPeriod );
+
+		for ( int i = 0; i < valuesArray.length; i++ )
+		{
+			chart.addData( datesArray[i], valuesArray[i] );
+		}
+		return chart;
+	}
+
+	/**
+	 * Create a {@link CallChart} and populate the chart
+	 *
+	 * @return Chart build from the context and collected values
+	 */
+	private CallChart createCallChart()
+	{
+		CallChart chart =
+				new CallChart( context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType() );
+		chart.setScatterPlot( context.getBlade().isInjector() );
+
+		for ( int i = 0; i < valuesArray.length; i++ )
+		{
+			chart.addData( datesArray[i], valuesArray[i] );
+		}
+		return chart;
+	}
+
+	/**
+	 * Create a {@link FixedSliceNumberDistributionChart} and populate the chart
+	 *
+	 * @return Chart build from the context and collected values
+	 */
+	private FixedSliceNumberDistributionChart createFixedSliceNumberDistributionChart()
+	{
+
+		FixedSliceNumberDistributionChart chart =
+				new FixedSliceNumberDistributionChart( context.getTestPlanShortName(), context.getBlade().getId(),
+				                                       context.getEventType(), sliceNumber );
+		chart.addData( valuesArray );
+		return chart;
+	}
+
+	/**
+	 * Create a {@link FixedSliceSizeDistributionChart} and populate the chart
+	 *
+	 * @return Chart build from the context and collected values
+	 */
+	private FixedSliceSizeDistributionChart createFixedSliceSizeDistributionChart()
+	{
+
+		FixedSliceSizeDistributionChart chart =
+				new FixedSliceSizeDistributionChart( context.getTestPlanShortName(), context.getBlade().getId(),
+				                                     context.getEventType(), sliceSize );
+		chart.addData( valuesArray, stat.getMin(), stat.getMax() );
+		return chart;
+	}
+
+	/**
+	 * Create a {@link QuantileDistributionChart} and populate the chart
+	 *
+	 * @return Chart build from the context and collected values
+	 */
+	private QuantileDistributionChart createQuantileDistributionChart()
+	{
+		QuantileDistributionChart chart =
+				new QuantileDistributionChart( context.getTestPlanShortName(), context.getBlade().getId(),
+				                               context.getEventType() );
+
+		chart.addData( stat );
+		return chart;
+	}
+
+	public void generateCharts( File rootDir, int chartWidth, int chartHeight )
+	{
+		callChart.createChart( rootDir, chartWidth, chartHeight );
+		if (movingStatChart != null)
+		{
+			movingStatChart.createChart( rootDir, chartWidth, chartHeight );
+		}
+		if (fixedSliceNumberDistributionChart != null)
+		{
+			fixedSliceNumberDistributionChart.createChart( rootDir, chartWidth, chartHeight );
+		}
+		if (fixedSliceSizeDistributionChart != null)
+		{
+			fixedSliceSizeDistributionChart.createChart( rootDir, chartWidth, chartHeight );
+		}
+		if (quantileDistributionChart != null)
+		{
+			quantileDistributionChart.createChart( rootDir, chartWidth, chartHeight );
+		}
+	}
 
 }

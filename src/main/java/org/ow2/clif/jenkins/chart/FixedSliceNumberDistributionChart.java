@@ -43,134 +43,134 @@ import java.util.ArrayList;
  * @author Julien Coste
  */
 public class FixedSliceNumberDistributionChart
-        extends AbstractChart
+		extends AbstractChart
 {
 
-    protected int slices;
+	protected int slices;
 
-    protected HistogramDataset data = new HistogramDataset();
+	protected HistogramDataset data = new HistogramDataset();
 
-    public FixedSliceNumberDistributionChart( String testplan, String bladeId, String event, int slices )
-    {
-        super( "FixedSliceNumberDistribution", bladeId, testplan, event );
+	public FixedSliceNumberDistributionChart( String testplan, String bladeId, String event, int slices )
+	{
+		super( "FixedSliceNumberDistribution", bladeId, testplan, event );
 
-        this.slices = slices;
-        this.data = new HistogramDataset();
-    }
+		this.slices = slices;
+		this.data = new HistogramDataset();
+	}
 
-    public void addData( double[] values )
-    {
-        if (values != null && values.length > 0)
-        {
-            data.addSeries( this.chartId.getEvent(), values, this.slices );
-        }
-    }
+	public void addData( double[] values )
+	{
+		if (values != null && values.length > 0)
+		{
+			data.addSeries( this.chartId.getEvent(), values, this.slices );
+		}
+	}
 
-    @Override
-    protected JFreeChart createChart()
-    {
-        JFreeChart chart = ChartFactory.createHistogram( getBasicTitle(),
-                                                         Messages.FixedSliceNumberDistributionChart_ResponseTime(),
-                                                         Messages.FixedSliceNumberDistributionChart_NumberOfCalls(),
-                                                         data, PlotOrientation.VERTICAL, true, true, false );
+	@Override
+	protected JFreeChart createChart()
+	{
+		JFreeChart chart = ChartFactory.createHistogram( getBasicTitle(),
+		                                                 Messages.FixedSliceNumberDistributionChart_ResponseTime(),
+		                                                 Messages.FixedSliceNumberDistributionChart_NumberOfCalls(),
+		                                                 data, PlotOrientation.VERTICAL, true, true, false );
 
-        if (data.getSeriesCount() != 0)
-        {
+		if (data.getSeriesCount() != 0)
+		{
 
-            double rangeStart = data.getStartX( 0, 0 ).doubleValue();
-            double rangeEnd = data.getEndX( 0, data.getItemCount( 0 ) - 1 ).doubleValue();
+			double rangeStart = data.getStartX( 0, 0 ).doubleValue();
+			double rangeEnd = data.getEndX( 0, data.getItemCount( 0 ) - 1 ).doubleValue();
 
-            NumberAxis domainAxis = (NumberAxis) new HistogramAxis( data, 0 );
-            domainAxis.setAutoRangeIncludesZero( false );
-            domainAxis.setVerticalTickLabels( true );
-            domainAxis.setTickLabelsVisible( true );
-            domainAxis.setTickMarksVisible( true );
+			NumberAxis domainAxis = (NumberAxis) new HistogramAxis( data, 0 );
+			domainAxis.setAutoRangeIncludesZero( false );
+			domainAxis.setVerticalTickLabels( true );
+			domainAxis.setTickLabelsVisible( true );
+			domainAxis.setTickMarksVisible( true );
 
-            domainAxis.setRange( rangeStart, rangeEnd );
-            chart.getXYPlot().setDomainAxis( domainAxis );
+			domainAxis.setRange( rangeStart, rangeEnd );
+			chart.getXYPlot().setDomainAxis( domainAxis );
 
-            NumberAxis rangeAxis = (NumberAxis) chart.getXYPlot().getRangeAxis();
-            rangeAxis.setAutoRangeIncludesZero( true );
-            rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
+			NumberAxis rangeAxis = (NumberAxis) chart.getXYPlot().getRangeAxis();
+			rangeAxis.setAutoRangeIncludesZero( true );
+			rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
 
-        }
+		}
 
-        chart.getXYPlot().setRangeGridlinesVisible( true );
-        chart.getXYPlot().setDomainGridlinesVisible( false );
-        return chart;
-    }
+		chart.getXYPlot().setRangeGridlinesVisible( true );
+		chart.getXYPlot().setDomainGridlinesVisible( false );
+		return chart;
+	}
 
-    private class HistogramAxis
-            extends NumberAxis
-    {
+	private class HistogramAxis
+			extends NumberAxis
+	{
 
-        private HistogramDataset data;
+		private HistogramDataset data;
 
-        private int serie;
+		private int serie;
 
-        private NumberFormat formatter = new DecimalFormat( "###.##" );
+		private NumberFormat formatter = new DecimalFormat( "###.##" );
 
-        public HistogramAxis( HistogramDataset data, int serie )
-        {
-            super();
-            this.data = data;
-            this.serie = serie;
-        }
+		public HistogramAxis( HistogramDataset data, int serie )
+		{
+			super();
+			this.data = data;
+			this.serie = serie;
+		}
 
-        @Override
-        protected java.util.List refreshTicksHorizontal( Graphics2D g2, Rectangle2D dataArea, RectangleEdge edge )
-        {
-            java.util.List result = new ArrayList();
+		@Override
+		protected java.util.List refreshTicksHorizontal( Graphics2D g2, Rectangle2D dataArea, RectangleEdge edge )
+		{
+			java.util.List result = new ArrayList();
 
-            double currentTickValue = 50.5;
-            for ( int i = 0; i < data.getItemCount( serie ); i++ )
-            {
-                currentTickValue = data.getStartX( 0, i ).doubleValue();
-                Tick tick = createTick( edge, currentTickValue );
-                result.add( tick );
-            }
-            // Add last tick
-            currentTickValue = data.getEndX( 0, data.getItemCount( serie ) - 1 ).doubleValue();
-            Tick tick = createTick( edge, currentTickValue );
-            result.add( tick );
-            return result;
-        }
+			double currentTickValue = 50.5;
+			for ( int i = 0; i < data.getItemCount( serie ); i++ )
+			{
+				currentTickValue = data.getStartX( 0, i ).doubleValue();
+				Tick tick = createTick( edge, currentTickValue );
+				result.add( tick );
+			}
+			// Add last tick
+			currentTickValue = data.getEndX( 0, data.getItemCount( serie ) - 1 ).doubleValue();
+			Tick tick = createTick( edge, currentTickValue );
+			result.add( tick );
+			return result;
+		}
 
-        private Tick createTick( RectangleEdge edge, double currentTickValue )
-        {
-            String tickLabel;
-            tickLabel = formatter.format( currentTickValue );
+		private Tick createTick( RectangleEdge edge, double currentTickValue )
+		{
+			String tickLabel;
+			tickLabel = formatter.format( currentTickValue );
 
-            TextAnchor anchor = null;
-            TextAnchor rotationAnchor = null;
-            double angle = 0.0;
-            if (isVerticalTickLabels())
-            {
-                anchor = TextAnchor.CENTER_RIGHT;
-                rotationAnchor = TextAnchor.CENTER_RIGHT;
-                if (edge == RectangleEdge.TOP)
-                {
-                    angle = Math.PI / 2.0;
-                }
-                else
-                {
-                    angle = -Math.PI / 2.0;
-                }
-            }
-            else
-            {
-                if (edge == RectangleEdge.TOP)
-                {
-                    anchor = TextAnchor.BOTTOM_CENTER;
-                    rotationAnchor = TextAnchor.BOTTOM_CENTER;
-                }
-                else
-                {
-                    anchor = TextAnchor.TOP_CENTER;
-                    rotationAnchor = TextAnchor.TOP_CENTER;
-                }
-            }
-            return new NumberTick( new Double( currentTickValue ), tickLabel, anchor, rotationAnchor, angle );
-        }
-    }
+			TextAnchor anchor = null;
+			TextAnchor rotationAnchor = null;
+			double angle = 0.0;
+			if (isVerticalTickLabels())
+			{
+				anchor = TextAnchor.CENTER_RIGHT;
+				rotationAnchor = TextAnchor.CENTER_RIGHT;
+				if (edge == RectangleEdge.TOP)
+				{
+					angle = Math.PI / 2.0;
+				}
+				else
+				{
+					angle = -Math.PI / 2.0;
+				}
+			}
+			else
+			{
+				if (edge == RectangleEdge.TOP)
+				{
+					anchor = TextAnchor.BOTTOM_CENTER;
+					rotationAnchor = TextAnchor.BOTTOM_CENTER;
+				}
+				else
+				{
+					anchor = TextAnchor.TOP_CENTER;
+					rotationAnchor = TextAnchor.TOP_CENTER;
+				}
+			}
+			return new NumberTick( new Double( currentTickValue ), tickLabel, anchor, rotationAnchor, angle );
+		}
+	}
 }

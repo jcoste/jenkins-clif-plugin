@@ -1,21 +1,21 @@
 <div>
-    <p>
-        Permet de paramétrer la détection des actions en succés.
-    </p>
+	<p>
+		Permet de paramétrer la détection des actions en succés.
+	</p>
 
-    <p>
-        Par défaut, seul l'indicateur "success" est utilisé pour déterminer si l'action est en succés ou non.<br>
-        Pour les actions de type appel HTTP par exemple, ce fonctionnement est trop simpliste car une erreur HTTP 404
-        est traitée en succés par Clif.<br/>
-        Pour faire une détection plus précise, le plugin peut se baser sur l'analyse du champ "comment" d'une
-        action.<br/>
-        Pour chaque "action type" de Clif, il est possible de définir une expression régulière. Si le champ "comment"
-        matche l'expression régulière alors l'action est considérée comme en succés.<br/>
-    </p>
+	<p>
+		Par défaut, seul l'indicateur "success" est utilisé pour déterminer si l'action est en succés ou non.<br>
+		Pour les actions de type appel HTTP par exemple, ce fonctionnement est trop simpliste car une erreur HTTP 404
+		est traitée en succés par Clif.<br/>
+		Pour faire une détection plus précise, le plugin peut se baser sur l'analyse du champ "comment" d'une
+		action.<br/>
+		Pour chaque "action type" de Clif, il est possible de définir une expression régulière. Si le champ "comment"
+		matche l'expression régulière alors l'action est considérée comme en succés.<br/>
+	</p>
 
-    <p>
-        <u><strong>Exemple :</strong></u><br/>
-        &nbsp;&nbsp;Pour les actions de type "<strong>HTTP GET</strong>" on peut définir l'expression régulière
-        "<strong>.*OK</strong>"
-    </p>
+	<p>
+		<u><strong>Exemple :</strong></u><br/>
+		&nbsp;&nbsp;Pour les actions de type "<strong>HTTP GET</strong>" on peut définir l'expression régulière
+		"<strong>.*OK</strong>"
+	</p>
 </div>

@@ -28,44 +28,44 @@ import java.io.Serializable;
  * @author Julien Coste
  */
 public class ClifAlias
-        implements Serializable
+		implements Serializable
 {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    protected String pattern;
+	protected String pattern;
 
-    protected String value;
+	protected String value;
 
-    public ClifAlias()
-    {
-    }
+	public ClifAlias()
+	{
+	}
 
-    @DataBoundConstructor
-    public ClifAlias( String pattern, String value )
-    {
-        super();
-        this.pattern = pattern;
-        this.value = value;
-    }
+	@DataBoundConstructor
+	public ClifAlias( String pattern, String value )
+	{
+		super();
+		this.pattern = pattern;
+		this.value = value;
+	}
 
-    public String getPattern()
-    {
-        return pattern;
-    }
+	public String getPattern()
+	{
+		return pattern;
+	}
 
-    public String getValue()
-    {
-        return value;
-    }
+	public String getValue()
+	{
+		return value;
+	}
 
-    public void setPattern( String pattern )
-    {
-        this.pattern = pattern;
-    }
+	public void setPattern( String pattern )
+	{
+		this.pattern = pattern;
+	}
 
-    public void setValue( String value )
-    {
-        this.value = value;
-    }
+	public void setValue( String value )
+	{
+		this.value = value;
+	}
 }

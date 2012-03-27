@@ -27,119 +27,119 @@ package org.ow2.clif.jenkins.model;
  */
 public class Alarm
 {
-    protected long date;
-    protected Severity severity;
-    protected String message;
-    protected String ownerServer;
-    protected String ownerType;
-    protected String ownerId;
+	protected long date;
+	protected Severity severity;
+	protected String message;
+	protected String ownerServer;
+	protected String ownerType;
+	protected String ownerId;
 
 
-    public Alarm()
-    {
-    }
+	public Alarm()
+	{
+	}
 
-    public Alarm( long date, Severity severity, String message )
-    {
-        this.date = date;
-        this.severity = severity;
-        this.message = message;
-    }
+	public Alarm( long date, Severity severity, String message )
+	{
+		this.date = date;
+		this.severity = severity;
+		this.message = message;
+	}
 
-    public long getDate()
-    {
-        return date;
-    }
+	public long getDate()
+	{
+		return date;
+	}
 
-    public void setDate( long date )
-    {
-        this.date = date;
-    }
+	public void setDate( long date )
+	{
+		this.date = date;
+	}
 
-    public Severity getSeverity()
-    {
-        return severity;
-    }
+	public Severity getSeverity()
+	{
+		return severity;
+	}
 
-    public void setSeverity( Severity severity )
-    {
-        this.severity = severity;
-    }
+	public void setSeverity( Severity severity )
+	{
+		this.severity = severity;
+	}
 
-    public String getMessage()
-    {
-        return message;
-    }
+	public String getMessage()
+	{
+		return message;
+	}
 
-    public void setMessage( String message )
-    {
-        this.message = message;
-    }
+	public void setMessage( String message )
+	{
+		this.message = message;
+	}
 
-    public String getOwnerServer()
-    {
-        return ownerServer;
-    }
+	public String getOwnerServer()
+	{
+		return ownerServer;
+	}
 
-    public void setOwnerServer( String ownerServer )
-    {
-        this.ownerServer = ownerServer;
-    }
+	public void setOwnerServer( String ownerServer )
+	{
+		this.ownerServer = ownerServer;
+	}
 
-    public String getOwnerType()
-    {
-        return ownerType;
-    }
+	public String getOwnerType()
+	{
+		return ownerType;
+	}
 
-    public void setOwnerType( String ownerType )
-    {
-        this.ownerType = ownerType;
-    }
+	public void setOwnerType( String ownerType )
+	{
+		this.ownerType = ownerType;
+	}
 
-    public String getOwnerId()
-    {
-        return ownerId;
-    }
+	public String getOwnerId()
+	{
+		return ownerId;
+	}
 
-    public void setOwnerId( String ownerId )
-    {
-        this.ownerId = ownerId;
-    }
+	public void setOwnerId( String ownerId )
+	{
+		this.ownerId = ownerId;
+	}
 
-    public void setOwner( String server, String type, String id )
-    {
-        setOwnerServer( server );
-        setOwnerType( type );
-        setOwnerId( id );
-    }
+	public void setOwner( String server, String type, String id )
+	{
+		setOwnerServer( server );
+		setOwnerType( type );
+		setOwnerId( id );
+	}
 
 
-    public enum Severity
-    {
-        INFO( 0 ),
-        WARNING( 1 ),
-        ERROR( 2 ),
-        FATAL( 3 );
+	public enum Severity
+	{
+		INFO( 0 ),
+		WARNING( 1 ),
+		ERROR( 2 ),
+		FATAL( 3 );
 
-        private int value;
+		private int value;
 
-        Severity( int value )
-        {
-            this.value = value;
-        }
+		Severity( int value )
+		{
+			this.value = value;
+		}
 
-        public static Severity fromValue( int value )
-        {
-            for ( Severity sev : Severity.values() )
-            {
-                if (sev.value == value)
-                {
-                    return sev;
-                }
-            }
-            throw new IllegalArgumentException( "Unknown alarm severity value : " + value );
-        }
-    }
+		public static Severity fromValue( int value )
+		{
+			for ( Severity sev : Severity.values() )
+			{
+				if (sev.value == value)
+				{
+					return sev;
+				}
+			}
+			throw new IllegalArgumentException( "Unknown alarm severity value : " + value );
+		}
+	}
 
 
 }

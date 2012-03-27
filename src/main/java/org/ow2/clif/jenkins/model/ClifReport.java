@@ -6,44 +6,44 @@ import java.util.List;
 public class ClifReport
 {
 
-    private List<TestPlan> testplans;
+	private List<TestPlan> testplans;
 
-    public ClifReport()
-    {
-        testplans = new ArrayList<TestPlan>();
-    }
+	public ClifReport()
+	{
+		testplans = new ArrayList<TestPlan>();
+	}
 
-    public List<TestPlan> getTestplans()
-    {
-        return testplans;
-    }
+	public List<TestPlan> getTestplans()
+	{
+		return testplans;
+	}
 
-    public TestPlan getTestplan( String testPlanName )
-    {
-        for ( TestPlan testPlan : testplans )
-        {
-            if (testPlanName.equals( testPlan.getName() ))
-            {
-                return testPlan;
-            }
+	public TestPlan getTestplan( String testPlanName )
+	{
+		for ( TestPlan testPlan : testplans )
+		{
+			if (testPlanName.equals( testPlan.getName() ))
+			{
+				return testPlan;
+			}
 
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 
-    public void setTestplans( List<TestPlan> testplans )
-    {
-        this.testplans = testplans;
-    }
+	public void setTestplans( List<TestPlan> testplans )
+	{
+		this.testplans = testplans;
+	}
 
-    public void addTestplan( TestPlan testplan )
-    {
-        if (testplans == null)
-        {
-            testplans = new ArrayList<TestPlan>();
-        }
-        testplans.add( testplan );
-    }
+	public void addTestplan( TestPlan testplan )
+	{
+		if (testplans == null)
+		{
+			testplans = new ArrayList<TestPlan>();
+		}
+		testplans.add( testplan );
+	}
 
 
 }

@@ -29,13 +29,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class MeasureTest
 {
-    @Test
-    public void testErrorPercent() throws Exception
-    {
-        Measure m = new Measure();
-        m.setSize( 10 );
-        m.setCountErrors( 1 );
-        assertEquals( 0.1, m.errorPercent(), 0.01 );
-        assertEquals( "10%", m.errorPercentFormated() );
-    }
+	@Test
+	public void testErrorPercent() throws Exception
+	{
+		Measure m = new Measure();
+		m.setSize( 10 );
+		m.setCountErrors( 1 );
+		assertEquals( 0.1, m.errorPercent(), 0.01 );
+		assertEquals( "10%", m.errorPercentFormated() );
+	}
 }

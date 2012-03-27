@@ -28,12 +28,12 @@ import hudson.Plugin;
  * @author Julien Coste
  */
 public class ClifPlugin
-        extends Plugin
+		extends Plugin
 {
 
-    static final String ICON_FILE_NAME = "graph.gif";
+	static final String ICON_FILE_NAME = "graph.gif";
 
-    static final String DISPLAY_NAME = Messages.Plugin_DisplayName();
+	static final String DISPLAY_NAME = Messages.Plugin_DisplayName();
 
-    static final String URL = "clif";
+	static final String URL = "clif";
 }

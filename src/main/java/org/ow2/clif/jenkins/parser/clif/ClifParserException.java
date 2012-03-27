@@ -26,11 +26,11 @@ package org.ow2.clif.jenkins.parser.clif;
  * @author Julien Coste
  */
 public class ClifParserException
-        extends Exception
+		extends Exception
 {
 
-    public ClifParserException( String message )
-    {
-        super( message );
-    }
+	public ClifParserException( String message )
+	{
+		super( message );
+	}
 }

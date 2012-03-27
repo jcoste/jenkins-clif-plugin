@@ -40,116 +40,116 @@ import java.awt.*;
  * @author Julien Coste
  */
 public class MovingStatChart
-        extends AbstractChart
+		extends AbstractChart
 {
-    protected long statisticalPeriod;
+	protected long statisticalPeriod;
 
-    protected XYSeries eventSerie;
+	protected XYSeries eventSerie;
 
-    public MovingStatChart( String testplan, String bladeId, String event, int statisticalPeriod )
-    {
-        super( "movingStat", bladeId, testplan, event );
-        this.statisticalPeriod = statisticalPeriod;
-        this.eventSerie = new XYSeries( event );
-    }
+	public MovingStatChart( String testplan, String bladeId, String event, int statisticalPeriod )
+	{
+		super( "movingStat", bladeId, testplan, event );
+		this.statisticalPeriod = statisticalPeriod;
+		this.eventSerie = new XYSeries( event );
+	}
 
 
-    /**
-     * Set the statistical period (in seconds)
-     *
-     * @param statisticalPeriod the statistical period
-     */
-    public void setStatisticalPeriod( long statisticalPeriod )
-    {
-        this.statisticalPeriod = statisticalPeriod;
-    }
+	/**
+	 * Set the statistical period (in seconds)
+	 *
+	 * @param statisticalPeriod the statistical period
+	 */
+	public void setStatisticalPeriod( long statisticalPeriod )
+	{
+		this.statisticalPeriod = statisticalPeriod;
+	}
 
-    public void addData( double x, double y )
-    {
-        this.eventSerie.add( x, y );
-    }
+	public void addData( double x, double y )
+	{
+		this.eventSerie.add( x, y );
+	}
 
-    @Override
-    protected JFreeChart createChart()
-    {
-        XYSeriesCollection coreDataset = new XYSeriesCollection();
-        coreDataset.addSeries( this.eventSerie );
+	@Override
+	protected JFreeChart createChart()
+	{
+		XYSeriesCollection coreDataset = new XYSeriesCollection();
+		coreDataset.addSeries( this.eventSerie );
 
-        MovingAverageStat averageStat = new MovingAverageStat();
-        long statisticalPeriodInMs = statisticalPeriod * 1000;
-        XYSeries movingSeries =
-                averageStat.calculateMovingStat( coreDataset, 0, " Moving Average", statisticalPeriodInMs,
-                                                 0 );
-        MovingMaxStat maxStat = new MovingMaxStat();
-        XYSeries maxSeries = maxStat.calculateMovingStat( coreDataset, 0, " Moving Max", statisticalPeriodInMs,
-                                                          0 );
-        MovingMinStat minStat = new MovingMinStat();
-        XYSeries minSeries = minStat.calculateMovingStat( coreDataset, 0, " Moving Min", statisticalPeriodInMs,
-                                                          0 );
-        MovingMedianStat medianStat = new MovingMedianStat();
-        XYSeries medianSeries = medianStat.calculateMovingStat( coreDataset, 0, " Moving Median", statisticalPeriodInMs,
-                                                                0 );
+		MovingAverageStat averageStat = new MovingAverageStat();
+		long statisticalPeriodInMs = statisticalPeriod * 1000;
+		XYSeries movingSeries =
+				averageStat.calculateMovingStat( coreDataset, 0, " Moving Average", statisticalPeriodInMs,
+				                                 0 );
+		MovingMaxStat maxStat = new MovingMaxStat();
+		XYSeries maxSeries = maxStat.calculateMovingStat( coreDataset, 0, " Moving Max", statisticalPeriodInMs,
+		                                                  0 );
+		MovingMinStat minStat = new MovingMinStat();
+		XYSeries minSeries = minStat.calculateMovingStat( coreDataset, 0, " Moving Min", statisticalPeriodInMs,
+		                                                  0 );
+		MovingMedianStat medianStat = new MovingMedianStat();
+		XYSeries medianSeries = medianStat.calculateMovingStat( coreDataset, 0, " Moving Median", statisticalPeriodInMs,
+		                                                        0 );
 
-        MovingStdDevStat stdDevStat = new MovingStdDevStat();
-        XYSeries stdDevSeries = stdDevStat.calculateMovingStat( coreDataset, 0, " Moving StdDev", statisticalPeriodInMs,
-                                                                0 );
+		MovingStdDevStat stdDevStat = new MovingStdDevStat();
+		XYSeries stdDevSeries = stdDevStat.calculateMovingStat( coreDataset, 0, " Moving StdDev", statisticalPeriodInMs,
+		                                                        0 );
 
-        XYSeriesCollection movingDataset = new XYSeriesCollection();
-        movingDataset.addSeries( movingSeries );
-        movingDataset.addSeries( maxSeries );
-        movingDataset.addSeries( minSeries );
-        movingDataset.addSeries( medianSeries );
-        movingDataset.addSeries( stdDevSeries );
+		XYSeriesCollection movingDataset = new XYSeriesCollection();
+		movingDataset.addSeries( movingSeries );
+		movingDataset.addSeries( maxSeries );
+		movingDataset.addSeries( minSeries );
+		movingDataset.addSeries( medianSeries );
+		movingDataset.addSeries( stdDevSeries );
 
-        JFreeChart chart;
-        chart = ChartFactory.createXYLineChart(
-                getBasicTitle() + " " + Messages.MovingChart_StatisticalPeriod( statisticalPeriod ),
-                // chart title
-                Messages.MovingChart_Time(), // x axis label
-                Messages.MovingChart_ResponseTime(), // y axis label
-                movingDataset, // data
-                PlotOrientation.VERTICAL, true, // include legend
-                true, // tooltips
-                false // urls
-        );
+		JFreeChart chart;
+		chart = ChartFactory.createXYLineChart(
+				getBasicTitle() + " " + Messages.MovingChart_StatisticalPeriod( statisticalPeriod ),
+				// chart title
+				Messages.MovingChart_Time(), // x axis label
+				Messages.MovingChart_ResponseTime(), // y axis label
+				movingDataset, // data
+				PlotOrientation.VERTICAL, true, // include legend
+				true, // tooltips
+				false // urls
+		);
 
-        chart.setBackgroundPaint( Color.white );
-        // get a reference to the plot for further customisation...
-        XYPlot plot = (XYPlot) chart.getPlot();
-        plot.setBackgroundPaint( Color.lightGray );
-        plot.setAxisOffset( new RectangleInsets( 5.0, 5.0, 5.0, 5.0 ) );
-        plot.setDomainGridlinePaint( Color.white );
-        plot.setRangeGridlinePaint( Color.white );
+		chart.setBackgroundPaint( Color.white );
+		// get a reference to the plot for further customisation...
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundPaint( Color.lightGray );
+		plot.setAxisOffset( new RectangleInsets( 5.0, 5.0, 5.0, 5.0 ) );
+		plot.setDomainGridlinePaint( Color.white );
+		plot.setRangeGridlinePaint( Color.white );
 
-        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setSeriesShapesVisible( 0, false );
-        renderer.setSeriesPaint( 0, Color.BLUE );
-        renderer.setSeriesStroke( 0, new BasicStroke( 1 ) );
-        renderer.setSeriesShapesVisible( 1, false );
-        renderer.setSeriesPaint( 1, Color.RED );
-        renderer.setSeriesStroke( 1, new BasicStroke( 2 ) );
-        renderer.setSeriesShapesVisible( 2, false );
-        renderer.setSeriesPaint( 2, Color.GREEN );
-        renderer.setSeriesStroke( 2, new BasicStroke( 2 ) );
-        renderer.setSeriesShapesVisible( 3, false );
-        renderer.setSeriesPaint( 3, Color.YELLOW );
-        renderer.setSeriesStroke( 3, new BasicStroke( 1 ) );
-        renderer.setSeriesShapesVisible( 4, false );
-        renderer.setSeriesPaint( 4, Color.ORANGE );
-        renderer.setSeriesStroke( 4, new BasicStroke( 1 ) );
-        plot.setRenderer( renderer );
+		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setSeriesShapesVisible( 0, false );
+		renderer.setSeriesPaint( 0, Color.BLUE );
+		renderer.setSeriesStroke( 0, new BasicStroke( 1 ) );
+		renderer.setSeriesShapesVisible( 1, false );
+		renderer.setSeriesPaint( 1, Color.RED );
+		renderer.setSeriesStroke( 1, new BasicStroke( 2 ) );
+		renderer.setSeriesShapesVisible( 2, false );
+		renderer.setSeriesPaint( 2, Color.GREEN );
+		renderer.setSeriesStroke( 2, new BasicStroke( 2 ) );
+		renderer.setSeriesShapesVisible( 3, false );
+		renderer.setSeriesPaint( 3, Color.YELLOW );
+		renderer.setSeriesStroke( 3, new BasicStroke( 1 ) );
+		renderer.setSeriesShapesVisible( 4, false );
+		renderer.setSeriesPaint( 4, Color.ORANGE );
+		renderer.setSeriesStroke( 4, new BasicStroke( 1 ) );
+		plot.setRenderer( renderer );
 
-        // Force the 0 on vertical axis
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setAutoRangeIncludesZero( true );
-        rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
+		// Force the 0 on vertical axis
+		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setAutoRangeIncludesZero( true );
+		rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
 
-        // Force the 0 on horizontal axis
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setAutoRangeIncludesZero( true );
+		// Force the 0 on horizontal axis
+		NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+		domainAxis.setAutoRangeIncludesZero( true );
 
-        return chart;
-    }
+		return chart;
+	}
 
 
 }

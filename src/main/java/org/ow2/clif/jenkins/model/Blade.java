@@ -29,178 +29,178 @@ import java.util.List;
 public abstract class Blade
 {
 
-    private String id;
-    private String name;
-    private String server;
-    private String argument;
-    private String type;
-    private String comment;
+	private String id;
+	private String name;
+	private String server;
+	private String argument;
+	private String type;
+	private String comment;
 
-    private List<Measure> measures;
+	private List<Measure> measures;
 
-    private List<Alarm> alarms;
+	private List<Alarm> alarms;
 
-    public Blade()
-    {
-        super();
-    }
+	public Blade()
+	{
+		super();
+	}
 
-    public Blade( String id, String name, String server, String argument, String type, String comment )
-    {
-        super();
-        this.id = id;
-        this.name = name;
-        this.server = server;
-        this.argument = argument;
-        this.type = type;
-        this.comment = comment;
-    }
+	public Blade( String id, String name, String server, String argument, String type, String comment )
+	{
+		super();
+		this.id = id;
+		this.name = name;
+		this.server = server;
+		this.argument = argument;
+		this.type = type;
+		this.comment = comment;
+	}
 
-    public String getId()
-    {
-        return id;
-    }
+	public String getId()
+	{
+		return id;
+	}
 
-    public void setId( String id )
-    {
-        this.id = id;
-    }
+	public void setId( String id )
+	{
+		this.id = id;
+	}
 
-    public String getName()
-    {
-        return name;
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public void setName( String name )
-    {
-        this.name = name;
-    }
+	public void setName( String name )
+	{
+		this.name = name;
+	}
 
-    public String getServer()
-    {
-        return server;
-    }
+	public String getServer()
+	{
+		return server;
+	}
 
-    public void setServer( String server )
-    {
-        this.server = server;
-    }
+	public void setServer( String server )
+	{
+		this.server = server;
+	}
 
-    public String getArgument()
-    {
-        return argument;
-    }
+	public String getArgument()
+	{
+		return argument;
+	}
 
-    public void setArgument( String argument )
-    {
-        this.argument = argument;
-    }
+	public void setArgument( String argument )
+	{
+		this.argument = argument;
+	}
 
-    public String getType()
-    {
-        return type;
-    }
+	public String getType()
+	{
+		return type;
+	}
 
-    public void setType( String type )
-    {
-        this.type = type;
-    }
+	public void setType( String type )
+	{
+		this.type = type;
+	}
 
-    public String getComment()
-    {
-        return comment;
-    }
+	public String getComment()
+	{
+		return comment;
+	}
 
-    public void setComment( String comment )
-    {
-        this.comment = comment;
-    }
+	public void setComment( String comment )
+	{
+		this.comment = comment;
+	}
 
-    public List<Measure> getMeasures()
-    {
-        return measures;
-    }
+	public List<Measure> getMeasures()
+	{
+		return measures;
+	}
 
-    public void setMeasures( List<Measure> measures )
-    {
-        this.measures = measures;
-    }
+	public void setMeasures( List<Measure> measures )
+	{
+		this.measures = measures;
+	}
 
-    public void addMeasure( Measure measure )
-    {
-        if (this.measures == null)
-        {
-            this.measures = new ArrayList<Measure>();
-        }
-        this.measures.add( measure );
-    }
+	public void addMeasure( Measure measure )
+	{
+		if (this.measures == null)
+		{
+			this.measures = new ArrayList<Measure>();
+		}
+		this.measures.add( measure );
+	}
 
-    public Measure getMeasure( String measureName )
-    {
-        if (this.measures == null)
-        {
-            return null;
-        }
-        for ( Measure measure : this.measures )
-        {
-            if (measure.getName().equals( measureName ))
-            {
-                return measure;
-            }
-        }
-        return null;
-    }
+	public Measure getMeasure( String measureName )
+	{
+		if (this.measures == null)
+		{
+			return null;
+		}
+		for ( Measure measure : this.measures )
+		{
+			if (measure.getName().equals( measureName ))
+			{
+				return measure;
+			}
+		}
+		return null;
+	}
 
-    public List<Alarm> getAlarms()
-    {
-        return alarms;
-    }
+	public List<Alarm> getAlarms()
+	{
+		return alarms;
+	}
 
-    public void setAlarms( List<Alarm> alarms )
-    {
-        this.alarms = alarms;
-        for ( Alarm alarm : this.alarms )
-        {
-            alarm.setOwner( this.server, this.name, this.id );
-        }
-    }
+	public void setAlarms( List<Alarm> alarms )
+	{
+		this.alarms = alarms;
+		for ( Alarm alarm : this.alarms )
+		{
+			alarm.setOwner( this.server, this.name, this.id );
+		}
+	}
 
-    public void addAlarm( Alarm alarm )
-    {
-        if (this.alarms == null)
-        {
-            this.alarms = new ArrayList<Alarm>();
-        }
-        alarm.setOwner( this.server, this.name, this.id );
-        this.alarms.add( alarm );
-    }
+	public void addAlarm( Alarm alarm )
+	{
+		if (this.alarms == null)
+		{
+			this.alarms = new ArrayList<Alarm>();
+		}
+		alarm.setOwner( this.server, this.name, this.id );
+		this.alarms.add( alarm );
+	}
 
-    public List<Alarm> getAlarms( Alarm.Severity sev )
-    {
-        List<Alarm> res = new ArrayList<Alarm>();
-        if (this.alarms == null)
-        {
-            return null;
-        }
-        for ( Alarm a : this.alarms )
-        {
-            if (a.getSeverity().equals( sev ))
-            {
-                res.add( a );
-            }
-        }
-        if (res.isEmpty())
-        {
-            return null;
-        }
-        return res;
-    }
+	public List<Alarm> getAlarms( Alarm.Severity sev )
+	{
+		List<Alarm> res = new ArrayList<Alarm>();
+		if (this.alarms == null)
+		{
+			return null;
+		}
+		for ( Alarm a : this.alarms )
+		{
+			if (a.getSeverity().equals( sev ))
+			{
+				res.add( a );
+			}
+		}
+		if (res.isEmpty())
+		{
+			return null;
+		}
+		return res;
+	}
 
-    public List<Alarm> getAlarms( String sev )
-    {
-        Alarm.Severity severity = Alarm.Severity.valueOf( sev );
-        return getAlarms( severity );
-    }
+	public List<Alarm> getAlarms( String sev )
+	{
+		Alarm.Severity severity = Alarm.Severity.valueOf( sev );
+		return getAlarms( severity );
+	}
 
 
 }

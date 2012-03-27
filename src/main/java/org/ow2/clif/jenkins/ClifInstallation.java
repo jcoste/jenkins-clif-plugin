@@ -44,164 +44,164 @@ import java.util.List;
  * @author Julien Coste
  */
 public final class ClifInstallation
-        extends ToolInstallation
-        implements EnvironmentSpecific<ClifInstallation>, NodeSpecific<ClifInstallation>
+		extends ToolInstallation
+		implements EnvironmentSpecific<ClifInstallation>, NodeSpecific<ClifInstallation>
 {
 
-    private final String clifHudsonTarget;
+	private final String clifHudsonTarget;
 
-    @DataBoundConstructor
-    public ClifInstallation( String name, String home, List<? extends ToolProperty<?>> properties,
-                             String clifHudsonTarget )
-    {
-        super( name, launderHome( home ), properties );
-        this.clifHudsonTarget = clifHudsonTarget;
-    }
+	@DataBoundConstructor
+	public ClifInstallation( String name, String home, List<? extends ToolProperty<?>> properties,
+	                         String clifHudsonTarget )
+	{
+		super( name, launderHome( home ), properties );
+		this.clifHudsonTarget = clifHudsonTarget;
+	}
 
-    public String getClifHudsonTarget()
-    {
-        return clifHudsonTarget;
-    }
+	public String getClifHudsonTarget()
+	{
+		return clifHudsonTarget;
+	}
 
-    private static String launderHome( String home )
-    {
-        if (home.endsWith( "/" ) || home.endsWith( "\\" ))
-        {
-            // see https://issues.apache.org/bugzilla/show_bug.cgi?id=26947
-            // Ant doesn't like the trailing slash, especially on Windows
-            return home.substring( 0, home.length() - 1 );
-        }
-        else
-        {
-            return home;
-        }
-    }
+	private static String launderHome( String home )
+	{
+		if (home.endsWith( "/" ) || home.endsWith( "\\" ))
+		{
+			// see https://issues.apache.org/bugzilla/show_bug.cgi?id=26947
+			// Ant doesn't like the trailing slash, especially on Windows
+			return home.substring( 0, home.length() - 1 );
+		}
+		else
+		{
+			return home;
+		}
+	}
 
-    /**
-     * Gets the executable path of this Clif on the given target system.
-     */
-    public String getExecutable( Launcher launcher )
-            throws IOException, InterruptedException
-    {
-        return launcher.getChannel().call( new Callable<String, IOException>()
-        {
-            public String call()
-                    throws IOException
-            {
-                File exe = getExeFile();
-                if (exe.exists())
-                {
-                    return exe.getPath();
-                }
-                return null;
-            }
-        } );
-    }
+	/**
+	 * Gets the executable path of this Clif on the given target system.
+	 */
+	public String getExecutable( Launcher launcher )
+			throws IOException, InterruptedException
+	{
+		return launcher.getChannel().call( new Callable<String, IOException>()
+		{
+			public String call()
+					throws IOException
+			{
+				File exe = getExeFile();
+				if (exe.exists())
+				{
+					return exe.getPath();
+				}
+				return null;
+			}
+		} );
+	}
 
-    private File getExeFile()
-    {
-        String execName = Functions.isWindows() ? "ant.bat" : "ant";
-        String home = Util.replaceMacro( getHome(), EnvVars.masterEnvVars );
+	private File getExeFile()
+	{
+		String execName = Functions.isWindows() ? "ant.bat" : "ant";
+		String home = Util.replaceMacro( getHome(), EnvVars.masterEnvVars );
 
-        return new File( home, "bin/" + execName );
-    }
+		return new File( home, "bin/" + execName );
+	}
 
-    /**
-     * Returns true if the executable exists.
-     */
-    public boolean getExists()
-            throws IOException, InterruptedException
-    {
-        return getExecutable( new Launcher.LocalLauncher( TaskListener.NULL ) ) != null;
-    }
+	/**
+	 * Returns true if the executable exists.
+	 */
+	public boolean getExists()
+			throws IOException, InterruptedException
+	{
+		return getExecutable( new Launcher.LocalLauncher( TaskListener.NULL ) ) != null;
+	}
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public ClifInstallation forEnvironment( EnvVars environment )
-    {
-        return new ClifInstallation( getName(), environment.expand( getHome() ), getProperties().toList(),
-                                     getClifHudsonTarget() );
-    }
+	public ClifInstallation forEnvironment( EnvVars environment )
+	{
+		return new ClifInstallation( getName(), environment.expand( getHome() ), getProperties().toList(),
+		                             getClifHudsonTarget() );
+	}
 
-    public ClifInstallation forNode( Node node, TaskListener log )
-            throws IOException, InterruptedException
-    {
-        return new ClifInstallation( getName(), translateFor( node, log ), getProperties().toList(),
-                                     getClifHudsonTarget() );
-    }
+	public ClifInstallation forNode( Node node, TaskListener log )
+			throws IOException, InterruptedException
+	{
+		return new ClifInstallation( getName(), translateFor( node, log ), getProperties().toList(),
+		                             getClifHudsonTarget() );
+	}
 
-    @Extension
-    public static class DescriptorImpl
-            extends ToolDescriptor<ClifInstallation>
-    {
+	@Extension
+	public static class DescriptorImpl
+			extends ToolDescriptor<ClifInstallation>
+	{
 
-        @Override
-        public String getDisplayName()
-        {
-            return "Clif";
-        }
+		@Override
+		public String getDisplayName()
+		{
+			return "Clif";
+		}
 
-        // for compatibility reasons, the persistence is done by ClifBuilder.DescriptorImpl
-        @Override
-        public ClifInstallation[] getInstallations()
-        {
-            return Hudson.getInstance().getDescriptorByType( ClifBuilder.DescriptorImpl.class ).getInstallations();
-        }
+		// for compatibility reasons, the persistence is done by ClifBuilder.DescriptorImpl
+		@Override
+		public ClifInstallation[] getInstallations()
+		{
+			return Hudson.getInstance().getDescriptorByType( ClifBuilder.DescriptorImpl.class ).getInstallations();
+		}
 
-        @Override
-        public void setInstallations( ClifInstallation... installations )
-        {
-            Hudson.getInstance().getDescriptorByType( ClifBuilder.DescriptorImpl.class ).setInstallations(
-                    installations );
-        }
+		@Override
+		public void setInstallations( ClifInstallation... installations )
+		{
+			Hudson.getInstance().getDescriptorByType( ClifBuilder.DescriptorImpl.class ).setInstallations(
+					installations );
+		}
 
-        /**
-         * Checks if the CLIF_HOME is valid.
-         */
-        public FormValidation doCheckHome( @QueryParameter File value )
-        {
-            // this can be used to check the existence of a file on the server, so needs to be protected
-            if (!Hudson.getInstance().hasPermission( Hudson.ADMINISTER ))
-            {
-                return FormValidation.ok();
-            }
+		/**
+		 * Checks if the CLIF_HOME is valid.
+		 */
+		public FormValidation doCheckHome( @QueryParameter File value )
+		{
+			// this can be used to check the existence of a file on the server, so needs to be protected
+			if (!Hudson.getInstance().hasPermission( Hudson.ADMINISTER ))
+			{
+				return FormValidation.ok();
+			}
 
-            if (value.getPath().equals( "" ))
-            {
-                return FormValidation.ok();
-            }
+			if (value.getPath().equals( "" ))
+			{
+				return FormValidation.ok();
+			}
 
-            if (!value.isDirectory())
-            {
-                return FormValidation.error( Messages.Clif_NotADirectory( value ) );
-            }
+			if (!value.isDirectory())
+			{
+				return FormValidation.error( Messages.Clif_NotADirectory( value ) );
+			}
 
-            File clifJar = new File( value, "lib/clif-core.jar" );
-            if (!clifJar.exists())
-            {
-                return FormValidation.error( Messages.Clif_NotClifDirectory( value ) );
-            }
+			File clifJar = new File( value, "lib/clif-core.jar" );
+			if (!clifJar.exists())
+			{
+				return FormValidation.error( Messages.Clif_NotClifDirectory( value ) );
+			}
 
-            return FormValidation.ok();
-        }
+			return FormValidation.ok();
+		}
 
-        public FormValidation doCheckName( @QueryParameter String value )
-        {
-            if (Util.fixEmptyAndTrim( value ) == null)
-            {
-                return FormValidation.error( Messages.Clif_NameRequired() );
-            }
-            return FormValidation.ok();
-        }
+		public FormValidation doCheckName( @QueryParameter String value )
+		{
+			if (Util.fixEmptyAndTrim( value ) == null)
+			{
+				return FormValidation.error( Messages.Clif_NameRequired() );
+			}
+			return FormValidation.ok();
+		}
 
-        public FormValidation doCheckClifHudsonTarget( @QueryParameter String value )
-        {
-            if (Util.fixEmptyAndTrim( value ) == null)
-            {
-                return FormValidation.error( Messages.Clif_TargetRequired() );
-            }
-            return FormValidation.ok();
-        }
-    }
+		public FormValidation doCheckClifHudsonTarget( @QueryParameter String value )
+		{
+			if (Util.fixEmptyAndTrim( value ) == null)
+			{
+				return FormValidation.error( Messages.Clif_TargetRequired() );
+			}
+			return FormValidation.ok();
+		}
+	}
 
 }

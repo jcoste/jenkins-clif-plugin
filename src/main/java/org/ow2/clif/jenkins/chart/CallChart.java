@@ -40,87 +40,87 @@ import java.awt.*;
  * @author Julien Coste
  */
 public class CallChart
-        extends AbstractChart
+		extends AbstractChart
 {
 
-    protected boolean scatterPlot;
+	protected boolean scatterPlot;
 
-    protected XYSeries eventSerie;
+	protected XYSeries eventSerie;
 
-    public CallChart( String testplan, String bladeId, String event )
-    {
-        super( "Call", bladeId, testplan, event );
-        this.eventSerie = new XYSeries( event );
-    }
+	public CallChart( String testplan, String bladeId, String event )
+	{
+		super( "Call", bladeId, testplan, event );
+		this.eventSerie = new XYSeries( event );
+	}
 
-    public void setScatterPlot( boolean scatterPlot )
-    {
-        this.scatterPlot = scatterPlot;
-    }
+	public void setScatterPlot( boolean scatterPlot )
+	{
+		this.scatterPlot = scatterPlot;
+	}
 
-    public void addData( double x, double y )
-    {
-        this.eventSerie.add( x, y );
-    }
+	public void addData( double x, double y )
+	{
+		this.eventSerie.add( x, y );
+	}
 
-    @Override
-    protected JFreeChart createChart()
-    {
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries( this.eventSerie );
+	@Override
+	protected JFreeChart createChart()
+	{
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries( this.eventSerie );
 
-        JFreeChart chart;
-        if (this.scatterPlot)
-        {
-            chart = ChartFactory.createScatterPlot( getBasicTitle(),
-                                                    // chart title
-                                                    Messages.CallChart_Time(), // x axis label
-                                                    Messages.CallChart_ResponseTime(), // y axis label
-                                                    dataset, // data
-                                                    PlotOrientation.VERTICAL, true, // include legend
-                                                    true, // tooltips
-                                                    false // urls
-            );
-        }
-        else
-        {
-            chart = ChartFactory.createXYLineChart( getBasicTitle(),
-                                                    // chart title
-                                                    Messages.CallChart_Time(), // x axis label
-                                                    this.chartId.getEvent(), // y axis label
-                                                    dataset, // data
-                                                    PlotOrientation.VERTICAL, false, // include legend
-                                                    true, // tooltips
-                                                    false // urls
-            );
-        }
+		JFreeChart chart;
+		if (this.scatterPlot)
+		{
+			chart = ChartFactory.createScatterPlot( getBasicTitle(),
+			                                        // chart title
+			                                        Messages.CallChart_Time(), // x axis label
+			                                        Messages.CallChart_ResponseTime(), // y axis label
+			                                        dataset, // data
+			                                        PlotOrientation.VERTICAL, true, // include legend
+			                                        true, // tooltips
+			                                        false // urls
+			);
+		}
+		else
+		{
+			chart = ChartFactory.createXYLineChart( getBasicTitle(),
+			                                        // chart title
+			                                        Messages.CallChart_Time(), // x axis label
+			                                        this.chartId.getEvent(), // y axis label
+			                                        dataset, // data
+			                                        PlotOrientation.VERTICAL, false, // include legend
+			                                        true, // tooltips
+			                                        false // urls
+			);
+		}
 
-        chart.setBackgroundPaint( Color.white );
-        // get a reference to the plot for further customisation...
-        XYPlot plot = (XYPlot) chart.getPlot();
-        plot.setBackgroundPaint( Color.lightGray );
-        plot.setAxisOffset( new RectangleInsets( 5.0, 5.0, 5.0, 5.0 ) );
-        plot.setDomainGridlinePaint( Color.white );
-        plot.setRangeGridlinePaint( Color.white );
+		chart.setBackgroundPaint( Color.white );
+		// get a reference to the plot for further customisation...
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundPaint( Color.lightGray );
+		plot.setAxisOffset( new RectangleInsets( 5.0, 5.0, 5.0, 5.0 ) );
+		plot.setDomainGridlinePaint( Color.white );
+		plot.setRangeGridlinePaint( Color.white );
 
-        Shape cross = ShapeUtilities.createDiamond( 3 );
+		Shape cross = ShapeUtilities.createDiamond( 3 );
 
-        final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        renderer.setBaseShape( cross );
-        renderer.setSeriesLinesVisible( 0, false );
-        renderer.setSeriesShape( 0, cross );
-        plot.setRenderer( renderer );
+		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setBaseShape( cross );
+		renderer.setSeriesLinesVisible( 0, false );
+		renderer.setSeriesShape( 0, cross );
+		plot.setRenderer( renderer );
 
-        // Force the 0 on vertical axis
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setAutoRangeIncludesZero( true );
-        rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
+		// Force the 0 on vertical axis
+		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setAutoRangeIncludesZero( true );
+		rangeAxis.setStandardTickUnits( NumberAxis.createIntegerTickUnits() );
 
-        // Force the 0 on horizontal axis
-        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setAutoRangeIncludesZero( true );
-        return chart;
-    }
+		// Force the 0 on horizontal axis
+		NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+		domainAxis.setAutoRangeIncludesZero( true );
+		return chart;
+	}
 
 
 }

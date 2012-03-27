@@ -32,74 +32,74 @@ import java.io.Serializable;
  * @author Julien Coste
  */
 public class ClifDataCleanup
-        implements Serializable, Describable<ClifDataCleanup>
+		implements Serializable, Describable<ClifDataCleanup>
 {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    protected boolean enabled;
+	protected boolean enabled;
 
-    protected double keepFactor;
+	protected double keepFactor;
 
-    protected double keepPercentage;
+	protected double keepPercentage;
 
-    public ClifDataCleanup()
-    {
-    }
+	public ClifDataCleanup()
+	{
+	}
 
-    @DataBoundConstructor
-    public ClifDataCleanup( boolean enabled, double keepFactor, double keepPercentage )
-    {
-        super();
-        this.enabled = enabled;
-        this.keepFactor = keepFactor;
-        this.keepPercentage = keepPercentage;
-    }
+	@DataBoundConstructor
+	public ClifDataCleanup( boolean enabled, double keepFactor, double keepPercentage )
+	{
+		super();
+		this.enabled = enabled;
+		this.keepFactor = keepFactor;
+		this.keepPercentage = keepPercentage;
+	}
 
-    public Descriptor<ClifDataCleanup> getDescriptor()
-    {
-        return Hudson.getInstance().getDescriptorByType( DataCleanupDescriptor.class );
-    }
+	public Descriptor<ClifDataCleanup> getDescriptor()
+	{
+		return Hudson.getInstance().getDescriptorByType( DataCleanupDescriptor.class );
+	}
 
-    @Extension
-    public static final class DataCleanupDescriptor
-            extends Descriptor<ClifDataCleanup>
-    {
+	@Extension
+	public static final class DataCleanupDescriptor
+			extends Descriptor<ClifDataCleanup>
+	{
 
-        @Override
-        public String getDisplayName()
-        {
-            return "";
-        }
-    }
+		@Override
+		public String getDisplayName()
+		{
+			return "";
+		}
+	}
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
 
-    public double getKeepFactor()
-    {
-        return keepFactor;
-    }
+	public double getKeepFactor()
+	{
+		return keepFactor;
+	}
 
-    public double getKeepPercentage()
-    {
-        return keepPercentage;
-    }
+	public double getKeepPercentage()
+	{
+		return keepPercentage;
+	}
 
-    public void setEnabled( boolean enabled )
-    {
-        this.enabled = enabled;
-    }
+	public void setEnabled( boolean enabled )
+	{
+		this.enabled = enabled;
+	}
 
-    public void setKeepFactor( double keepFactor )
-    {
-        this.keepFactor = keepFactor;
-    }
+	public void setKeepFactor( double keepFactor )
+	{
+		this.keepFactor = keepFactor;
+	}
 
-    public void setKeepPercentage( double keepPercentage )
-    {
-        this.keepPercentage = keepPercentage;
-    }
+	public void setKeepPercentage( double keepPercentage )
+	{
+		this.keepPercentage = keepPercentage;
+	}
 }
