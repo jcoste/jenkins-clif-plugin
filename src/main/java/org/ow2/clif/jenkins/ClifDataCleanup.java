@@ -32,8 +32,7 @@ import java.io.Serializable;
  * @author Julien Coste
  */
 public class ClifDataCleanup
-		implements Serializable, Describable<ClifDataCleanup>
-{
+		implements Serializable, Describable<ClifDataCleanup> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,63 +42,52 @@ public class ClifDataCleanup
 
 	protected double keepPercentage;
 
-	public ClifDataCleanup()
-	{
+	public ClifDataCleanup() {
 	}
 
 	@DataBoundConstructor
-	public ClifDataCleanup( boolean enabled, double keepFactor, double keepPercentage )
-	{
+	public ClifDataCleanup(boolean enabled, double keepFactor, double keepPercentage) {
 		super();
 		this.enabled = enabled;
 		this.keepFactor = keepFactor;
 		this.keepPercentage = keepPercentage;
 	}
 
-	public Descriptor<ClifDataCleanup> getDescriptor()
-	{
-		return Hudson.getInstance().getDescriptorByType( DataCleanupDescriptor.class );
+	public Descriptor<ClifDataCleanup> getDescriptor() {
+		return Hudson.getInstance().getDescriptorByType(DataCleanupDescriptor.class);
 	}
 
 	@Extension
 	public static final class DataCleanupDescriptor
-			extends Descriptor<ClifDataCleanup>
-	{
+			extends Descriptor<ClifDataCleanup> {
 
 		@Override
-		public String getDisplayName()
-		{
+		public String getDisplayName() {
 			return "";
 		}
 	}
 
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return enabled;
 	}
 
-	public double getKeepFactor()
-	{
+	public double getKeepFactor() {
 		return keepFactor;
 	}
 
-	public double getKeepPercentage()
-	{
+	public double getKeepPercentage() {
 		return keepPercentage;
 	}
 
-	public void setEnabled( boolean enabled )
-	{
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 
-	public void setKeepFactor( double keepFactor )
-	{
+	public void setKeepFactor(double keepFactor) {
 		this.keepFactor = keepFactor;
 	}
 
-	public void setKeepPercentage( double keepPercentage )
-	{
+	public void setKeepPercentage(double keepPercentage) {
 		this.keepPercentage = keepPercentage;
 	}
 }

@@ -23,17 +23,14 @@ package org.ow2.clif.jenkins.model;
 /**
  * @author Julien Coste
  */
-public class Injector extends Blade
-{
+public class Injector extends Blade {
 
-	public Injector()
-	{
+	public Injector() {
 		super();
 	}
 
-	public Injector( String id, String name, String server, String arguments, String type, String comment )
-	{
-		super( id, name, server, arguments, type, comment );
+	public Injector(String id, String name, String server, String arguments, String type, String comment) {
+		super(id, name, server, arguments, type, comment);
 	}
 
 }

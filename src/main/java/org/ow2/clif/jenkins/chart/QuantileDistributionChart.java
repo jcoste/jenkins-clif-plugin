@@ -37,36 +37,31 @@ import org.ow2.clif.jenkins.parser.clif.Messages;
  * @author Julien Coste
  */
 public class QuantileDistributionChart
-		extends AbstractChart
-{
+		extends AbstractChart {
 
 	protected DefaultCategoryDataset data;
 
-	public QuantileDistributionChart( String testplan, String bladeId, String event )
-	{
-		super( "QuantileDistribution", bladeId, testplan, event );
+	public QuantileDistributionChart(String testplan, String bladeId, String event) {
+		super("QuantileDistribution", bladeId, testplan, event);
 
 		this.data = new DefaultCategoryDataset();
 	}
 
-	public void addData( DescriptiveStatistics stat )
-	{
-		for ( int i = 5; i <= 100; i += 5 )
-		{
-			this.data.addValue( stat.getPercentile( i ), this.chartId.getEvent(), "" + i );
+	public void addData(DescriptiveStatistics stat) {
+		for (int i = 5; i <= 100; i += 5) {
+			this.data.addValue(stat.getPercentile(i), this.chartId.getEvent(), "" + i);
 		}
 	}
 
 	@Override
-	protected JFreeChart createChart()
-	{
-		JFreeChart chart = ChartFactory.createBarChart( getBasicTitle(),
-		                                                Messages.QuantileDistributionChart_PercentageOfRequests(),
-		                                                Messages.QuantileDistributionChart_ResponseTime(), data,
-		                                                PlotOrientation.VERTICAL, true, true, false );
+	protected JFreeChart createChart() {
+		JFreeChart chart = ChartFactory.createBarChart(getBasicTitle(),
+		                                               Messages.QuantileDistributionChart_PercentageOfRequests(),
+		                                               Messages.QuantileDistributionChart_ResponseTime(), data,
+		                                               PlotOrientation.VERTICAL, true, true, false);
 
-		chart.getCategoryPlot().setRangeGridlinesVisible( true );
-		chart.getCategoryPlot().setDomainGridlinesVisible( true );
+		chart.getCategoryPlot().setRangeGridlinesVisible(true);
+		chart.getCategoryPlot().setDomainGridlinesVisible(true);
 		return chart;
 	}
 

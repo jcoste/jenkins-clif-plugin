@@ -7,37 +7,32 @@ import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class FakeTest
-{
+public class FakeTest {
 
 	@Test
-	public void canFakeAndResetGlobals()
-	{
-		assertThat( Jenkins.getInstance() ).isNull();
+	public void canFakeAndResetGlobals() {
+		assertThat(Jenkins.getInstance()).isNull();
 		Jenkins jenkins = Fake.install();
 
-		assertThat( jenkins ).isNotNull();
-		assertThat( Jenkins.getInstance() ).isEqualTo( jenkins );
+		assertThat(jenkins).isNotNull();
+		assertThat(Jenkins.getInstance()).isEqualTo(jenkins);
 
 		Jenkins j = Fake.uninstall();
-		assertThat( j ).isNull();
-		assertThat( Jenkins.getInstance() ).isNull();
+		assertThat(j).isNull();
+		assertThat(Jenkins.getInstance()).isNull();
 	}
 
 
-	public void canThenCreateFreestyleProject()
-	{
+	public void canThenCreateFreestyleProject() {
 		Jenkins jenkins = Fake.install();
-		try
-		{
+		try {
 			FreeStyleProject project = new FreeStyleProject(
 					(ItemGroup<? extends Item>) jenkins.getItemGroup(),
 					"bar"
 			);
-			assertThat( project.getParent() ).isEqualTo( jenkins );
+			assertThat(project.getParent()).isEqualTo(jenkins);
 		}
-		finally
-		{
+		finally {
 			Fake.uninstall();
 		}
 	}

@@ -28,8 +28,7 @@ import java.text.NumberFormat;
  *
  * @author Julien Coste
  */
-public class Measure
-{
+public class Measure {
 
 	private transient NumberFormat percentFormat;
 	private transient NumberFormat dataFormat;
@@ -45,16 +44,14 @@ public class Measure
 	private double throughput;
 	private String name;
 
-	public Measure()
-	{
-		percentFormat = new DecimalFormat( "#.##%" );
-		doubleFormat = new DecimalFormat( "#.##" );
-		dataFormat = new DecimalFormat( "#,###" );
+	public Measure() {
+		percentFormat = new DecimalFormat("#.##%");
+		doubleFormat = new DecimalFormat("#.##");
+		dataFormat = new DecimalFormat("#,###");
 	}
 
-	public Measure( String name, long size, long average, long median, long min, long max, double stdDev,
-	                double throughput, long countErrors )
-	{
+	public Measure(String name, long size, long average, long median, long min, long max, double stdDev,
+	               double throughput, long countErrors) {
 		this();
 		this.size = size;
 		this.countErrors = countErrors;
@@ -67,147 +64,119 @@ public class Measure
 		this.name = name;
 	}
 
-	private Object readResolve()
-	{
-		percentFormat = new DecimalFormat( "#.##%" );
-		doubleFormat = new DecimalFormat( "#.##" );
-		dataFormat = new DecimalFormat( "#,###" );
+	private Object readResolve() {
+		percentFormat = new DecimalFormat("#.##%");
+		doubleFormat = new DecimalFormat("#.##");
+		dataFormat = new DecimalFormat("#,###");
 		return this;
 	}
 
-	public long countErrors()
-	{
+	public long countErrors() {
 		return countErrors;
 	}
 
-	public double errorPercent()
-	{
+	public double errorPercent() {
 		return ((double) countErrors) / size;
 	}
 
-	public String errorPercentFormated()
-	{
-		return percentFormat.format( errorPercent() );
+	public String errorPercentFormated() {
+		return percentFormat.format(errorPercent());
 		//return MessageFormat.format("{0,number,#.##%}", errorPercent());
 	}
 
-	public long getAverage()
-	{
+	public long getAverage() {
 		return average;
 	}
 
-	public String getAverageFormated()
-	{
-		return dataFormat.format( getAverage() );
+	public String getAverageFormated() {
+		return dataFormat.format(getAverage());
 	}
 
-	public void setAverage( long average )
-	{
+	public void setAverage(long average) {
 		this.average = average;
 	}
 
-	public long getMedian()
-	{
+	public long getMedian() {
 		return median;
 	}
 
-	public String getMedianFormated()
-	{
-		return dataFormat.format( getMedian() );
+	public String getMedianFormated() {
+		return dataFormat.format(getMedian());
 	}
 
-	public void setMedian( long median )
-	{
+	public void setMedian(long median) {
 		this.median = median;
 	}
 
-	public long getMax()
-	{
+	public long getMax() {
 		return max;
 	}
 
-	public String getMaxFormated()
-	{
-		return dataFormat.format( getMax() );
+	public String getMaxFormated() {
+		return dataFormat.format(getMax());
 	}
 
-	public void setMax( long max )
-	{
+	public void setMax(long max) {
 		this.max = max;
 	}
 
-	public long getMin()
-	{
+	public long getMin() {
 		return min;
 	}
 
-	public String getMinFormated()
-	{
-		return dataFormat.format( getMin() );
+	public String getMinFormated() {
+		return dataFormat.format(getMin());
 	}
 
-	public void setMin( long min )
-	{
+	public void setMin(long min) {
 		this.min = min;
 	}
 
-	public long getSize()
-	{
+	public long getSize() {
 		return size;
 	}
 
-	public String getSizeFormated()
-	{
-		return dataFormat.format( getSize() );
+	public String getSizeFormated() {
+		return dataFormat.format(getSize());
 	}
 
-	public void setSize( long size )
-	{
+	public void setSize(long size) {
 		this.size = size;
 	}
 
-	public void setCountErrors( long countErrors )
-	{
+	public void setCountErrors(long countErrors) {
 		this.countErrors = countErrors;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public void setName( String name )
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public double getStdDev()
-	{
+	public double getStdDev() {
 		return stdDev;
 	}
 
-	public String getStdDevFormated()
-	{
-		return doubleFormat.format( stdDev );
+	public String getStdDevFormated() {
+		return doubleFormat.format(stdDev);
 	}
 
-	public void setStdDev( double stdDev )
-	{
+	public void setStdDev(double stdDev) {
 		this.stdDev = stdDev;
 	}
 
-	public double getThroughput()
-	{
+	public double getThroughput() {
 		return throughput;
 	}
 
-	public String getThroughputFormated()
-	{
-		return doubleFormat.format( throughput );
+	public String getThroughputFormated() {
+		return doubleFormat.format(throughput);
 	}
 
-	public void setThroughput( double throughput )
-	{
+	public void setThroughput(double throughput) {
 		this.throughput = throughput;
 	}
 

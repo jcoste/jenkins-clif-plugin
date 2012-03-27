@@ -36,77 +36,62 @@ import java.io.OutputStream;
 /**
  * @author Julien Coste
  */
-public abstract class AbstractChart
-{
+public abstract class AbstractChart {
 	protected ChartId chartId;
 
-	public AbstractChart( String chartType, String bladeId, String testplan, String event )
-	{
-		this.chartId = new ChartId( chartType, testplan, bladeId, event );
+	public AbstractChart(String chartType, String bladeId, String testplan, String event) {
+		this.chartId = new ChartId(chartType, testplan, bladeId, event);
 	}
 
-	protected String getBasicTitle()
-	{
+	protected String getBasicTitle() {
 		return this.chartId.getTestplan() + " - " + this.chartId.getBladeId() + " - " + this.chartId.getEvent();
 	}
 
-	private void saveImageFile( File imageFile, BufferedImage bImage )
-	{
-		try
-		{
-			OutputStream os = new FileOutputStream( imageFile );
-			ImageIO.write( bImage, "png", os );
+	private void saveImageFile(File imageFile, BufferedImage bImage) {
+		try {
+			OutputStream os = new FileOutputStream(imageFile);
+			ImageIO.write(bImage, "png", os);
 			os.close();
 		}
-		catch ( IOException e )
-		{
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private File getImageFile( File rootDir )
-	{
-		File clifImageDir = new File( rootDir, "clif" );
-		if (clifImageDir.exists())
-		{
-			if (!clifImageDir.isDirectory())
-			{
-				throw new IllegalStateException( clifImageDir.getAbsolutePath() + " is not a directory" );
+	private File getImageFile(File rootDir) {
+		File clifImageDir = new File(rootDir, "clif");
+		if (clifImageDir.exists()) {
+			if (!clifImageDir.isDirectory()) {
+				throw new IllegalStateException(clifImageDir.getAbsolutePath() + " is not a directory");
 			}
-			if (!clifImageDir.canWrite())
-			{
-				throw new IllegalStateException( clifImageDir.getAbsolutePath() + " is not writable" );
+			if (!clifImageDir.canWrite()) {
+				throw new IllegalStateException(clifImageDir.getAbsolutePath() + " is not writable");
 			}
 		}
-		else
-		{
-			if (!clifImageDir.mkdirs())
-			{
+		else {
+			if (!clifImageDir.mkdirs()) {
 				throw new IllegalStateException(
-						"Impossible to create directory " + clifImageDir.getAbsolutePath() );
+						"Impossible to create directory " + clifImageDir.getAbsolutePath());
 			}
 		}
 
-		return new File( clifImageDir, this.chartId.getId() + ".png" );
+		return new File(clifImageDir, this.chartId.getId() + ".png");
 	}
 
 
-	public void doPng( File rootDir, StaplerRequest req, StaplerResponse rsp )
-			throws IOException
-	{
+	public void doPng(File rootDir, StaplerRequest req, StaplerResponse rsp)
+			throws IOException {
 
-		File imageFile = getImageFile( rootDir );
+		File imageFile = getImageFile(rootDir);
 
-		try
-		{
-			BufferedImage bufferedImage = ImageIO.read( imageFile );
-			rsp.setContentType( "image/png" );
+		try {
+			BufferedImage bufferedImage = ImageIO.read(imageFile);
+			rsp.setContentType("image/png");
 			ServletOutputStream os = rsp.getOutputStream();
-			ImageIO.write( bufferedImage, "PNG", os );
+			ImageIO.write(bufferedImage, "PNG", os);
 			os.close();
 		}
-		catch ( Error e )
-		{
+		catch (Error e) {
 			/* OpenJDK on ARM produces an error like this in case of headless error
 							Caused by: java.lang.Error: Probable fatal error:No fonts found.
 									at sun.font.FontManager.getDefaultPhysicalFont(FontManager.java:1088)
@@ -137,28 +122,25 @@ public abstract class AbstractChart
 									at hudson.tasks.test.TestResultProjectAction.doTrend(TestResultProjectAction.java:97)
 									... 37 more
 						 */
-			if (e.getMessage().contains( "Probable fatal error:No fonts found" ))
-			{
-				rsp.sendRedirect2( req.getContextPath() + "/images/headless.png" );
+			if (e.getMessage().contains("Probable fatal error:No fonts found")) {
+				rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
 				return;
 			}
 			throw e; // otherwise let the caller deal with it
 		}
-		catch ( HeadlessException e )
-		{
+		catch (HeadlessException e) {
 			// not available. send out error message
-			rsp.sendRedirect2( req.getContextPath() + "/images/headless.png" );
+			rsp.sendRedirect2(req.getContextPath() + "/images/headless.png");
 		}
 
 	}
 
-	public void createChart( File rootDir, int chartWidth, int chartHeight )
-	{
+	public void createChart(File rootDir, int chartWidth, int chartHeight) {
 		JFreeChart chart = createChart();
 
-		File imageFile = getImageFile( rootDir );
-		BufferedImage bImage = chart.createBufferedImage( chartWidth, chartHeight );
-		saveImageFile( imageFile, bImage );
+		File imageFile = getImageFile(rootDir);
+		BufferedImage bImage = chart.createBufferedImage(chartWidth, chartHeight);
+		saveImageFile(imageFile, bImage);
 
 	}
 

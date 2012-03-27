@@ -28,8 +28,7 @@ import hudson.Plugin;
  * @author Julien Coste
  */
 public class ClifPlugin
-		extends Plugin
-{
+		extends Plugin {
 
 	static final String ICON_FILE_NAME = "graph.gif";
 

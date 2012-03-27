@@ -4,8 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  */
-public class ChartId
-{
+public class ChartId {
 	protected final String chartType;
 
 	protected final String testplan;
@@ -14,36 +13,30 @@ public class ChartId
 
 	protected final String event;
 
-	public ChartId( String chartType, String testplan, String bladeId, String event )
-	{
+	public ChartId(String chartType, String testplan, String bladeId, String event) {
 		this.chartType = chartType;
 		this.testplan = testplan;
 		this.bladeId = bladeId;
 		this.event = event;
 	}
 
-	public String getId()
-	{
-		return DigestUtils.shaHex( chartType + testplan + bladeId + event );
+	public String getId() {
+		return DigestUtils.shaHex(chartType + testplan + bladeId + event);
 	}
 
-	public String getBladeId()
-	{
+	public String getBladeId() {
 		return bladeId;
 	}
 
-	public String getChartType()
-	{
+	public String getChartType() {
 		return chartType;
 	}
 
-	public String getEvent()
-	{
+	public String getEvent() {
 		return event;
 	}
 
-	public String getTestplan()
-	{
+	public String getTestplan() {
 		return testplan;
 	}
 }

@@ -28,8 +28,7 @@ import java.io.Serializable;
  * @author Julien Coste
  */
 public class ClifResultConfig
-		implements Serializable
-{
+		implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,35 +36,29 @@ public class ClifResultConfig
 
 	protected String patternSuccessfulResult;
 
-	public ClifResultConfig()
-	{
+	public ClifResultConfig() {
 	}
 
 	@DataBoundConstructor
-	public ClifResultConfig( String actionType, String patternSuccessfulResult )
-	{
+	public ClifResultConfig(String actionType, String patternSuccessfulResult) {
 		super();
 		this.actionType = actionType;
 		this.patternSuccessfulResult = patternSuccessfulResult;
 	}
 
-	public String getActionType()
-	{
+	public String getActionType() {
 		return actionType;
 	}
 
-	public String getPatternSuccessfulResult()
-	{
+	public String getPatternSuccessfulResult() {
 		return patternSuccessfulResult;
 	}
 
-	public void setActionType( String actionType )
-	{
+	public void setActionType(String actionType) {
 		this.actionType = actionType;
 	}
 
-	public void setPatternSuccessfulResult( String patternSuccessfulResult )
-	{
+	public void setPatternSuccessfulResult(String patternSuccessfulResult) {
 		this.patternSuccessfulResult = patternSuccessfulResult;
 	}
 }

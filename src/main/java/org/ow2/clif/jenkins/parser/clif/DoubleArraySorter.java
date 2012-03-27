@@ -34,11 +34,9 @@ package org.ow2.clif.jenkins.parser.clif;
  * @since 1.2
  */
 
-public class DoubleArraySorter
-{
+public class DoubleArraySorter {
 	// Suppresses default constructor, ensuring non-instantiability.
-	private DoubleArraySorter()
-	{
+	private DoubleArraySorter() {
 	}
 
 	// Sorting
@@ -71,9 +69,8 @@ public class DoubleArraySorter
 	 * @param first  the array to be sorted
 	 * @param second second array to be sorted
 	 */
-	public static void sort( double[] first, double[] second )
-	{
-		sort2( first, second, 0, first.length );
+	public static void sort(double[] first, double[] second) {
+		sort2(first, second, 0, first.length);
 	}
 
 	/**
@@ -115,15 +112,13 @@ public class DoubleArraySorter
 	 * @throws ArrayIndexOutOfBoundsException if <tt>fromIndex &lt; 0</tt> or
 	 *                                        <tt>toIndex &gt; a.length</tt>
 	 */
-	public static void sort( double[] first, double[] second, int fromIndex, int toIndex )
-	{
-		rangeCheck( first.length, fromIndex, toIndex );
-		sort2( first, second, fromIndex, toIndex );
+	public static void sort(double[] first, double[] second, int fromIndex, int toIndex) {
+		rangeCheck(first.length, fromIndex, toIndex);
+		sort2(first, second, fromIndex, toIndex);
 	}
 
-	private static void sort2( double first[], double[] second, int fromIndex, int toIndex )
-	{
-		final long NEG_ZERO_BITS = Double.doubleToLongBits( -0.0d );
+	private static void sort2(double first[], double[] second, int fromIndex, int toIndex) {
+		final long NEG_ZERO_BITS = Double.doubleToLongBits(-0.0d);
 		/*
 				 * The sort is done in three phases to avoid the expense of using
 				 * NaN and -0.0 aware comparisons during the main sort.
@@ -135,10 +130,8 @@ public class DoubleArraySorter
 				 */
 		int numNegZeros = 0;
 		int i = fromIndex, n = toIndex;
-		while ( i < n )
-		{
-			if (first[i] != first[i])
-			{
+		while (i < n) {
+			if (first[i] != first[i]) {
 				double swap = first[i];
 				double swap2 = second[i];
 				first[i] = first[--n];
@@ -146,10 +139,8 @@ public class DoubleArraySorter
 				first[n] = swap;
 				second[n] = swap2;
 			}
-			else
-			{
-				if (first[i] == 0 && Double.doubleToLongBits( first[i] ) == NEG_ZERO_BITS)
-				{
+			else {
+				if (first[i] == 0 && Double.doubleToLongBits(first[i]) == NEG_ZERO_BITS) {
 					first[i] = 0.0d;
 					numNegZeros++;
 				}
@@ -158,21 +149,18 @@ public class DoubleArraySorter
 		}
 
 		// Main sort phase: quicksort everything but the NaN's
-		sort1( first, second, fromIndex, n - fromIndex );
+		sort1(first, second, fromIndex, n - fromIndex);
 
 		// Postprocessing phase: change 0.0's to -0.0's as required
-		if (numNegZeros != 0)
-		{
-			int j = binarySearch0( first, fromIndex, n, 0.0d ); // posn of ANY zero
-			do
-			{
+		if (numNegZeros != 0) {
+			int j = binarySearch0(first, fromIndex, n, 0.0d); // posn of ANY zero
+			do {
 				j--;
 			}
-			while ( j >= 0 && first[j] == 0.0d );
+			while (j >= 0 && first[j] == 0.0d);
 
 			// j is now one less than the index of the FIRST zero
-			for ( int k = 0; k < numNegZeros; k++ )
-			{
+			for (int k = 0; k < numNegZeros; k++) {
 				first[++j] = -0.0d;
 			}
 		}
@@ -181,17 +169,13 @@ public class DoubleArraySorter
 	/**
 	 * Sorts the specified sub-array of doubles into ascending order.
 	 */
-	private static void sort1( double[] first, double[] second, int off, int len )
-	{
+	private static void sort1(double[] first, double[] second, int off, int len) {
 		// Insertion sort on smallest arrays
-		if (len < 7)
-		{
-			for ( int i = off; i < len + off; i++ )
-			{
-				for ( int j = i; j > off && first[j - 1] > first[j]; j-- )
-				{
-					swap( first, j, j - 1 );
-					swap( second, j, j - 1 );
+		if (len < 7) {
+			for (int i = off; i < len + off; i++) {
+				for (int j = i; j > off && first[j - 1] > first[j]; j--) {
+					swap(first, j, j - 1);
+					swap(second, j, j - 1);
 				}
 			}
 			return;
@@ -199,76 +183,65 @@ public class DoubleArraySorter
 
 		// Choose a partition element, v
 		int m = off + (len >> 1);       // Small arrays, middle element
-		if (len > 7)
-		{
+		if (len > 7) {
 			int l = off;
 			int n = off + len - 1;
-			if (len > 40)
-			{        // Big arrays, pseudomedian of 9
+			if (len > 40) {        // Big arrays, pseudomedian of 9
 				int s = len / 8;
-				l = med3( first, l, l + s, l + 2 * s );
-				m = med3( first, m - s, m, m + s );
-				n = med3( first, n - 2 * s, n - s, n );
+				l = med3(first, l, l + s, l + 2 * s);
+				m = med3(first, m - s, m, m + s);
+				n = med3(first, n - 2 * s, n - s, n);
 			}
-			m = med3( first, l, m, n ); // Mid-size, med of 3
+			m = med3(first, l, m, n); // Mid-size, med of 3
 		}
 		double v = first[m];
 
 		// Establish Invariant: v* (<v)* (>v)* v*
 		int a = off, b = a, c = off + len - 1, d = c;
-		while ( true )
-		{
-			while ( b <= c && first[b] <= v )
-			{
-				if (first[b] == v)
-				{
-					swap( first, a++, b );
-					swap( second, a - 1, b );
+		while (true) {
+			while (b <= c && first[b] <= v) {
+				if (first[b] == v) {
+					swap(first, a++, b);
+					swap(second, a - 1, b);
 				}
 				b++;
 			}
-			while ( c >= b && first[c] >= v )
-			{
-				if (first[c] == v)
-				{
-					swap( first, c, d-- );
-					swap( second, c, d + 1 );
+			while (c >= b && first[c] >= v) {
+				if (first[c] == v) {
+					swap(first, c, d--);
+					swap(second, c, d + 1);
 				}
 				c--;
 			}
-			if (b > c)
-			{
+			if (b > c) {
 				break;
 			}
-			swap( first, b++, c-- );
-			swap( second, b - 1, c + 1 );
+			swap(first, b++, c--);
+			swap(second, b - 1, c + 1);
 		}
 
 		// Swap partition elements back to middle
 		int s, n = off + len;
-		s = Math.min( a - off, b - a );
-		vecswap( first, off, b - s, s );
-		vecswap( second, off, b - s, s );
-		s = Math.min( d - c, n - d - 1 );
-		vecswap( first, b, n - s, s );
-		vecswap( second, b, n - s, s );
+		s = Math.min(a - off, b - a);
+		vecswap(first, off, b - s, s);
+		vecswap(second, off, b - s, s);
+		s = Math.min(d - c, n - d - 1);
+		vecswap(first, b, n - s, s);
+		vecswap(second, b, n - s, s);
 
 		// Recursively sort non-partition-elements
-		if ((s = b - a) > 1)
-		{
-			sort1( first, second, off, s );
+		if ((s = b - a) > 1) {
+			sort1(first, second, off, s);
 		}
-		if ((s = d - c) > 1)
-		{
-			sort1( first, second, n - s, s );
+		if ((s = d - c) > 1) {
+			sort1(first, second, n - s, s);
 		}
 	}
 
 	/**
 	 * Swaps x[a] with x[b].
 	 */
-	private static void swap( double x[], int a, int b )
-	{
+	private static void swap(double x[], int a, int b) {
 		double t = x[a];
 		x[a] = x[b];
 		x[b] = t;
@@ -277,19 +250,16 @@ public class DoubleArraySorter
 	/**
 	 * Swaps x[a .. (a+n-1)] with x[b .. (b+n-1)].
 	 */
-	private static void vecswap( double x[], int a, int b, int n )
-	{
-		for ( int i = 0; i < n; i++, a++, b++ )
-		{
-			swap( x, a, b );
+	private static void vecswap(double x[], int a, int b, int n) {
+		for (int i = 0; i < n; i++, a++, b++) {
+			swap(x, a, b);
 		}
 	}
 
 	/**
 	 * Returns the index of the median of the three indexed doubles.
 	 */
-	private static int med3( double x[], int a, int b, int c )
-	{
+	private static int med3(double x[], int a, int b, int c) {
 		return (x[a] < x[b] ? (x[b] < x[c] ? b : x[a] < x[c] ? c : a) : (x[b] > x[c] ? b : x[a] > x[c] ? c : a));
 	}
 
@@ -297,63 +267,51 @@ public class DoubleArraySorter
 	 * Check that fromIndex and toIndex are in range, and throw an
 	 * appropriate exception if they aren't.
 	 */
-	private static void rangeCheck( int arrayLen, int fromIndex, int toIndex )
-	{
-		if (fromIndex > toIndex)
-		{
-			throw new IllegalArgumentException( "fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")" );
+	private static void rangeCheck(int arrayLen, int fromIndex, int toIndex) {
+		if (fromIndex > toIndex) {
+			throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
 		}
-		if (fromIndex < 0)
-		{
-			throw new ArrayIndexOutOfBoundsException( fromIndex );
+		if (fromIndex < 0) {
+			throw new ArrayIndexOutOfBoundsException(fromIndex);
 		}
-		if (toIndex > arrayLen)
-		{
-			throw new ArrayIndexOutOfBoundsException( toIndex );
+		if (toIndex > arrayLen) {
+			throw new ArrayIndexOutOfBoundsException(toIndex);
 		}
 	}
 
 	// Searching
 
 	// Like public version, but without range checks.
-	private static int binarySearch0( double[] a, int fromIndex, int toIndex, double key )
-	{
+	private static int binarySearch0(double[] a, int fromIndex, int toIndex, double key) {
 		int low = fromIndex;
 		int high = toIndex - 1;
 
-		while ( low <= high )
-		{
+		while (low <= high) {
 			int mid = (low + high) >>> 1;
 			double midVal = a[mid];
 
 			int cmp;
-			if (midVal < key)
-			{
+			if (midVal < key) {
 				cmp = -1;   // Neither val is NaN, thisVal is smaller
 			}
-			else if (midVal > key)
-			{
+			else if (midVal > key) {
 				cmp = 1;    // Neither val is NaN, thisVal is larger
 			}
-			else
-			{
-				long midBits = Double.doubleToLongBits( midVal );
-				long keyBits = Double.doubleToLongBits( key );
+			else {
+				long midBits = Double.doubleToLongBits(midVal);
+				long keyBits = Double.doubleToLongBits(key);
 				cmp = (midBits == keyBits ? 0 : // Values are equal
 						(midBits < keyBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
 								1));                     // (0.0, -0.0) or (NaN, !NaN)
 			}
 
-			if (cmp < 0)
-			{
+			if (cmp < 0) {
 				low = mid + 1;
 			}
-			else if (cmp > 0)
-			{
+			else if (cmp > 0) {
 				high = mid - 1;
 			}
-			else
-			{
+			else {
 				return mid; // key found
 			}
 		}

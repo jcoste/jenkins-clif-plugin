@@ -8,13 +8,11 @@ import java.io.File;
 import static org.mockito.Mockito.mock;
 
 
-public class Fake extends Jenkins
-{
+public class Fake extends Jenkins {
 
-	public Fake( File root, ServletContext context, PluginManager pluginManager )
-			throws Exception
-	{
-		super( root, context, pluginManager );
+	public Fake(File root, ServletContext context, PluginManager pluginManager)
+			throws Exception {
+		super(root, context, pluginManager);
 	}
 
 	private static JenkinsHolder previous;
@@ -26,14 +24,11 @@ public class Fake extends Jenkins
 	 *
 	 * @return
 	 */
-	public static Jenkins install()
-	{
+	public static Jenkins install() {
 		previous = Jenkins.HOLDER;
-		final Jenkins jenkins = mock( Jenkins.class );
-		Jenkins.HOLDER = new JenkinsHolder()
-		{
-			public Jenkins getInstance()
-			{
+		final Jenkins jenkins = mock(Jenkins.class);
+		Jenkins.HOLDER = new JenkinsHolder() {
+			public Jenkins getInstance() {
 				return jenkins;
 			}
 		};
@@ -45,8 +40,7 @@ public class Fake extends Jenkins
 	 *
 	 * @return
 	 */
-	public static Jenkins uninstall()
-	{
+	public static Jenkins uninstall() {
 		Jenkins.HOLDER = previous;
 		return previous.getInstance();
 	}

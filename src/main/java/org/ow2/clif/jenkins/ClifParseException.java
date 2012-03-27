@@ -26,15 +26,12 @@ package org.ow2.clif.jenkins;
  * @author Julien Coste
  */
 public class ClifParseException
-		extends RuntimeException
-{
-	public ClifParseException( String msg, Exception e )
-	{
-		super( msg, e );
+		extends RuntimeException {
+	public ClifParseException(String msg, Exception e) {
+		super(msg, e);
 	}
 
-	public ClifParseException( String msg )
-	{
-		super( msg );
+	public ClifParseException(String msg) {
+		super(msg);
 	}
 }

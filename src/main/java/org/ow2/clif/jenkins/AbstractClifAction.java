@@ -33,24 +33,20 @@ import java.io.IOException;
  * @author Julien Coste
  */
 public abstract class AbstractClifAction
-		implements Action
-{
-	public String getIconFileName()
-	{
+		implements Action {
+	public String getIconFileName() {
 		return ClifPlugin.ICON_FILE_NAME;
 	}
 
 	public abstract String getDisplayName();
 
 
-	public String getUrlName()
-	{
+	public String getUrlName() {
 		return ClifPlugin.URL;
 	}
 
-	protected boolean shouldReloadGraph( StaplerRequest request, StaplerResponse response, Run build )
-			throws IOException
-	{
-		return !request.checkIfModified( build.getTimestamp(), response );
+	protected boolean shouldReloadGraph(StaplerRequest request, StaplerResponse response, Run build)
+			throws IOException {
+		return !request.checkIfModified(build.getTimestamp(), response);
 	}
 }

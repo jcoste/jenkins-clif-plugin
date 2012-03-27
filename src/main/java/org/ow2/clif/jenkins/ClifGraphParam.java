@@ -23,8 +23,7 @@ package org.ow2.clif.jenkins;
 /**
  * @author Julien Coste
  */
-public class ClifGraphParam
-{
+public class ClifGraphParam {
 
 	protected String chartId;
 
@@ -36,53 +35,43 @@ public class ClifGraphParam
 
 	protected String label;
 
-	public String getChartId()
-	{
+	public String getChartId() {
 		return chartId;
 	}
 
-	public void setChartId( String chartId )
-	{
+	public void setChartId(String chartId) {
 		this.chartId = chartId;
 	}
 
-	public String getTestPlan()
-	{
+	public String getTestPlan() {
 		return testPlan;
 	}
 
-	public void setTestPlan( String testPlan )
-	{
+	public void setTestPlan(String testPlan) {
 		this.testPlan = testPlan;
 	}
 
-	public String getServer()
-	{
+	public String getServer() {
 		return server;
 	}
 
-	public void setServer( String server )
-	{
+	public void setServer(String server) {
 		this.server = server;
 	}
 
-	public String getBladeId()
-	{
+	public String getBladeId() {
 		return bladeId;
 	}
 
-	public void setBladeId( String bladeId )
-	{
+	public void setBladeId(String bladeId) {
 		this.bladeId = bladeId;
 	}
 
-	public String getLabel()
-	{
+	public String getLabel() {
 		return label;
 	}
 
-	public void setLabel( String label )
-	{
+	public void setLabel(String label) {
 		this.label = label;
 	}
 }

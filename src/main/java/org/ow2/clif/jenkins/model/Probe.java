@@ -23,15 +23,12 @@ package org.ow2.clif.jenkins.model;
 /**
  * @author Julien Coste
  */
-public class Probe extends Blade
-{
-	public Probe()
-	{
+public class Probe extends Blade {
+	public Probe() {
 		super();
 	}
 
-	public Probe( String id, String name, String server, String arguments, String type, String comment )
-	{
-		super( id, name, server, arguments, type, comment );
+	public Probe(String id, String name, String server, String arguments, String type, String comment) {
+		super(id, name, server, arguments, type, comment);
 	}
 }
