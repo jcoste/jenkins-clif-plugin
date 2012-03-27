@@ -21,6 +21,7 @@
 package org.ow2.clif.jenkins.parser.clif;
 
 import org.apache.commons.lang.StringUtils;
+import org.ow2.clif.jenkins.chart.ChartConfiguration;
 import org.ow2.clif.jenkins.model.*;
 import org.ow2.clif.storage.api.*;
 import org.ow2.clif.storage.lib.filestorage.ConsoleFileStorageImpl;
@@ -72,7 +73,7 @@ public class ClifParser {
 
 	protected Map<String, Pattern> actionAliasPatterns = new HashMap<String, Pattern>();
 
-	private int chartWidth = 900;
+/*	private int chartWidth = 900;
 
 	private int chartHeight = 600;
 
@@ -80,8 +81,9 @@ public class ClifParser {
 
 	private int distributionSliceNumber = 20;
 
-	private int statisticalPeriod = 20;
+	private int statisticalPeriod = 20;*/
 
+	private ChartConfiguration chartConfiguration;
 
 	protected ParsingContext context = new ParsingContext();
 
@@ -313,7 +315,7 @@ public class ClifParser {
 			context.setEventType(labels[i]);
 			Measure m = createProbeMeasure(labels[i], statsInfo[i]);
 			probe.addMeasure(m);
-			statsInfo[i].generateCharts(this.ouputDirectory, this.chartWidth, this.chartHeight);
+			statsInfo[i].generateCharts(this.ouputDirectory, this.chartConfiguration.getChartWidth(), this.chartConfiguration.getChartHeight());
 		}
 	}
 
@@ -346,14 +348,14 @@ public class ClifParser {
 			Measure m = createInjectorMeasure(entry.getKey(), entry.getValue());
 			injector.addMeasure(m);
 
-			entry.getValue().generateCharts(this.ouputDirectory, this.chartWidth, this.chartHeight);
+			entry.getValue().generateCharts(this.ouputDirectory, this.chartConfiguration.getChartWidth(), this.chartConfiguration.getChartHeight());
 		}
 	}
 
 	protected void addError(String action) {
 		ActionStatInfo statInfo = statsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, distributionSliceNumber, distributionSliceSize, statisticalPeriod);
+			statInfo = new ActionStatInfo(context, chartConfiguration);
 			statsByAction.put(action, statInfo);
 		}
 		statInfo.incrementErrors();
@@ -363,7 +365,7 @@ public class ClifParser {
 	private void addAggregatedError(String action) {
 		ActionStatInfo statInfo = aggregatedStatsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, distributionSliceNumber, distributionSliceSize, statisticalPeriod);
+			statInfo = new ActionStatInfo(context, chartConfiguration);
 			aggregatedStatsByAction.put(action, statInfo);
 		}
 
@@ -373,7 +375,7 @@ public class ClifParser {
 	protected void addEventToStat(String action, BladeEvent actionEvent) {
 		ActionStatInfo statInfo = statsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, distributionSliceNumber, distributionSliceSize, statisticalPeriod);
+			statInfo = new ActionStatInfo(context, chartConfiguration);
 			statsByAction.put(action, statInfo);
 		}
 
@@ -387,7 +389,7 @@ public class ClifParser {
 	protected void addEventToAggregatedStat(String action, long date, int duration) {
 		ActionStatInfo statInfo = aggregatedStatsByAction.get(action);
 		if (statInfo == null) {
-			statInfo = new ActionStatInfo(context, distributionSliceNumber, distributionSliceSize, statisticalPeriod);
+			statInfo = new ActionStatInfo(context, chartConfiguration);
 			aggregatedStatsByAction.put(action, statInfo);
 		}
 
@@ -516,23 +518,7 @@ public class ClifParser {
 		return vals;
 	}
 
-	public void setDistributionSliceSize(int distributionSliceSize) {
-		this.distributionSliceSize = distributionSliceSize;
-	}
-
-	public void setDistributionSliceNumber(int distributionSliceNumber) {
-		this.distributionSliceNumber = distributionSliceNumber;
-	}
-
-	public void setChartHeight(int chartHeight) {
-		this.chartHeight = chartHeight;
-	}
-
-	public void setChartWidth(int chartWidth) {
-		this.chartWidth = chartWidth;
-	}
-
-	public void setStatisticalPeriod(int statisticalPeriod) {
-		this.statisticalPeriod = statisticalPeriod;
+	public void setChartConfiguration(ChartConfiguration chartConfiguration) {
+		this.chartConfiguration = chartConfiguration;
 	}
 }

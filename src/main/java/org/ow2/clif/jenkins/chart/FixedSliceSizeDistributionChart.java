@@ -47,24 +47,22 @@ import java.util.ArrayList;
 public class FixedSliceSizeDistributionChart
 		extends AbstractChart {
 
-	protected int sliceSize;
-
 	protected SimpleHistogramDataset data;
 
-	public FixedSliceSizeDistributionChart(String testplan, String bladeId, String event, int slices) {
-		super("FixedSliceSizeDistribution", bladeId, testplan, event);
+	public FixedSliceSizeDistributionChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
+		super("FixedSliceSizeDistribution", bladeId, testplan, event, chartConfiguration);
 
-		this.sliceSize = slices;
 		this.data = new SimpleHistogramDataset(this.chartId.getEvent());
 	}
 
 	public void addData(double[] values, double min, double max) {
 		if (values != null && values.length > 0) {
 			double lower = min;
+			int sliceSize = this.chartConfiguration.getDistributionSliceSize();
 			do {
 				boolean last = (lower + sliceSize >= max);
-				this.data.addBin(new SimpleHistogramBin(lower, lower + this.sliceSize, true, last));
-				lower += this.sliceSize;
+				this.data.addBin(new SimpleHistogramBin(lower, lower + sliceSize, true, last));
+				lower += sliceSize;
 			}
 			while (lower < max);
 

@@ -70,11 +70,7 @@ public class ActionStatInfo {
 
 	private static long lastCall = Long.MIN_VALUE;
 
-	private int sliceNumber = 20;
-
-	private int sliceSize = 20;
-
-	private int statisticalPeriod = 20;
+	private ChartConfiguration chartConfiguration;
 
 	public static void resetTime() {
 		firstCall = Long.MAX_VALUE;
@@ -86,12 +82,10 @@ public class ActionStatInfo {
 		onTheFlyStat = new SummaryStatisticsImpl();
 	}
 
-	public ActionStatInfo(ParsingContext context, int sliceNumber, int sliceSize, int statisticalPeriod) {
+	public ActionStatInfo(ParsingContext context, ChartConfiguration chartConfiguration) {
 		this.context = new ParsingContext(context);
 		onTheFlyStat = new SummaryStatisticsImpl();
-		this.sliceNumber = sliceNumber;
-		this.sliceSize = sliceSize;
-		this.statisticalPeriod = statisticalPeriod;
+		this.chartConfiguration = chartConfiguration;
 	}
 
 
@@ -297,7 +291,7 @@ public class ActionStatInfo {
 	private MovingStatChart createMovingStatChart() {
 		MovingStatChart chart =
 				new MovingStatChart(context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(),
-				                    this.statisticalPeriod);
+				                    chartConfiguration);
 
 		for (int i = 0; i < valuesArray.length; i++) {
 			chart.addData(datesArray[i], valuesArray[i]);
@@ -312,7 +306,7 @@ public class ActionStatInfo {
 	 */
 	private CallChart createCallChart() {
 		CallChart chart =
-				new CallChart(context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType());
+				new CallChart(context.getTestPlanShortName(), context.getBlade().getId(), context.getEventType(), this.chartConfiguration);
 		chart.setScatterPlot(context.getBlade().isInjector());
 
 		for (int i = 0; i < valuesArray.length; i++) {
@@ -330,7 +324,7 @@ public class ActionStatInfo {
 
 		FixedSliceNumberDistributionChart chart =
 				new FixedSliceNumberDistributionChart(context.getTestPlanShortName(), context.getBlade().getId(),
-				                                      context.getEventType(), sliceNumber);
+				                                      context.getEventType(), chartConfiguration);
 		chart.addData(valuesArray);
 		return chart;
 	}
@@ -344,7 +338,7 @@ public class ActionStatInfo {
 
 		FixedSliceSizeDistributionChart chart =
 				new FixedSliceSizeDistributionChart(context.getTestPlanShortName(), context.getBlade().getId(),
-				                                    context.getEventType(), sliceSize);
+				                                    context.getEventType(), chartConfiguration);
 		chart.addData(valuesArray, stat.getMin(), stat.getMax());
 		return chart;
 	}
@@ -357,7 +351,7 @@ public class ActionStatInfo {
 	private QuantileDistributionChart createQuantileDistributionChart() {
 		QuantileDistributionChart chart =
 				new QuantileDistributionChart(context.getTestPlanShortName(), context.getBlade().getId(),
-				                              context.getEventType());
+				                              context.getEventType(), this.chartConfiguration);
 
 		chart.addData(stat);
 		return chart;

@@ -41,25 +41,14 @@ import java.awt.*;
  */
 public class MovingStatChart
 		extends AbstractChart {
-	protected long statisticalPeriod;
 
 	protected XYSeries eventSerie;
 
-	public MovingStatChart(String testplan, String bladeId, String event, int statisticalPeriod) {
-		super("movingStat", bladeId, testplan, event);
-		this.statisticalPeriod = statisticalPeriod;
+	public MovingStatChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
+		super("movingStat", bladeId, testplan, event, chartConfiguration);
 		this.eventSerie = new XYSeries(event);
 	}
 
-
-	/**
-	 * Set the statistical period (in seconds)
-	 *
-	 * @param statisticalPeriod the statistical period
-	 */
-	public void setStatisticalPeriod(long statisticalPeriod) {
-		this.statisticalPeriod = statisticalPeriod;
-	}
 
 	public void addData(double x, double y) {
 		this.eventSerie.add(x, y);
@@ -71,7 +60,7 @@ public class MovingStatChart
 		coreDataset.addSeries(this.eventSerie);
 
 		MovingAverageStat averageStat = new MovingAverageStat();
-		long statisticalPeriodInMs = statisticalPeriod * 1000;
+		long statisticalPeriodInMs = this.chartConfiguration.getStatisticalPeriod() * 1000;
 		XYSeries movingSeries =
 				averageStat.calculateMovingStat(coreDataset, 0, " Moving Average", statisticalPeriodInMs,
 				                                0);
@@ -98,7 +87,7 @@ public class MovingStatChart
 
 		JFreeChart chart;
 		chart = ChartFactory.createXYLineChart(
-				getBasicTitle() + " " + Messages.MovingChart_StatisticalPeriod(statisticalPeriod),
+				getBasicTitle() + " " + Messages.MovingChart_StatisticalPeriod(this.chartConfiguration.getStatisticalPeriod()),
 				// chart title
 				Messages.MovingChart_Time(), // x axis label
 				Messages.MovingChart_ResponseTime(), // y axis label

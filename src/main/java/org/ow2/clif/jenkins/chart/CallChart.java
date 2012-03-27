@@ -46,8 +46,8 @@ public class CallChart
 
 	protected XYSeries eventSerie;
 
-	public CallChart(String testplan, String bladeId, String event) {
-		super("Call", bladeId, testplan, event);
+	public CallChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
+		super("Call", bladeId, testplan, event, chartConfiguration);
 		this.eventSerie = new XYSeries(event);
 	}
 

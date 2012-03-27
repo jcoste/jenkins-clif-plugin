@@ -36,7 +36,7 @@ public class ClifBuildAction
 		ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		CallChart chart = new CallChart(params.getTestPlan(), params.getBladeId(), params.getLabel());
+		CallChart chart = new CallChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -46,7 +46,7 @@ public class ClifBuildAction
 		ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		MovingStatChart chart = new MovingStatChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), -1);
+		MovingStatChart chart = new MovingStatChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -57,8 +57,8 @@ public class ClifBuildAction
 		request.bindParameters(params);
 
 		FixedSliceNumberDistributionChart chart =
-				new FixedSliceNumberDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),
-				                                      -1);
+				new FixedSliceNumberDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null
+				                                      );
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -69,7 +69,7 @@ public class ClifBuildAction
 		request.bindParameters(params);
 
 		FixedSliceSizeDistributionChart chart =
-				new FixedSliceSizeDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), -1);
+				new FixedSliceSizeDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -80,7 +80,7 @@ public class ClifBuildAction
 		request.bindParameters(params);
 
 		QuantileDistributionChart chart =
-				new QuantileDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel());
+				new QuantileDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 

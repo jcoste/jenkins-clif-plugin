@@ -45,20 +45,17 @@ import java.util.ArrayList;
 public class FixedSliceNumberDistributionChart
 		extends AbstractChart {
 
-	protected int slices;
-
 	protected HistogramDataset data = new HistogramDataset();
 
-	public FixedSliceNumberDistributionChart(String testplan, String bladeId, String event, int slices) {
-		super("FixedSliceNumberDistribution", bladeId, testplan, event);
+	public FixedSliceNumberDistributionChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
+		super("FixedSliceNumberDistribution", bladeId, testplan, event, chartConfiguration);
 
-		this.slices = slices;
 		this.data = new HistogramDataset();
 	}
 
 	public void addData(double[] values) {
 		if (values != null && values.length > 0) {
-			data.addSeries(this.chartId.getEvent(), values, this.slices);
+			data.addSeries(this.chartId.getEvent(), values, this.chartConfiguration.getDistributionSliceNumber());
 		}
 	}
 

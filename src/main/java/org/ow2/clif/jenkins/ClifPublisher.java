@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.ow2.clif.jenkins.chart.ChartConfiguration;
 import org.ow2.clif.jenkins.model.ClifReport;
 import org.ow2.clif.jenkins.parser.clif.ClifParser;
 import org.ow2.clif.jenkins.parser.clif.ClifParserException;
@@ -114,11 +115,8 @@ public class ClifPublisher
 					FilePath reportDir = build.getWorkspace().child(this.clifReportDirectory);
 					ClifParser parser = new ClifParser(reportDir.getRemote(), build.getRootDir());
 
-					parser.setChartWidth(this.chartWidth);
-					parser.setChartHeight(this.chartHeight);
-					parser.setDistributionSliceSize(this.distributionSliceSize);
-					parser.setDistributionSliceNumber(this.distributionSliceNumber);
-					parser.setStatisticalPeriod(this.statisticalPeriod);
+					ChartConfiguration chartConfig = new ChartConfiguration(this.chartHeight, this.chartWidth,this.distributionSliceNumber,this.distributionSliceSize,this.statisticalPeriod);
+					parser.setChartConfiguration(chartConfig);
 
 					if (this.dateFiltering) {
 						parser.addDateFilter(getLong(this.minTimestamp), getLong(this.maxTimestamp));

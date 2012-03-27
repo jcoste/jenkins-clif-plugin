@@ -39,8 +39,11 @@ import java.io.OutputStream;
 public abstract class AbstractChart {
 	protected ChartId chartId;
 
-	public AbstractChart(String chartType, String bladeId, String testplan, String event) {
+	protected ChartConfiguration chartConfiguration;
+
+	public AbstractChart(String chartType, String bladeId, String testplan, String event, ChartConfiguration chartConfiguration) {
 		this.chartId = new ChartId(chartType, testplan, bladeId, event);
+		this.chartConfiguration = chartConfiguration;
 	}
 
 	protected String getBasicTitle() {
