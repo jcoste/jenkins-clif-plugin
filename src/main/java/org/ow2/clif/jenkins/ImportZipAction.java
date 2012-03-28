@@ -102,9 +102,4 @@ public class ImportZipAction implements RootAction {
 		this.jenkins = jenkins;
 		return this;
 	}
-
-	ImportZipAction whiteList(String whiteList) {
-		this.whiteList = whiteList;
-		return this;
-	}
 }
