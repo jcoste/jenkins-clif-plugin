@@ -21,18 +21,17 @@
 package org.ow2.clif.jenkins;
 
 import hudson.*;
-import hudson.model.EnvironmentSpecific;
-import hudson.model.Hudson;
-import hudson.model.Node;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import hudson.remoting.Callable;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
 import hudson.util.FormValidation;
+import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,15 +48,29 @@ public final class ClifInstallation
 
 	private final String clifHudsonTarget;
 
+	private final ClifProActiveConfig clifProActiveConfig;
+
 	@DataBoundConstructor
 	public ClifInstallation(String name, String home, List<? extends ToolProperty<?>> properties,
-	                        String clifHudsonTarget) {
+	                        String clifHudsonTarget, ClifProActiveConfig clifProActiveConfig) {
 		super(name, launderHome(home), properties);
 		this.clifHudsonTarget = clifHudsonTarget;
+		this.clifProActiveConfig = clifProActiveConfig;
+
 	}
 
 	public String getClifHudsonTarget() {
 		return clifHudsonTarget;
+	}
+
+
+
+	public ClifProActiveConfig getClifProActiveConfig() {
+		return clifProActiveConfig;
+	}
+
+	public boolean isProactiveInstallation() {
+		return clifProActiveConfig != null;
 	}
 
 	private static String launderHome(String home) {
@@ -107,13 +120,13 @@ public final class ClifInstallation
 
 	public ClifInstallation forEnvironment(EnvVars environment) {
 		return new ClifInstallation(getName(), environment.expand(getHome()), getProperties().toList(),
-		                            getClifHudsonTarget());
+		                            getClifHudsonTarget(), clifProActiveConfig);
 	}
 
 	public ClifInstallation forNode(Node node, TaskListener log)
 			throws IOException, InterruptedException {
 		return new ClifInstallation(getName(), translateFor(node, log), getProperties().toList(),
-		                            getClifHudsonTarget());
+		                            getClifHudsonTarget(), clifProActiveConfig);
 	}
 
 	@Extension
@@ -172,6 +185,32 @@ public final class ClifInstallation
 		public FormValidation doCheckClifHudsonTarget(@QueryParameter String value) {
 			if (Util.fixEmptyAndTrim(value) == null) {
 				return FormValidation.error(Messages.Clif_TargetRequired());
+			}
+			return FormValidation.ok();
+		}
+
+		/**
+		 * Checks if the Scheduler url is valid.
+		 *
+		 * @param value
+		 * @return
+		 */
+		public FormValidation doCheckSchedulerURL(@QueryParameter String value) {
+			if (Util.fixEmptyAndTrim(value) == null) {
+				return FormValidation.error(Messages.Clif_SchedulerURLRequired());
+			}
+			return FormValidation.ok();
+		}
+
+		/**
+		 * Checks if the scheduler credentials file is valid
+		 *
+		 * @param value
+		 * @return
+		 */
+		public FormValidation doCheckSchedulerCredentialsFile(@QueryParameter String value) {
+			if (Util.fixEmptyAndTrim(value) == null) {
+				return FormValidation.error(Messages.Clif_SchedulerCredentialsFileRequired());
 			}
 			return FormValidation.ok();
 		}

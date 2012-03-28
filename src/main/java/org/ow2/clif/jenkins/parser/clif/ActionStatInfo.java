@@ -77,11 +77,6 @@ public class ActionStatInfo {
 		lastCall = Long.MIN_VALUE;
 	}
 
-/*	public ActionStatInfo(ParsingContext context) {
-		this.context = new ParsingContext(context);
-		onTheFlyStat = new SummaryStatisticsImpl();
-	}*/
-
 	public ActionStatInfo(ParsingContext context, ChartConfiguration chartConfiguration) {
 		this.context = new ParsingContext(context);
 		onTheFlyStat = new SummaryStatisticsImpl();

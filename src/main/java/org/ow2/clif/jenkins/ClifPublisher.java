@@ -83,6 +83,7 @@ public class ClifPublisher
 
 	private int distributionSliceSize;
 
+
 	private int statisticalPeriod;
 
 	@DataBoundConstructor
@@ -432,4 +433,9 @@ public class ClifPublisher
 	public boolean isDateFiltering() {
 		return dateFiltering;
 	}
+
+	public int getStatisticalPeriod() {
+		return statisticalPeriod;
+	}
+
 }
