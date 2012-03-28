@@ -1,14 +1,18 @@
 package org.ow2.clif.jenkins.parser.clif;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.ow2.clif.jenkins.ClifAlias;
 import org.ow2.clif.jenkins.ClifResultConfig;
 import org.ow2.clif.jenkins.chart.ChartConfiguration;
 import org.ow2.clif.jenkins.model.ClifReport;
+import org.ow2.clif.jenkins.model.TestPlan;
 
 import java.io.File;
 
+import static org.junit.Assert.assertNotNull;
+import static org.fest.assertions.Assertions.assertThat;
 /**
  * Created by IntelliJ IDEA.
  * User: bvjr5731
@@ -20,16 +24,31 @@ public class ClifParserTest {
 	@Test
 	public void testParse() throws Exception {
 
+		long start = -System.currentTimeMillis();
 		File reportDir = new File("src/test/resources/reports");
 		File buildDir = new File("target/clif");
 		ClifParser parser = new ClifParser(reportDir.getAbsolutePath(), buildDir.getAbsoluteFile());
 
-		ChartConfiguration chartConfig =new ChartConfiguration(600, 1200, 15,50, 5);
+		ChartConfiguration chartConfig =new ChartConfiguration(600, 1200, 15,50, 2);
 		parser.setChartConfiguration(chartConfig);
 		parser.enableDataCleanup(2,95);
 		parser.addActionAliasPattern("random", ".*dummy.*");
 
+		parser.setGenerateCharts(false);
 		// Parse Clif report directory
 		ClifReport report = parser.parse(System.out);
+
+		assertNotNull(report);
+		assertThat(report.getTestplans()).isNotEmpty().containsExactly(new TestPlan("random", null));
+
+		TestPlan testPlanRead = report.getTestplan("random");
+		assertThat(testPlanRead.getAggregatedMeasures()).hasSize(1);
+		assertThat(testPlanRead.getAlarms()).isNullOrEmpty();
+		assertThat(testPlanRead.getInjectors()).hasSize(1);
+		assertThat(testPlanRead.getProbes()).isNullOrEmpty();
+		assertThat(testPlanRead.getServers()).hasSize(1);
+
+		start += System.currentTimeMillis();
+		System.out.println(start);
 	}
 }

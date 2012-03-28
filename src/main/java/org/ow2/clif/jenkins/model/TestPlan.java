@@ -185,4 +185,26 @@ public class TestPlan {
 		return getAlarms(severity);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+
+		TestPlan testPlan = (TestPlan) o;
+
+		if (!name.equals(testPlan.name)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

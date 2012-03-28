@@ -94,6 +94,11 @@ public class ClifParser {
 
 	protected Pattern patternProbeName = Pattern.compile("org\\.ow2\\.clif\\.probe.(.*)\\.Insert");
 
+	/**
+	 * Indicates if charts should be generated. Used for tests only
+	 */
+	private boolean generateCharts = true;
+
 	public ClifParser(String clifReportDirectory, File ouputDirectory) {
 		this.clifReportDirectory = clifReportDirectory;
 		this.ouputDirectory = ouputDirectory;
@@ -181,8 +186,14 @@ public class ClifParser {
 			for (Map.Entry<String, ActionStatInfo> entry : aggregatedStatsByAction.entrySet()) {
 				Measure m = createInjectorMeasure(entry.getKey(), entry.getValue());
 				testPlan.addAggregatedMeasure(m);
-				entry.getValue().generateCharts(this.ouputDirectory);
+				generateChart(entry.getValue());
 			}
+		}
+	}
+
+	private void generateChart(ActionStatInfo actionStatInfo) {
+		if (generateCharts) {
+			actionStatInfo.generateCharts(this.ouputDirectory);
 		}
 	}
 
@@ -313,7 +324,7 @@ public class ClifParser {
 			context.setEventType(labels[i]);
 			Measure m = createProbeMeasure(labels[i], statsInfo[i]);
 			probe.addMeasure(m);
-			statsInfo[i].generateCharts(this.ouputDirectory);
+			generateChart(statsInfo[i]);
 		}
 	}
 
@@ -345,8 +356,7 @@ public class ClifParser {
 		for (Map.Entry<String, ActionStatInfo> entry : statsByAction.entrySet()) {
 			Measure m = createInjectorMeasure(entry.getKey(), entry.getValue());
 			injector.addMeasure(m);
-
-			entry.getValue().generateCharts(this.ouputDirectory);
+			generateChart(entry.getValue());
 		}
 	}
 
@@ -524,5 +534,9 @@ public class ClifParser {
 
 	public void setChartConfiguration(ChartConfiguration chartConfiguration) {
 		this.chartConfiguration = chartConfiguration;
+	}
+
+	public void setGenerateCharts(boolean generateCharts) {
+		this.generateCharts = generateCharts;
 	}
 }
