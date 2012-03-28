@@ -36,7 +36,7 @@ public class ImportZipAction implements RootAction {
 	}
 
 	public String getIconFileName() {
-		return "setting.png";
+		return "/plugin/jenkins-clif-plugin/images/clif-22x22.png";
 	}
 
 	public String getDisplayName() {
