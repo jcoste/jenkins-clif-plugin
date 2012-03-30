@@ -12,9 +12,9 @@ import jenkins.model.Jenkins;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.ow2.clif.jenkins.helper.Configurer;
-import org.ow2.clif.jenkins.helper.FakeConfigurer;
-import org.ow2.clif.jenkins.zip.Zip;
+import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.FakeConfigurer;
+import org.ow2.clif.jenkins.jobs.Zip;
 
 import com.google.common.collect.ImmutableList;
 
@@ -42,7 +42,7 @@ public class ImportZipActionTest {
 	public void jobNameIsDasherizedFileNameWithoutExtension()
 			throws Exception {
 		when(zip.names(eq(importer.whiteList))).
-				thenReturn(ImmutableList.of("red/tomato.erl"));
+			thenReturn(ImmutableList.of("red/tomato.erl"));
 
 		List<FreeStyleProject> projects =
 				importer.newProjectForEachFileInZipMatchingFilter(zip, importer.whiteList);

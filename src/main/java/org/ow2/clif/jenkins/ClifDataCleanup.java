@@ -43,11 +43,12 @@ public class ClifDataCleanup
 	protected double keepPercentage;
 
 	public ClifDataCleanup() {
+		this.keepFactor = 2;
+		this.keepPercentage = 95;
 	}
 
 	@DataBoundConstructor
 	public ClifDataCleanup(boolean enabled, double keepFactor, double keepPercentage) {
-		super();
 		this.enabled = enabled;
 		this.keepFactor = keepFactor;
 		this.keepPercentage = keepPercentage;

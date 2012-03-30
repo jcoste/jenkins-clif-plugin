@@ -1,18 +1,14 @@
 package org.ow2.clif.jenkins.parser.clif;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.ow2.clif.jenkins.ClifAlias;
-import org.ow2.clif.jenkins.ClifResultConfig;
-import org.ow2.clif.jenkins.chart.ChartConfiguration;
-import org.ow2.clif.jenkins.model.ClifReport;
-import org.ow2.clif.jenkins.model.TestPlan;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import static org.junit.Assert.assertNotNull;
-import static org.fest.assertions.Assertions.assertThat;
+import org.junit.Test;
+import org.ow2.clif.jenkins.chart.ChartConfiguration;
+import org.ow2.clif.jenkins.model.ClifReport;
+import org.ow2.clif.jenkins.model.TestPlan;
 /**
  * Created by IntelliJ IDEA.
  * User: bvjr5731

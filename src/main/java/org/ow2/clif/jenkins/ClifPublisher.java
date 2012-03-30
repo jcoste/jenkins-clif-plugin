@@ -61,13 +61,13 @@ import java.util.regex.Pattern;
 public class ClifPublisher
 		extends Recorder {
 
-	private String clifReportDirectory;
+	private final String clifReportDirectory;
 
-	private boolean dateFiltering;
+	private final boolean dateFiltering;
 
-	private String minTimestamp;
+	private final String minTimestamp;
 
-	private String maxTimestamp;
+	private final String maxTimestamp;
 
 	private List<ClifAlias> alias;
 
@@ -75,16 +75,22 @@ public class ClifPublisher
 
 	private ClifDataCleanup dataCleanupConfig;
 
-	private int chartWidth;
+	private final int chartWidth;
 
-	private int chartHeight;
+	private final int chartHeight;
 
-	private int distributionSliceNumber;
+	private final int distributionSliceNumber;
 
-	private int distributionSliceSize;
-
+	private final int distributionSliceSize;
 
 	private int statisticalPeriod;
+
+	public ClifPublisher(String clifReportDirectory) {
+		// duplication of default values of
+		// src/main/resources/org/ow2/clif/jenkins/ClifPublisher/config.jelly
+	  this(clifReportDirectory, false, "", "", 1200, 600, 50, 15, 5);
+	  this.dataCleanupConfig = new ClifDataCleanup();
+  }
 
 	@DataBoundConstructor
 	public ClifPublisher(String clifReportDirectory, boolean dateFiltering, String minTimestamp,
@@ -202,7 +208,8 @@ public class ClifPublisher
 			super(ClifPublisher.class);
 		}
 
-		public String getDisplayName() {
+		@Override
+    public String getDisplayName() {
 			return Messages.Publisher_DisplayName();
 		}
 

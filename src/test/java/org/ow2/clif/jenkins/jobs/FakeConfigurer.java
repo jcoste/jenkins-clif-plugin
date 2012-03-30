@@ -1,4 +1,6 @@
-package org.ow2.clif.jenkins.helper;
+package org.ow2.clif.jenkins.jobs;
+
+import org.ow2.clif.jenkins.jobs.Configurer;
 
 import hudson.model.FreeStyleProject;
 

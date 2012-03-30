@@ -329,7 +329,9 @@ public class ClifBuilder
 			return ToolInstallation.all().get(ClifInstallation.DescriptorImpl.class);
 		}
 
-		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+		@Override
+    @SuppressWarnings("rawtypes")
+    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
 			return true;
 		}
 
@@ -338,7 +340,8 @@ public class ClifBuilder
 			return "/help-clif.html";
 		}
 
-		public String getDisplayName() {
+		@Override
+    public String getDisplayName() {
 			return Messages.Clif_DisplayName();
 		}
 
@@ -384,6 +387,4 @@ public class ClifBuilder
 			return FormValidation.ok();
 		}
 	}
-
-
 }

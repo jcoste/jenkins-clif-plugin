@@ -13,8 +13,9 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.ow2.clif.jenkins.helper.Configurer;
-import org.ow2.clif.jenkins.zip.Zip;
+import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.Workspaces;
+import org.ow2.clif.jenkins.jobs.Zip;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,26 +55,23 @@ public class ImportZipAction implements RootAction {
 		List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory())
 				.parseRequest(req);
 
-		for (FileItem item : items) {
-			Zip zip = new Zip(item.getInputStream());
-			List<FreeStyleProject> projects =
-					newProjectForEachFileInZipMatchingFilter(zip, whiteList);
-			for (FreeStyleProject project : projects) {
-	      jenkins.putItem(project);
-      }
-		}
+		Zip zip = new Zip(items.get(0));
+		List<FreeStyleProject> projects =
+				newProjectForEachFileInZipMatchingFilter(zip, whiteList);
+		for (FreeStyleProject project : projects) {
+      jenkins.putItem(project);
+    }
 
+		zip.extractTo(Workspaces.DEFAULT_LOCATION);
 		res.sendRedirect2("/");
 	}
 
-
 	/**
 	 *
-	 * @param name
 	 * @param zip
 	 * @param filter regular expression as a string
 	 * @return
-	 * @throws IOException wish I could use a list comprehension!
+	 * @throws IOException
 	 */
 	List<FreeStyleProject>
 	newProjectForEachFileInZipMatchingFilter(Zip zip, String filter)

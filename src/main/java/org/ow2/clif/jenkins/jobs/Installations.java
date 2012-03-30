@@ -1,4 +1,4 @@
-package org.ow2.clif.jenkins.helper;
+package org.ow2.clif.jenkins.jobs;
 
 import hudson.tasks.Ant.AntInstallation;
 import hudson.tools.ToolDescriptor;

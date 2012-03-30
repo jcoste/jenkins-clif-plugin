@@ -1,4 +1,4 @@
-package org.ow2.clif.jenkins.helper;
+package org.ow2.clif.jenkins.jobs;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ow2.clif.jenkins.ClifBuilder;
 import org.ow2.clif.jenkins.ClifPublisher;
+import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.Installations;
 
 public class ConfigurerTest {
 
@@ -45,23 +47,29 @@ public class ConfigurerTest {
   }
 
 	@Test
-	public void configurePrivateWorkspace() throws Exception {
-		configurer.configure(project, null);
-		verify(project).setCustomWorkspace(
-				System.getProperty("user.home") + "/reports"
-		);
-	}
-
-
-	@Test
 	public void configurePublisher() throws Exception {
 		configurer.configure(project, null);
 		verify(project.getPublishersList()).add(any(ClifPublisher.class));
 	}
 
 	@Test
+	public void configurePrivateWorkspace() throws Exception {
+		configurer.configure(project, "examples/http.ctp");
+		verify(project).setCustomWorkspace(
+				System.getProperty("user.home") + "/clif/examples"
+		);
+	}
+
+	@Test
 	public void newClifBuilderHasTestPlan() throws Exception {
-		ClifBuilder builder = configurer.newClifBuilder("bar");
-		assertThat(builder.getTestPlanFile()).isEqualTo("bar");
+		ClifBuilder builder = configurer.newClifBuilder("http.ctp");
+		assertThat(builder.getTestPlanFile()).isEqualTo("http.ctp");
+  }
+
+	@Test
+  public void newClifPublisherHasReportDirectory() throws Exception {
+		ClifPublisher publisher = configurer.newClifPublisher("/var/clif/examples");
+	  assertThat(publisher.getClifReportDirectory())
+	  	.isEqualTo("/var/clif/examples/report");
   }
 }
