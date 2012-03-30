@@ -64,7 +64,13 @@ public class ConfigurerTest {
 	public void newClifBuilderHasTestPlan() throws Exception {
 		ClifBuilder builder = configurer.newClifBuilder("http.ctp");
 		assertThat(builder.getTestPlanFile()).isEqualTo("http.ctp");
-  }
+	}
+
+	@Test
+	public void newClifBuilderHasReportDir() throws Exception {
+		ClifBuilder builder = configurer.newClifBuilder("http.ctp");
+		assertThat(builder.getReportDir()).isEqualTo("report");
+	}
 
 	@Test
   public void newClifPublisherHasReportDirectory() throws Exception {

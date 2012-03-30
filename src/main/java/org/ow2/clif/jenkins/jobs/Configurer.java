@@ -32,7 +32,7 @@ public class Configurer {
 	  String clifName = installations.getFirstClifName();
 		String antName = installations.getFirstAntName();
 		ClifBuilder builder = new ClifBuilder(
-				clifName, antName, null, null, plan, null
+				clifName, antName, null, null, plan, "report"
 		);
 	  return builder;
   }
