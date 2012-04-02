@@ -40,7 +40,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Clif launcher.
@@ -150,81 +149,120 @@ public class ClifBuilder
 			return false;
 		}
 
-		String overridedProperties = getOverridedProperties();
 
 		ArgumentListBuilder args = new ArgumentListBuilder();
 		EnvVars env = build.getEnvironment(listener);
 
-		Ant.AntInstallation ai = getAnt();
-		if (ai == null) {
-			args.add(launcher.isUnix() ? "ant" : "ant.bat");
+		Ant.AntInstallation antInstallation = getAnt();
+		try {
+			antInstallation = addAntExecutable(launcher, listener, args, env, antInstallation);
 		}
-		else {
-			ai = ai.forNode(Computer.currentComputer().getNode(), listener);
-			ai = ai.forEnvironment(env);
-			String exe = ai.getExecutable(launcher);
-			if (exe == null) {
-				listener.fatalError(hudson.tasks.Messages.Ant_ExecutableNotFound(ai.getName()));
-				return false;
-			}
-			args.add(exe);
+		catch (IllegalStateException ise) {
+			listener.fatalError(ise.getMessage());
+			return false;
 		}
 
-		VariableResolver<String> vr = build.getBuildVariableResolver();
 
-		String buildFile = getClif().getHome() + File.separator + "build.xml";
+		String clifHome = clifInst.getHome();
+		String buildFile = clifHome + File.separator + "build.xml";
 		String targets = clifInst.getClifHudsonTarget();
 
 		FilePath buildFilePath = buildFilePath(build.getModuleRoot(), buildFile, targets);
-
 		if (!buildFilePath.exists()) {
-			// because of the poor choice of getModuleRoot() with CVS/Subversion, people often get confused
-			// with where the build file path is relative to. Now it's too late to change this behavior
-			// due to compatibility issue, but at least we can make this less painful by looking for errors
-			// and diagnosing it nicely. See HUDSON-1782
-
-			// first check if this appears to be a valid relative path from workspace root
-			FilePath buildFilePath2 = buildFilePath(build.getWorkspace(), buildFile, targets);
-			if (buildFilePath2.exists()) {
-				// This must be what the user meant. Let it continue.
-				buildFilePath = buildFilePath2;
+			try {
+				buildFilePath = tryToFixBuildFilePath(build, buildFile, targets, buildFilePath);
 			}
-			else {
-				// neither file exists. So this now really does look like an error.
-				listener.fatalError("Unable to find build script at " + buildFilePath);
+			catch (IllegalStateException ise) {
+				listener.fatalError(ise.getMessage());
 				return false;
 			}
 		}
 
-		if (buildFile != null) {
-			args.add("-file", buildFilePath.getName());
+		addAntBuildFileIfNecessary(args, buildFile, buildFilePath);
+		addSensitiveVariables(build, args);
+
+		if (clifInst.isProactiveInstallation()) {
+			final String lf = System.getProperty("line.separator");
+			// The absolute path to JENKINS workspace directory
+			final String workspaceDir = build.getWorkspace().getRemote() + File.separator;
+			// The properties are defined in org.ow2.clif.console.lib.batch.LaunchCmdNGScheduler.MandatoryProperties
+			// The values affected to the properties comes from the COMCLif related configuration that
+			// can be changed in the JENKINS project (or job) configuration (see the "Invoke Clif" build step configuration)
+			// The testPlanFile and reportDir variables are relative to the JENKINS workspace directory
+			args.add("-Dtestplan.file=" + workspaceDir + this.testPlanFile);
+			args.add("-Dtest.report=" + workspaceDir + this.reportDir);
+			args.add("-Dsched.url=" + clifInst.getClifProActiveConfig().getSchedulerURL());
+			args.add("-Dsched.creds=" + clifInst.getClifProActiveConfig().getSchedulerCredentialsFile());
+			args.add("-Dfork.props=" + clifInst.getClifProActiveConfig().getForkProps());
+			// The user specifies the clif home in the general JENKINS configuration
+			// (see Manage Jenkins->COMClif->CLIF_HOME)
+			args.add("-Dclif.home=" + clifHome);
+			final String securityPolicyOption =
+					clifHome + File.separator + "etc" + File.separator + "proactive.java.policy";
+			args.add("-Djava.security.policy=" + securityPolicyOption);
+			args.add("-Dlog4j.configuration=file:///" + clifHome + File.separator + "etc" + File.separator +
+					         "proactive-log4j");
 		}
-
-		Set<String> sensitiveVars = build.getSensitiveBuildVariables();
-
-		args.addKeyValuePairs("-D", build.getBuildVariables(), sensitiveVars);
-
-		args.addKeyValuePairsFromPropertyString("-D", overridedProperties, vr, sensitiveVars);
-
+		else {
+			addOverridedProperties(build, args);
+		}
 		args.addTokenized(targets.replaceAll("[\t\r\n]+", " "));
 
-		if (ai != null) {
-			env.put("ANT_HOME", ai.getHome());
+		addAntHomeToEnvIfNecessary(env, antInstallation);
+		addClifPropsToEnvIfNecessary(env);
+
+		if (!launcher.isUnix()) {
+			args = addQuoteToEmptyParameters(args);
 		}
+
+		return runAntCommand(build, launcher, listener, args, env, antInstallation, buildFilePath);
+	}
+
+	private void addClifPropsToEnvIfNecessary(EnvVars env) {
 		if (clifOpts != null) {
 			env.put("ANT_OPTS", env.expand(clifOpts));
 		}
+	}
 
-		if (!launcher.isUnix()) {
-			args = args.toWindowsCommand();
-			// For some reason, ant on windows rejects empty parameters but unix does not.
-			// Add quotes for any empty parameter values:
-			List<String> newArgs = new ArrayList<String>(args.toList());
-			newArgs.set(newArgs.size() - 1,
-			            newArgs.get(newArgs.size() - 1).replaceAll("(?<= )(-D[^\" ]+)= ", "$1=\"\" "));
-			args = new ArgumentListBuilder(newArgs.toArray(new String[newArgs.size()]));
+	private void addAntHomeToEnvIfNecessary(EnvVars env, Ant.AntInstallation antInstallation) {
+		if (antInstallation != null) {
+			env.put("ANT_HOME", antInstallation.getHome());
 		}
+	}
 
+	private void addOverridedProperties(AbstractBuild<?, ?> build, ArgumentListBuilder args) throws IOException {
+		String overridedProperties = getOverridedProperties();
+		VariableResolver<String> vr = build.getBuildVariableResolver();
+		args.addKeyValuePairsFromPropertyString("-D", overridedProperties, vr, build.getSensitiveBuildVariables());
+	}
+
+	private void addSensitiveVariables(AbstractBuild<?, ?> build, ArgumentListBuilder args) {
+		args.addKeyValuePairs("-D", build.getBuildVariables(), build.getSensitiveBuildVariables());
+	}
+
+	private FilePath tryToFixBuildFilePath(AbstractBuild<?, ?> build, String buildFile, String targets,
+	                                       FilePath buildFilePath) throws IOException, InterruptedException {
+		// because of the poor choice of getModuleRoot() with CVS/Subversion, people often get confused
+		// with where the build file path is relative to. Now it's too late to change this behavior
+		// due to compatibility issue, but at least we can make this less painful by looking for errors
+		// and diagnosing it nicely. See HUDSON-1782
+
+		// first check if this appears to be a valid relative path from workspace root
+		FilePath buildFilePath2 = buildFilePath(build.getWorkspace(), buildFile, targets);
+		if (buildFilePath2.exists()) {
+			// This must be what the user meant. Let it continue.
+			buildFilePath = buildFilePath2;
+		}
+		else {
+			// neither file exists. So this now really does look like an error.
+			throw new IllegalStateException("Unable to find build script at " + buildFilePath);
+		}
+		return buildFilePath;
+	}
+
+	private boolean runAntCommand(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener,
+	                              ArgumentListBuilder args, EnvVars env, Ant.AntInstallation antInstallation,
+	                              FilePath buildFilePath) throws InterruptedException {
 		long startTime = System.currentTimeMillis();
 		try {
 			AntConsoleAnnotator aca = new AntConsoleAnnotator(listener.getLogger(), build.getCharset());
@@ -241,7 +279,7 @@ public class ClifBuilder
 			Util.displayIOException(e, listener);
 
 			String errorMessage = hudson.tasks.Messages.Ant_ExecFailed();
-			if (ai == null && (System.currentTimeMillis() - startTime) < 1000) {
+			if (antInstallation == null && (System.currentTimeMillis() - startTime) < 1000) {
 				if (getDescriptor().getInstallations() == null)
 				// looks like the user didn't configure any Ant installation
 				{
@@ -256,6 +294,42 @@ public class ClifBuilder
 			e.printStackTrace(listener.fatalError(errorMessage));
 			return false;
 		}
+	}
+
+	private ArgumentListBuilder addQuoteToEmptyParameters(ArgumentListBuilder args) {
+		args = args.toWindowsCommand();
+		// For some reason, ant on windows rejects empty parameters but unix does not.
+		// Add quotes for any empty parameter values:
+		List<String> newArgs = new ArrayList<String>(args.toList());
+		newArgs.set(newArgs.size() - 1,
+		            newArgs.get(newArgs.size() - 1).replaceAll("(?<= )(-D[^\" ]+)= ", "$1=\"\" "));
+		args = new ArgumentListBuilder(newArgs.toArray(new String[newArgs.size()]));
+		return args;
+	}
+
+	private void addAntBuildFileIfNecessary(ArgumentListBuilder args, String buildFile, FilePath buildFilePath) {
+		if (buildFile != null) {
+			args.add("-file", buildFilePath.getName());
+		}
+	}
+
+	private Ant.AntInstallation addAntExecutable(Launcher launcher, BuildListener listener, ArgumentListBuilder args,
+	                                             EnvVars env,
+	                                             Ant.AntInstallation antInstallation) throws IOException, InterruptedException {
+		if (antInstallation == null) {
+			args.add(launcher.isUnix() ? "ant" : "ant.bat");
+		}
+		else {
+			antInstallation = antInstallation.forNode(Computer.currentComputer().getNode(), listener);
+			antInstallation = antInstallation.forEnvironment(env);
+			String exe = antInstallation.getExecutable(launcher);
+			if (exe == null) {
+				throw new IllegalStateException(
+						hudson.tasks.Messages.Ant_ExecutableNotFound(antInstallation.getName()));
+			}
+			args.add(exe);
+		}
+		return antInstallation;
 	}
 
 	protected String getOverridedProperties() {
