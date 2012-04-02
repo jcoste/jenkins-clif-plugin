@@ -35,7 +35,7 @@
 				</a>
 				<a href="quantileDistributionChart?testPlan=${urlTest}&amp;bladeId=${urlBlade}&amp;label=${urlLabel}">
 					<img src="${rootURL}/plugin/jenkins-clif-plugin/images/quantile.png" width="16" height="16"
-					     title="${%injectorTable.properties}"/>
+					     title="${%Tooltip.QuantileDistributionChart}"/>
 				</a>
 			</td>
 
