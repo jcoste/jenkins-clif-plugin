@@ -234,15 +234,9 @@ public class ClifPublisher
 				throws FormException {
 			ClifPublisher instance = req.bindParameters(ClifPublisher.class, "clif.");
 
-			List<ClifAlias> aliasReq = req.bindParametersToList(ClifAlias.class, "clif.alias.");
-			instance.alias = aliasReq;
-			List<ClifResultConfig> resultConfigReq =
-					req.bindParametersToList(ClifResultConfig.class, "clif.successPatterns.");
-			instance.successPatterns = resultConfigReq;
-
-			ClifDataCleanup dataCleanupConfig =
-					req.bindParameters(ClifDataCleanup.class, "clif.datacleanup.");
-			instance.dataCleanupConfig = dataCleanupConfig;
+			instance.alias = req.bindParametersToList(ClifAlias.class, "clif.alias.");
+			instance.successPatterns = req.bindParametersToList(ClifResultConfig.class, "clif.successPatterns.");
+			instance.dataCleanupConfig = req.bindParameters(ClifDataCleanup.class, "clif.datacleanup.");
 
 			return instance;
 		}
@@ -265,7 +259,7 @@ public class ClifPublisher
 		public FormValidation doCheckPattern(@QueryParameter String value) {
 			if (StringUtils.isNotBlank(value)) {
 				try {
-					Pattern p = Pattern.compile(value);
+					Pattern.compile(value);
 					return FormValidation.ok();
 				}
 				catch (Exception e) {

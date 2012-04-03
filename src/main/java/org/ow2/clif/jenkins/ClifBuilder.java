@@ -182,7 +182,6 @@ public class ClifBuilder
 		addSensitiveVariables(build, args);
 
 		if (clifInst.isProactiveInstallation()) {
-			final String lf = System.getProperty("line.separator");
 			// The absolute path to JENKINS workspace directory
 			final String workspaceDir = build.getWorkspace().getRemote() + File.separator;
 			// The properties are defined in org.ow2.clif.console.lib.batch.LaunchCmdNGScheduler.MandatoryProperties

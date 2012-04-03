@@ -104,7 +104,7 @@ public class Alarm {
 		ERROR(2),
 		FATAL(3);
 
-		private int value;
+		private final int value;
 
 		Severity(int value) {
 			this.value = value;

@@ -63,19 +63,19 @@ public class ClifParser {
 	/*
 		* Configuration properties
 		*/
-	protected String clifReportDirectory;
+	protected final String clifReportDirectory;
 
-	protected File ouputDirectory;
+	protected final File ouputDirectory;
 
 	protected DateEventFilter dateEventFilter;
 
-	protected Map<String, Pattern> successfulResultPatterns = new HashMap<String, Pattern>();
+	protected final Map<String, Pattern> successfulResultPatterns = new HashMap<String, Pattern>();
 
-	protected Map<String, Pattern> actionAliasPatterns = new HashMap<String, Pattern>();
+	protected final Map<String, Pattern> actionAliasPatterns = new HashMap<String, Pattern>();
 
 	private ChartConfiguration chartConfiguration;
 
-	protected ParsingContext context = new ParsingContext();
+	protected final ParsingContext context = new ParsingContext();
 
 	/*
 		* Internals attributs to compute the report
@@ -86,13 +86,13 @@ public class ClifParser {
 
 	protected Map<String, ActionStatInfo> aggregatedStatsByAction;
 
-	protected List<String> eventTypeToExclude = Arrays.asList("lifecycle", ALARM_EVENT_TYPE);
+	protected final List<String> eventTypeToExclude = Arrays.asList("lifecycle", ALARM_EVENT_TYPE);
 
-	protected StorageRead storageRead;
+	protected final StorageRead storageRead;
 
 	protected PrintStream logger;
 
-	protected Pattern patternProbeName = Pattern.compile("org\\.ow2\\.clif\\.probe.(.*)\\.Insert");
+	protected final Pattern patternProbeName = Pattern.compile("org\\.ow2\\.clif\\.probe.(.*)\\.Insert");
 
 	/**
 	 * Indicates if charts should be generated. Used for tests only

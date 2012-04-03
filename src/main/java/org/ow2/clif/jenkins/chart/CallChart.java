@@ -44,7 +44,7 @@ public class CallChart
 
 	protected boolean scatterPlot;
 
-	protected XYSeries eventSerie;
+	protected final XYSeries eventSerie;
 
 	public CallChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
 		super("Call", bladeId, testplan, event, chartConfiguration);

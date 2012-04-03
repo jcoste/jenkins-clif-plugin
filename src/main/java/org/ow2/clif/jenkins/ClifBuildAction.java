@@ -19,7 +19,7 @@ public class ClifBuildAction
 		extends AbstractClifAction {
 	private final AbstractBuild<?, ?> build;
 
-	private ClifReport report;
+	private final ClifReport report;
 
 	private transient Properties alias;
 

@@ -71,8 +71,8 @@ public class ClifProjectAction
 	private Map<String, Set<String>> computeActionsAvailable() {
 		Map<String, Set<String>> res = new HashMap<String, Set<String>>();
 		List<?> builds = getProject().getBuilds();
-		for (Iterator<?> iterator = builds.iterator(); iterator.hasNext(); ) {
-			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
+		for (Object build : builds) {
+			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) build;
 			ClifBuildAction clifBuildAction = currentBuild.getAction(ClifBuildAction.class);
 			if (clifBuildAction == null) {
 				continue;
@@ -138,8 +138,8 @@ public class ClifProjectAction
 
 		List builds = getProject().getBuilds();
 		Collections.sort(builds);
-		for (Iterator<?> iterator = builds.iterator(); iterator.hasNext(); ) {
-			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
+		for (Object build : builds) {
+			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) build;
 
 			if (!currentBuild.isBuilding() && currentBuild.getResult().isBetterOrEqualTo(Result.SUCCESS)) {
 
@@ -207,8 +207,8 @@ public class ClifProjectAction
 
 		List builds = getProject().getBuilds();
 		Collections.sort(builds);
-		for (Iterator<?> iterator = builds.iterator(); iterator.hasNext(); ) {
-			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) iterator.next();
+		for (Object build : builds) {
+			AbstractBuild<?, ?> currentBuild = (AbstractBuild<?, ?>) build;
 
 			if (!currentBuild.isBuilding() && currentBuild.getResult().isBetterOrEqualTo(Result.SUCCESS)) {
 
@@ -262,8 +262,7 @@ public class ClifProjectAction
 		return chart;
 	}
 
-	private boolean shouldReloadGraph(StaplerRequest request, StaplerResponse response)
-			throws IOException {
+	private boolean shouldReloadGraph(StaplerRequest request, StaplerResponse response) {
 		return true; // shouldReloadGraph(request, response,
 		// project.getLastSuccessfulBuild());
 	}

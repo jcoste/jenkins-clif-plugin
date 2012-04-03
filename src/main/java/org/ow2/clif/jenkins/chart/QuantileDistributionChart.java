@@ -39,7 +39,7 @@ import org.ow2.clif.jenkins.parser.clif.Messages;
 public class QuantileDistributionChart
 		extends AbstractChart {
 
-	protected DefaultCategoryDataset data;
+	protected final DefaultCategoryDataset data;
 
 	public QuantileDistributionChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
 		super("QuantileDistribution", bladeId, testplan, event, chartConfiguration);

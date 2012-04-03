@@ -45,8 +45,7 @@ public abstract class AbstractClifAction
 		return ClifPlugin.URL;
 	}
 
-	protected boolean shouldReloadGraph(StaplerRequest request, StaplerResponse response, Run build)
-			throws IOException {
+	protected boolean shouldReloadGraph(StaplerRequest request, StaplerResponse response, Run build) {
 		return !request.checkIfModified(build.getTimestamp(), response);
 	}
 }

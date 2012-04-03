@@ -37,20 +37,19 @@ public class ActionStatInfo {
 	protected static int MIN_SIZE_OF_STATISTICAL_DATA = 30;
 
 	// Used to compute statistics (Mean, Sum, Min,  Max)
-	protected SummaryStatistics onTheFlyStat;
+	protected final SummaryStatistics onTheFlyStat;
+
+	protected final ParsingContext context;
+
+	private final ChartConfiguration chartConfiguration;
 
 	protected ResizableDoubleArray values = new ResizableDoubleArray();
-
 	protected ResizableDoubleArray dates = new ResizableDoubleArray();
 
 	protected double[] valuesArray;
-
 	protected double[] datesArray;
 
-
 	private long errors;
-
-	protected ParsingContext context;
 
 	protected boolean statsAvailable;
 
@@ -70,8 +69,6 @@ public class ActionStatInfo {
 
 	private static long lastCall = Long.MIN_VALUE;
 
-	private ChartConfiguration chartConfiguration;
-
 	public static void resetTime() {
 		firstCall = Long.MAX_VALUE;
 		lastCall = Long.MIN_VALUE;
@@ -79,7 +76,7 @@ public class ActionStatInfo {
 
 	public ActionStatInfo(ParsingContext context, ChartConfiguration chartConfiguration) {
 		this.context = new ParsingContext(context);
-		onTheFlyStat = new SummaryStatisticsImpl();
+		this.onTheFlyStat = new SummaryStatisticsImpl();
 		this.chartConfiguration = chartConfiguration;
 	}
 
@@ -164,8 +161,8 @@ public class ActionStatInfo {
 
 		// Build stat objet
 		stat = new DescriptiveStatisticsImpl();
-		for (int i = 0; i < valuesArray.length; i++) {
-			stat.addValue(valuesArray[i]);
+		for (double aValuesArray : valuesArray) {
+			stat.addValue(aValuesArray);
 		}
 
 		// Build detailled graph

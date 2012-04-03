@@ -196,11 +196,7 @@ public class TestPlan {
 
 		TestPlan testPlan = (TestPlan) o;
 
-		if (!name.equals(testPlan.name)) {
-			return false;
-		}
-
-		return true;
+		return name.equals(testPlan.name);
 	}
 
 	@Override
