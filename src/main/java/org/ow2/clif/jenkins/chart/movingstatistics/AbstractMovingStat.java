@@ -52,6 +52,7 @@ public abstract class AbstractMovingStat {
 			// if the initial averaging period is to be excluded, then
 			// calculate the lowest x-value to have an average calculated...
 			double first = source.getXValue(series, 0) + skip;
+			double lastXEndPeriod = source.getXValue(series,source.getItemCount(series)-1);
 			for (int i = source.getItemCount(series) - 1; i >= 0; i--) {
 				// get the current data item...
 				double x = source.getXValue(series, i);
@@ -80,7 +81,9 @@ public abstract class AbstractMovingStat {
 						}
 						offset = offset + 1;
 					}
-					addMovingStatForPeriod(result, x);
+					addMovingStatForPeriod(result, lastXEndPeriod);
+					i -= offset;
+					lastXEndPeriod -= period;
 				}
 			}
 		}
