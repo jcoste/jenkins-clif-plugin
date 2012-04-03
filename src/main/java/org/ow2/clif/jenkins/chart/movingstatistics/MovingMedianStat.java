@@ -21,8 +21,8 @@ public class MovingMedianStat extends AbstractMovingStat {
 	}
 
 	@Override
-	protected void calculateMovingStatInPeriod(Number yy) {
-		values.addElement(yy.doubleValue());
+	protected void calculateMovingStatInPeriod(double xx, double yy) {
+		values.addElement(yy);
 		n = n + 1;
 	}
 

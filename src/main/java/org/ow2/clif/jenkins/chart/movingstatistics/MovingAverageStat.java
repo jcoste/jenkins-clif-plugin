@@ -18,8 +18,8 @@ public class MovingAverageStat extends AbstractMovingStat {
 	}
 
 	@Override
-	protected void calculateMovingStatInPeriod(Number yy) {
-		sum = sum + yy.doubleValue();
+	protected void calculateMovingStatInPeriod(double xx, double yy) {
+		sum = sum + yy;
 		n = n + 1;
 	}
 

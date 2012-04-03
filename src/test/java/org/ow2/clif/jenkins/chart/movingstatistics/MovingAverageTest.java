@@ -159,6 +159,36 @@ public class MovingAverageTest {
 		}
 	}*/
 
+	@Test
+	public void testCreateMovingThroughput() throws Exception {
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		XYSeries dataSeries = new XYSeries("data");
+		dataset.addSeries(dataSeries);
+		dataSeries.add(1, 1);
+		dataSeries.add(2, 3);
+		dataSeries.add(3, 5);
+		dataSeries.add(4, 2);
+		dataSeries.add(5, 2);
+		dataSeries.add(6, 5);
+		dataSeries.add(7, 6);
+		dataSeries.add(8, 1);
+		dataSeries.add(9, 4);
+		dataSeries.add(10, 3);
+
+		AbstractMovingStat ms = new MovingThroughputStat();
+		XYSeries res = ms.calculateMovingStat(dataset, 0, "throughput", 3, 3);
+
+		assertNotNull(res);
+		assertEquals("Bad size", 7, res.getItemCount());
+		printSeries(res, "res");
+		System.out.println(res);
+		double[] expectedMedians = {1500, 1500, 1500, 1500, 1500, 1500, 1500};
+		for (int i = 0; i < expectedMedians.length; i++) {
+			assertEquals("Bad throughput at index " + i, expectedMedians[i], res.getY(i));
+		}
+	}
+
+
 	private void printSeries(XYSeries res, final String seriesName) {
 		for (int i = 0; i < res.getItemCount(); i++) {
 			System.out.println(seriesName + "[" + i + "]=(" + res.getX(i) + "," + res.getY(i) + ")");

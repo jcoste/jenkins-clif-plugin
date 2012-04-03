@@ -18,8 +18,8 @@ public class MovingMinStat extends AbstractMovingStat {
 	}
 
 	@Override
-	protected void calculateMovingStatInPeriod(Number yy) {
-		min = Math.min(min, yy.doubleValue());
+	protected void calculateMovingStatInPeriod(double xx, double yy) {
+		min = Math.min(min, yy);
 		n = n + 1;
 	}
 

@@ -20,8 +20,8 @@ public class MovingStdDevStat extends AbstractMovingStat {
 	}
 
 	@Override
-	protected void calculateMovingStatInPeriod(Number yy) {
-		stat.addValue(yy.doubleValue());
+	protected void calculateMovingStatInPeriod(double xx, double yy) {
+		stat.addValue(yy);
 		n = n + 1;
 	}
 

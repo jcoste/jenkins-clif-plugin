@@ -22,6 +22,7 @@ package org.ow2.clif.jenkins.chart;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -34,6 +35,8 @@ import org.ow2.clif.jenkins.parser.clif.Messages;
 
 import java.awt.*;
 
+import static org.ow2.clif.jenkins.parser.clif.Messages.*;
+
 /**
  * Class used to generate and save a chart attach to a build
  *
@@ -42,7 +45,7 @@ import java.awt.*;
 public class MovingStatChart
 		extends AbstractChart {
 
-	protected XYSeries eventSerie;
+	protected final XYSeries eventSerie;
 
 	public MovingStatChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
 		super("movingStat", bladeId, testplan, event, chartConfiguration);
@@ -59,35 +62,15 @@ public class MovingStatChart
 		XYSeriesCollection coreDataset = new XYSeriesCollection();
 		coreDataset.addSeries(this.eventSerie);
 
-		MovingAverageStat averageStat = new MovingAverageStat();
-		long statisticalPeriodInMs = this.chartConfiguration.getStatisticalPeriod() * 1000;
-		XYSeries movingSeries =
-				averageStat.calculateMovingStat(coreDataset, 0, " Moving Average", statisticalPeriodInMs,
-				                                0);
-		MovingMaxStat maxStat = new MovingMaxStat();
-		XYSeries maxSeries = maxStat.calculateMovingStat(coreDataset, 0, " Moving Max", statisticalPeriodInMs,
-		                                                 0);
-		MovingMinStat minStat = new MovingMinStat();
-		XYSeries minSeries = minStat.calculateMovingStat(coreDataset, 0, " Moving Min", statisticalPeriodInMs,
-		                                                 0);
-		MovingMedianStat medianStat = new MovingMedianStat();
-		XYSeries medianSeries = medianStat.calculateMovingStat(coreDataset, 0, " Moving Median", statisticalPeriodInMs,
-		                                                       0);
+		long periodMs = this.chartConfiguration.getStatisticalPeriod() * 1000;
 
-		MovingStdDevStat stdDevStat = new MovingStdDevStat();
-		XYSeries stdDevSeries = stdDevStat.calculateMovingStat(coreDataset, 0, " Moving StdDev", statisticalPeriodInMs,
-		                                                       0);
-
-		XYSeriesCollection movingDataset = new XYSeriesCollection();
-		movingDataset.addSeries(movingSeries);
-		movingDataset.addSeries(maxSeries);
-		movingDataset.addSeries(minSeries);
-		movingDataset.addSeries(medianSeries);
-		movingDataset.addSeries(stdDevSeries);
+		XYSeriesCollection movingDataset = calculateMovingDataset(coreDataset, periodMs);
+		XYSeriesCollection throughputDataset = calculateThroughputDataset(coreDataset, periodMs);
 
 		JFreeChart chart;
 		chart = ChartFactory.createXYLineChart(
-				getBasicTitle() + " " + Messages.MovingChart_StatisticalPeriod(this.chartConfiguration.getStatisticalPeriod()),
+				getBasicTitle() + " " +
+						Messages.MovingChart_StatisticalPeriod(this.chartConfiguration.getStatisticalPeriod()),
 				// chart title
 				Messages.MovingChart_Time(), // x axis label
 				Messages.MovingChart_ResponseTime(), // y axis label
@@ -98,30 +81,10 @@ public class MovingStatChart
 		);
 
 		chart.setBackgroundPaint(Color.white);
+
 		// get a reference to the plot for further customisation...
 		XYPlot plot = (XYPlot) chart.getPlot();
-		plot.setBackgroundPaint(Color.lightGray);
-		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
-		plot.setDomainGridlinePaint(Color.white);
-		plot.setRangeGridlinePaint(Color.white);
-
-		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-		renderer.setSeriesShapesVisible(0, false);
-		renderer.setSeriesPaint(0, Color.BLUE);
-		renderer.setSeriesStroke(0, new BasicStroke(1));
-		renderer.setSeriesShapesVisible(1, false);
-		renderer.setSeriesPaint(1, Color.RED);
-		renderer.setSeriesStroke(1, new BasicStroke(2));
-		renderer.setSeriesShapesVisible(2, false);
-		renderer.setSeriesPaint(2, Color.GREEN);
-		renderer.setSeriesStroke(2, new BasicStroke(2));
-		renderer.setSeriesShapesVisible(3, false);
-		renderer.setSeriesPaint(3, Color.YELLOW);
-		renderer.setSeriesStroke(3, new BasicStroke(1));
-		renderer.setSeriesShapesVisible(4, false);
-		renderer.setSeriesPaint(4, Color.ORANGE);
-		renderer.setSeriesStroke(4, new BasicStroke(1));
-		plot.setRenderer(renderer);
+		configureBasicPlotProperties(plot);
 
 		// Force the 0 on vertical axis
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -132,7 +95,90 @@ public class MovingStatChart
 		NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
 		domainAxis.setAutoRangeIncludesZero(true);
 
+		attachThroughputDatasetToDedicatedAxis(throughputDataset, plot);
+
+		// Global renderer for moving stats
+		plot.setRenderer(getGlobalRenderer());
+
+		// Dedicated Throughput renderer
+		plot.setRenderer(1, getThroughputRenderer());
+
 		return chart;
+	}
+
+	private XYSeriesCollection calculateThroughputDataset(XYSeriesCollection coreDataset, long periodMs) {
+		MovingStdDevStat throughputStat = new MovingStdDevStat();
+		XYSeries throughputSeries =
+				throughputStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingThroughput(), periodMs, 0);
+		XYSeriesCollection throughputDataset = new XYSeriesCollection();
+		throughputDataset.addSeries(throughputSeries);
+		return throughputDataset;
+	}
+
+	private XYSeriesCollection calculateMovingDataset(XYSeriesCollection coreDataset, long periodMs) {
+		MovingAverageStat averageStat = new MovingAverageStat();
+		XYSeries movingSeries =
+				averageStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingAverage(), periodMs, 0);
+		MovingMaxStat maxStat = new MovingMaxStat();
+		XYSeries maxSeries = maxStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingMax(), periodMs, 0);
+		MovingMinStat minStat = new MovingMinStat();
+		XYSeries minSeries = minStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingMin(), periodMs, 0);
+		MovingMedianStat medianStat = new MovingMedianStat();
+		XYSeries medianSeries = medianStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingMedian(), periodMs, 0);
+		MovingStdDevStat stdDevStat = new MovingStdDevStat();
+		XYSeries stdDevSeries = stdDevStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingStdDev(), periodMs, 0);
+
+		XYSeriesCollection movingDataset = new XYSeriesCollection();
+		movingDataset.addSeries(movingSeries);
+		movingDataset.addSeries(maxSeries);
+		movingDataset.addSeries(minSeries);
+		movingDataset.addSeries(medianSeries);
+		movingDataset.addSeries(stdDevSeries);
+		return movingDataset;
+	}
+
+	private void configureBasicPlotProperties(XYPlot plot) {
+		plot.setBackgroundPaint(Color.lightGray);
+		plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+		plot.setDomainGridlinePaint(Color.white);
+		plot.setRangeGridlinePaint(Color.white);
+	}
+
+	private void attachThroughputDatasetToDedicatedAxis(XYSeriesCollection throughputDataset, XYPlot plot) {
+		NumberAxis throughputAxis = new NumberAxis("Throughput (req/s)");
+		plot.setRangeAxis(1, throughputAxis);
+		plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+		plot.setDataset(1, throughputDataset);
+		plot.mapDatasetToDomainAxis(1, 0);
+		plot.mapDatasetToRangeAxis(1, 1);
+	}
+
+	private XYLineAndShapeRenderer getThroughputRenderer() {
+		final XYLineAndShapeRenderer rendererThroughput = new XYLineAndShapeRenderer();
+		rendererThroughput.setSeriesShapesVisible(0, false);
+		rendererThroughput.setSeriesPaint(0, Color.MAGENTA);
+		rendererThroughput.setSeriesStroke(0, new BasicStroke(1));
+		return rendererThroughput;
+	}
+
+	private XYLineAndShapeRenderer getGlobalRenderer() {
+		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setSeriesShapesVisible(0, false);
+		renderer.setSeriesPaint(0, Color.BLUE);
+		renderer.setSeriesStroke(0, new BasicStroke(1));
+		renderer.setSeriesShapesVisible(1, false);
+		renderer.setSeriesPaint(1, Color.RED);
+		renderer.setSeriesStroke(1, new BasicStroke(1));
+		renderer.setSeriesShapesVisible(2, false);
+		renderer.setSeriesPaint(2, Color.GREEN);
+		renderer.setSeriesStroke(2, new BasicStroke(1));
+		renderer.setSeriesShapesVisible(3, false);
+		renderer.setSeriesPaint(3, Color.YELLOW);
+		renderer.setSeriesStroke(3, new BasicStroke(1));
+		renderer.setSeriesShapesVisible(4, false);
+		renderer.setSeriesPaint(4, Color.ORANGE);
+		renderer.setSeriesStroke(4, new BasicStroke(1));
+		return renderer;
 	}
 
 

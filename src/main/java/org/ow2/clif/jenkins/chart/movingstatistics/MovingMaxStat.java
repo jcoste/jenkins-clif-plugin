@@ -18,8 +18,8 @@ public class MovingMaxStat extends AbstractMovingStat {
 	}
 
 	@Override
-	protected void calculateMovingStatInPeriod(Number yy) {
-		max = Math.max(max, yy.doubleValue());
+	protected void calculateMovingStatInPeriod(double xx, double yy) {
+		max = Math.max(max, yy);
 		n = n + 1;
 	}
 

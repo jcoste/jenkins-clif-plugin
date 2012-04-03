@@ -68,7 +68,7 @@ public abstract class AbstractMovingStat {
 							Number yy = source.getY(series, i - offset);
 							if (xx > limit) {
 								if (yy != null) {
-									calculateMovingStatInPeriod(yy);
+									calculateMovingStatInPeriod(xx, yy.doubleValue());
 								}
 							}
 							else {
@@ -95,9 +95,10 @@ public abstract class AbstractMovingStat {
 	/**
 	 * Calculate the current moving statistic with a new point
 	 *
+	 * @param xx x value of the point
 	 * @param yy Y value of the point
 	 */
-	protected abstract void calculateMovingStatInPeriod(Number yy);
+	protected abstract void calculateMovingStatInPeriod(double xx, double yy);
 
 	/**
 	 * Add the moving statistic to the resulting XYSeries
