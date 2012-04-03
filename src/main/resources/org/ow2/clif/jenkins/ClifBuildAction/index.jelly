@@ -44,7 +44,7 @@
 							<j:set var="injectors" value="${testPlan.getInjectorsByServer(serverName)}"/>
 							<j:forEach var="injector" items="${injectors}">
 								<div style="font-weight:bold; border-bottom: 1px solid black; margin-bottom:0.2em; margin-top:0.4em">
-									${%Injector} - ${injector.name} (
+									${%Injector} - ${injector.id} - ${injector.name} (
 									<j:if test="${injector.argument!=null}">${%Argument}=${injector.argument}</j:if>
 									<j:if test="${injector.comment!=null}"><st:nbsp/>${%Comment}=${injector.comment}
 									</j:if>
