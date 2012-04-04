@@ -42,50 +42,57 @@ public class ClifPlugin extends Plugin {
 
 	static final String DISPLAY_NAME = Messages.Plugin_DisplayName();
 
+	private static final String DEFAULT_ROOT_DIR = "clif";
 	static final String URL = "clif";
 
 	/**
 	 * Root directory for storing Clif projects.
 	 */
-	private String clifRootDir = "clif";
+	private String clifRootDir;
 
 
 	@Override
 	public void configure(StaplerRequest req, JSONObject formData)
 			throws IOException, ServletException, Descriptor.FormException {
-		clifRootDir = formData.getString("clifRootDir").trim();
+		setClifRootDir(clifRootDir = formData.getString("clifRootDir").trim());
 		save();
 	}
 
+    @Override
+    public void start() throws Exception {
+        load();
+    }
+
 	/**
-     * @return The configured Clif root directory.
-     */
+	 * @return The configured Clif root directory.
+	 */
 	public String getClifRootDir() {
 		return clifRootDir;
 	}
 
 	public void setClifRootDir(String clifRootDir) {
-		this.clifRootDir = clifRootDir;
+		if (StringUtils.isNotBlank(clifRootDir)) {
+			this.clifRootDir = clifRootDir;
+		}
+		else {
+			this.clifRootDir = DEFAULT_ROOT_DIR;
+		}
 	}
 
 	/**
-     * Returns the File object representing the configured clif root directory.
-     *
-     * @return The configured clif root File object, or <JENKINS_ROOT>/clif  if this configuration has not been set.
-     */
-    protected File getConfiguredClifRootDir() {
-        File rootFile = null;
-        if (StringUtils.isNotBlank(clifRootDir)) {
-            if (clifRootDir.matches("^(/|\\\\|[a-zA-Z]:).*")) {
-                rootFile = new File(clifRootDir);
-            } else {
-                rootFile = new File(Hudson.getInstance().root.getPath() + "/" + clifRootDir);
-            }
-        }
-	    else {
-	        rootFile = new File(Hudson.getInstance().root.getPath() + "/clif" );
-        }
-        return rootFile;
-    }
+	 * Returns the File object representing the configured clif root directory.
+	 *
+	 * @return The configured clif root File object, or <JENKINS_ROOT>/clif  if this configuration has not been set.
+	 */
+	protected File getConfiguredClifRootDir() {
+		File rootFile = null;
+		if (clifRootDir.matches("^(/|\\\\|[a-zA-Z]:).*")) {
+			rootFile = new File(clifRootDir);
+		}
+		else {
+			rootFile = new File(Hudson.getInstance().root.getPath() + "/" + clifRootDir);
+		}
+		return rootFile;
+	}
 
 }
