@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.ow2.clif.jenkins.jobs.Zip;
 
 public class ZipExtractTest {
 	private Zip zip;
@@ -35,4 +34,19 @@ public class ZipExtractTest {
 		assertThat(new File(workspaces + "/samples")).isDirectory();
 		assertThat(new File(workspaces + "/samples/post.ctp")).isFile();
 	}
+
+	@Test
+  public void canBeExtractedSafelyWhenNoFileMatchesEntry() throws Exception {
+		zip = new Zip("src/test/resources/zips/nested.zip");
+		assertThat(zip.canBeSafelyExtractedTo(path)).isTrue();
+  }
+
+	@Test
+  public void canNotBeExtractedSafelyWhenDirExists() throws Exception {
+		zip = new Zip("src/test/resources/zips/nested.zip");
+		FileUtils.forceMkdir(new File(path + "/samples"));
+		FileUtils.touch(new File(path + "/samples/post.json"));
+
+		assertThat(zip.canBeSafelyExtractedTo(path)).isFalse();
+  }
 }

@@ -108,12 +108,12 @@ public class FixedSliceSizeDistributionChart
 
 
 		private static final long serialVersionUID = -6314496669559786395L;
-		
-		private IntervalXYDataset data;
 
-		private int serie;
+		private final IntervalXYDataset data;
 
-		private NumberFormat formatter = new DecimalFormat("###.##");
+		private final int serie;
+
+		private final NumberFormat formatter = new DecimalFormat("###.##");
 
 		public HistogramAxis(IntervalXYDataset data, int serie) {
 			super();
@@ -121,6 +121,7 @@ public class FixedSliceSizeDistributionChart
 			this.serie = serie;
 		}
 
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
 		protected java.util.List refreshTicksHorizontal(Graphics2D g2, Rectangle2D dataArea, RectangleEdge edge) {
 			java.util.List result = new ArrayList();

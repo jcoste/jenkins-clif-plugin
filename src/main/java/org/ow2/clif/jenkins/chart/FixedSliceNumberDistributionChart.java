@@ -95,12 +95,12 @@ public class FixedSliceNumberDistributionChart
 			extends NumberAxis {
 
 		private static final long serialVersionUID = -1582586041169744515L;
-		
-		private HistogramDataset data;
 
-		private int serie;
+		private final HistogramDataset data;
 
-		private NumberFormat formatter = new DecimalFormat("###.##");
+		private final int serie;
+
+		private final NumberFormat formatter = new DecimalFormat("###.##");
 
 		public HistogramAxis(HistogramDataset data, int serie) {
 			super();
@@ -108,7 +108,8 @@ public class FixedSliceNumberDistributionChart
 			this.serie = serie;
 		}
 
-		@Override
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
 		protected java.util.List refreshTicksHorizontal(Graphics2D g2, Rectangle2D dataArea, RectangleEdge edge) {
 			java.util.List result = new ArrayList();
 

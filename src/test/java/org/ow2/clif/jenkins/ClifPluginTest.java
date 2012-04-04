@@ -8,8 +8,6 @@ import java.io.File;
 
 public class ClifPluginTest extends HudsonTestCase {
 
-	private WebClient webClient;
-
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();

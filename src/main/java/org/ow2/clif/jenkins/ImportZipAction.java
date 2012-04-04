@@ -1,39 +1,43 @@
 package org.ow2.clif.jenkins;
 
-import com.google.common.collect.Lists;
 import hudson.Extension;
-import hudson.model.FreeStyleProject;
-import hudson.model.Item;
-import hudson.model.ItemGroup;
 import hudson.model.RootAction;
-import jenkins.model.Jenkins;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.FileSystem;
 import org.ow2.clif.jenkins.jobs.Workspaces;
 import org.ow2.clif.jenkins.jobs.Zip;
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.apache.commons.io.FilenameUtils.removeExtension;
+import com.google.common.collect.Maps;
 
 
 @Extension
 public class ImportZipAction implements RootAction {
-	Configurer clif;
-	Jenkins jenkins;
-	String whiteList;
+	String pattern;
 
+	private Zip zip;
+	final Map<String, PreviewZipAction> previews = Maps.newHashMap();
+
+	public void setZipFilePath(String filePath) {
+  	this.zip = new Zip(filePath);
+  }
+
+	public String getZipFilePath() {
+  	return zip.getFile().getAbsolutePath();
+  }
 
 	public ImportZipAction() {
-		clif = new Configurer();
-		with(Jenkins.getInstance());
-		whiteList = "(.*)\\.ctp$";
+		pattern = "(.*)\\.ctp$";
 	}
 
 	public String getIconFileName() {
@@ -48,56 +52,41 @@ public class ImportZipAction implements RootAction {
 		return "clif";
 	}
 
-	@SuppressWarnings("unchecked")
 	public void doImport(StaplerRequest req, StaplerResponse res)
 			throws IOException, InterruptedException, FileUploadException {
+		zip = new Zip(readZipFile(req));
+		new PreviewZipAction(zip, new FileSystem(location()), pattern)
+			.with(this)
+			.process(res);
+	}
 
+	public String location() {
+		return Workspaces.DEFAULT_LOCATION;
+	}
+
+	@SuppressWarnings("unchecked")
+	private File readZipFile(StaplerRequest req)
+			throws IOException, FileUploadException {
 		List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory())
-				.parseRequest(req);
-
-		Zip zip = new Zip(items.get(0));
-		List<FreeStyleProject> projects =
-				newProjectForEachFileInZipMatchingFilter(zip, whiteList);
-		for (FreeStyleProject project : projects) {
-      jenkins.putItem(project);
+			.parseRequest(req);
+	  File file = File.createTempFile("zip", null);
+		try {
+	    items.get(0).write(file);
+    } catch (Exception e) {
+	    throw new IOException(e);
     }
+		return file;
+  }
 
-		zip.extractTo(Workspaces.DEFAULT_LOCATION);
-		res.sendRedirect2("/");
+	public PreviewZipAction getPreviews(String id) {
+		 return previews.get(id);
 	}
 
-	/**
-	 *
-	 * @param zip
-	 * @param filter regular expression as a string
-	 * @return
-	 * @throws IOException
-	 */
-	List<FreeStyleProject>
-	newProjectForEachFileInZipMatchingFilter(Zip zip, String filter)
-			throws IOException, InterruptedException {
-		List<FreeStyleProject> projects = Lists.newArrayList();
-		for (String fileName : zip.names(filter)) {
-			projects.add(clif.configure(newProject(fileName), fileName));
-		}
-		return projects;
+	public PreviewZipAction addPreview(PreviewZipAction preview) {
+		return previews.put(preview.id(), preview);
 	}
 
-	FreeStyleProject newProject(String fileName)
-			throws IOException, InterruptedException {
-		FreeStyleProject project = new FreeStyleProject(
-				(ItemGroup<? extends Item>) jenkins,
-				nameThatProject(fileName)
-		);
-		return project;
-	}
-
-	private String nameThatProject(String fileName) {
-		return removeExtension(fileName.replace('/', '-'));
-	}
-
-	ImportZipAction with(Jenkins jenkins) {
-		this.jenkins = jenkins;
-		return this;
+	public PreviewZipAction removePreview(String id) {
+		return previews.remove(id);
 	}
 }
