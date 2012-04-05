@@ -30,15 +30,17 @@ public class MovingAverageTest {
 		dataSeries.add(8, 1);
 		dataSeries.add(9, 4);
 		dataSeries.add(10, 3);
+		dataSeries.add(50, 3);
+		dataSeries.add(100, 3);
 
 		AbstractMovingStat ms = new MovingMinStat();
-		XYSeries res = ms.calculateMovingStat(dataset, 0, "min", 3, 3);
+		XYSeries res = ms.calculateMovingStat(dataset, 0, "min", 3, 0);
 
 		assertNotNull(res);
-		assertEquals("Bad size", 7, res.getItemCount());
 		printSeries(res, "res");
+		assertEquals("Bad size", 6, res.getItemCount());
 		System.out.println(res);
-		double[] expectedMins = {2, 2, 2, 2, 1, 1, 1};
+		double[] expectedMins = {1, 2, 2, 1, 3, 3};
 		for (int i = 0; i < expectedMins.length; i++) {
 			assertEquals("Bad min at index " + i, expectedMins[i], res.getY(i));
 		}
@@ -64,10 +66,10 @@ public class MovingAverageTest {
 		XYSeries res = ms.calculateMovingStat(dataset, 0, "max", 3, 3);
 
 		assertNotNull(res);
-		assertEquals("Bad size", 7, res.getItemCount());
+		assertEquals("Bad size", 3, res.getItemCount());
 		printSeries(res, "res");
 		System.out.println(res);
-		double[] expectedMaxs = {5, 5, 5, 6, 6, 6, 4};
+		double[] expectedMaxs = {5, 6, 4};
 		for (int i = 0; i < expectedMaxs.length; i++) {
 			assertEquals("Bad max at index " + i, expectedMaxs[i], res.getY(i));
 		}
@@ -93,10 +95,10 @@ public class MovingAverageTest {
 		XYSeries res = ms.calculateMovingStat(dataset, 0, "average", 3, 3);
 
 		assertNotNull(res);
-		assertEquals("Bad size", 7, res.getItemCount());
+		assertEquals("Bad size", 3, res.getItemCount());
 		printSeries(res, "res");
 		System.out.println(res);
-		double[] expectedAverages = {10d / 3, 3d, 3d, 13d / 3, 4d, 11d / 3, 8d / 3};
+		double[] expectedAverages = {10d / 3, 13d / 3, 8d / 3};
 		for (int i = 0; i < expectedAverages.length; i++) {
 			assertEquals("Bad average at index " + i, expectedAverages[i], res.getY(i));
 		}
@@ -122,42 +124,14 @@ public class MovingAverageTest {
 		XYSeries res = ms.calculateMovingStat(dataset, 0, "median", 3, 3);
 
 		assertNotNull(res);
-		assertEquals("Bad size", 7, res.getItemCount());
+		assertEquals("Bad size", 3, res.getItemCount());
 		printSeries(res, "res");
 		System.out.println(res);
-		double[] expectedMedians = {3, 2, 2, 5, 5, 4, 3};
+		double[] expectedMedians = {3, 5, 3};
 		for (int i = 0; i < expectedMedians.length; i++) {
 			assertEquals("Bad median at index " + i, expectedMedians[i], res.getY(i));
 		}
 	}
-
-
-/*	@Test
-	public void testCreateMovingMaxExtrem() throws Exception
-	{
-		XYSeriesCollection dataset = new XYSeriesCollection();
-		XYSeries dataSeries = new XYSeries( "data" );
-		dataset.addSeries( dataSeries );
-		for ( int i = 0; i < 200; i++ )
-		{
-			dataSeries.add( i * 200, 50 );
-
-		}
-		dataSeries.addOrUpdate( 100 * 200, 200 );
-		printSeries( dataSeries, "dataSeries" );
-		AbstractMovingStat ms = new MovingMaxStat();
-		XYSeries res = ms.calculateMovingStat( dataset, 0, "max", 5000, 0 );
-
-		assertNotNull( res );
-		assertEquals( "Bad size", 201, res.getItemCount() );
-		printSeries( res, "res" );
-		System.out.println( res );
-		double[] expectedMaxs = {5, 5, 5, 6, 6, 6, 4};
-		for ( int i = 0; i < expectedMaxs.length; i++ )
-		{
-			assertEquals( "Bad max at index " + i, expectedMaxs[i], res.getY( i ) );
-		}
-	}*/
 
 	@Test
 	public void testCreateMovingThroughput() throws Exception {
@@ -179,10 +153,10 @@ public class MovingAverageTest {
 		XYSeries res = ms.calculateMovingStat(dataset, 0, "throughput", 3, 3);
 
 		assertNotNull(res);
-		assertEquals("Bad size", 7, res.getItemCount());
+		assertEquals("Bad size",3 , res.getItemCount());
 		printSeries(res, "res");
 		System.out.println(res);
-		double[] expectedMedians = {1500, 1500, 1500, 1500, 1500, 1500, 1500};
+		double[] expectedMedians = {1500, 1500, 1500};
 		for (int i = 0; i < expectedMedians.length; i++) {
 			assertEquals("Bad throughput at index " + i, expectedMedians[i], res.getY(i));
 		}

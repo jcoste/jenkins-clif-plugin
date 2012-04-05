@@ -56,6 +56,10 @@ public abstract class AbstractMovingStat {
 			for (int i = source.getItemCount(series) - 1; i >= 0; i--) {
 				// get the current data item...
 				double x = source.getXValue(series, i);
+				while (lastXEndPeriod >= x+period)
+				{
+					lastXEndPeriod -= period;
+				}
 				if (x >= first) {
 					// work out the average for the earlier values...
 					resetMovingStat();
@@ -70,6 +74,7 @@ public abstract class AbstractMovingStat {
 							if (xx > limit) {
 								if (yy != null) {
 									calculateMovingStatInPeriod(xx, yy.doubleValue());
+									offset = offset + 1;
 								}
 							}
 							else {
@@ -79,11 +84,9 @@ public abstract class AbstractMovingStat {
 						else {
 							finished = true;
 						}
-						offset = offset + 1;
 					}
 					addMovingStatForPeriod(result, lastXEndPeriod);
-					i -= offset;
-					lastXEndPeriod -= period;
+					i -= offset-1;
 				}
 			}
 		}

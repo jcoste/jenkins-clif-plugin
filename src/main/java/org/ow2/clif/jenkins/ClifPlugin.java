@@ -54,7 +54,7 @@ public class ClifPlugin extends Plugin {
 	@Override
 	public void configure(StaplerRequest req, JSONObject formData)
 			throws IOException, ServletException, Descriptor.FormException {
-		setClifRootDir(clifRootDir = formData.getString("clifRootDir").trim());
+		setClifRootDir(formData.getString("clifRootDir").trim());
 		save();
 	}
 

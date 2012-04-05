@@ -62,7 +62,7 @@ public class MovingStatChart
 		XYSeriesCollection coreDataset = new XYSeriesCollection();
 		coreDataset.addSeries(this.eventSerie);
 
-		long periodMs = this.chartConfiguration.getStatisticalPeriod() * 1000;
+		long periodMs = this.chartConfiguration.getStatisticalPeriod() * 1000L;
 
 		XYSeriesCollection movingDataset = calculateMovingDataset(coreDataset, periodMs);
 		XYSeriesCollection throughputDataset = calculateThroughputDataset(coreDataset, periodMs);

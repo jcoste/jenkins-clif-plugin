@@ -94,6 +94,8 @@ public class FixedSliceNumberDistributionChart
 	private class HistogramAxis
 			extends NumberAxis {
 
+		private static final long serialVersionUID = -1582586041169744515L;
+		
 		private HistogramDataset data;
 
 		private int serie;
@@ -110,7 +112,7 @@ public class FixedSliceNumberDistributionChart
 		protected java.util.List refreshTicksHorizontal(Graphics2D g2, Rectangle2D dataArea, RectangleEdge edge) {
 			java.util.List result = new ArrayList();
 
-			double currentTickValue = 50.5;
+			double currentTickValue;
 			for (int i = 0; i < data.getItemCount(serie); i++) {
 				currentTickValue = data.getStartX(0, i).doubleValue();
 				Tick tick = createTick(edge, currentTickValue);
@@ -150,7 +152,7 @@ public class FixedSliceNumberDistributionChart
 					rotationAnchor = TextAnchor.TOP_CENTER;
 				}
 			}
-			return new NumberTick(new Double(currentTickValue), tickLabel, anchor, rotationAnchor, angle);
+			return new NumberTick(currentTickValue, tickLabel, anchor, rotationAnchor, angle);
 		}
 	}
 }

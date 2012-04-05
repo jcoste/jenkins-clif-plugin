@@ -21,65 +21,63 @@ public class ClifBuildAction
 
 	private final ClifReport report;
 
-	private transient Properties alias;
-
-	public ClifBuildAction(AbstractBuild<?, ?> build, ClifReport report, ClifPublisher publisher,
-	                       PrintStream logger) {
+	public ClifBuildAction(final AbstractBuild<?, ?> build, final ClifReport report, final ClifPublisher publisher,
+	                       final PrintStream logger) {
 		this.build = build;
 		this.report = report;
 		logger.println("Created Clif results");
 	}
 
-	public void doCallChart(StaplerRequest request, StaplerResponse response)
+	public void doCallChart(final StaplerRequest request, final StaplerResponse response)
 			throws IOException {
 
-		ClifGraphParam params = new ClifGraphParam();
+		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		CallChart chart = new CallChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
+		final CallChart chart = new CallChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
-	public void doMovingStatChart(StaplerRequest request, StaplerResponse response)
+	public void doMovingStatChart(final StaplerRequest request, final StaplerResponse response)
 			throws IOException {
 
-		ClifGraphParam params = new ClifGraphParam();
+		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		MovingStatChart chart = new MovingStatChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
+		final MovingStatChart chart = new MovingStatChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
-	public void doFixedSliceNumberDistributionChart(StaplerRequest request, StaplerResponse response)
+	public void doFixedSliceNumberDistributionChart(final StaplerRequest request, final StaplerResponse response)
 			throws IOException {
 
-		ClifGraphParam params = new ClifGraphParam();
+		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		FixedSliceNumberDistributionChart chart =
+		final FixedSliceNumberDistributionChart chart =
 				new FixedSliceNumberDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null
 				                                      );
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
-	public void doFixedSliceSizeDistributionChart(StaplerRequest request, StaplerResponse response)
+	public void doFixedSliceSizeDistributionChart(final StaplerRequest request, final StaplerResponse response)
 			throws IOException {
 
-		ClifGraphParam params = new ClifGraphParam();
+		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		FixedSliceSizeDistributionChart chart =
+		final FixedSliceSizeDistributionChart chart =
 				new FixedSliceSizeDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
-	public void doQuantileDistributionChart(StaplerRequest request, StaplerResponse response)
+	public void doQuantileDistributionChart(final StaplerRequest request, final StaplerResponse response)
 			throws IOException {
 
-		ClifGraphParam params = new ClifGraphParam();
+		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		QuantileDistributionChart chart =
+		final QuantileDistributionChart chart =
 				new QuantileDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
 		chart.doPng(build.getRootDir(), request, response);
 	}

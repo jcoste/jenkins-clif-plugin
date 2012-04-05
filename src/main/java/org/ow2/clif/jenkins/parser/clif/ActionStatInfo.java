@@ -34,7 +34,7 @@ import java.io.File;
  */
 public class ActionStatInfo {
 
-	protected static int MIN_SIZE_OF_STATISTICAL_DATA = 30;
+	protected static final int MIN_SIZE_OF_STATISTICAL_DATA = 30;
 
 	// Used to compute statistics (Mean, Sum, Min,  Max)
 	protected final SummaryStatistics onTheFlyStat;
@@ -74,14 +74,14 @@ public class ActionStatInfo {
 		lastCall = Long.MIN_VALUE;
 	}
 
-	public ActionStatInfo(ParsingContext context, ChartConfiguration chartConfiguration) {
+	public ActionStatInfo(final ParsingContext context, final ChartConfiguration chartConfiguration) {
 		this.context = new ParsingContext(context);
 		this.onTheFlyStat = new SummaryStatisticsImpl();
 		this.chartConfiguration = chartConfiguration;
 	}
 
 
-	public void addStat(long date, double value) {
+	public void addStat(final long date, final double value) {
 		// Store values
 		values.addElement(value);
 		dates.addElement(date);
@@ -291,7 +291,7 @@ public class ActionStatInfo {
 		return chart;
 	}
 
-	private String getBladeId(ParsingContext context) {
+	private String getBladeId(final ParsingContext context) {
 		if (context.getBlade() == null) {
 			return "aggregated";
 		}
@@ -304,7 +304,7 @@ public class ActionStatInfo {
 	 * @return Chart build from the context and collected values
 	 */
 	private CallChart createCallChart() {
-		CallChart chart =
+		final CallChart chart =
 				new CallChart(context.getTestPlanShortName(), getBladeId(context), context.getEventType(),
 				              this.chartConfiguration);
 		if (context.getBlade() != null && context.getBlade().isInjector()) {
@@ -324,7 +324,7 @@ public class ActionStatInfo {
 	 */
 	private FixedSliceNumberDistributionChart createFixedSliceNumberDistributionChart() {
 
-		FixedSliceNumberDistributionChart chart =
+		final FixedSliceNumberDistributionChart chart =
 				new FixedSliceNumberDistributionChart(context.getTestPlanShortName(), getBladeId(context),
 				                                      context.getEventType(), chartConfiguration);
 		chart.addData(valuesArray);
@@ -338,7 +338,7 @@ public class ActionStatInfo {
 	 */
 	private FixedSliceSizeDistributionChart createFixedSliceSizeDistributionChart() {
 
-		FixedSliceSizeDistributionChart chart =
+		final FixedSliceSizeDistributionChart chart =
 				new FixedSliceSizeDistributionChart(context.getTestPlanShortName(), getBladeId(context),
 				                                    context.getEventType(), chartConfiguration);
 		chart.addData(valuesArray, stat.getMin(), stat.getMax());
@@ -351,7 +351,7 @@ public class ActionStatInfo {
 	 * @return Chart build from the context and collected values
 	 */
 	private QuantileDistributionChart createQuantileDistributionChart() {
-		QuantileDistributionChart chart =
+		final QuantileDistributionChart chart =
 				new QuantileDistributionChart(context.getTestPlanShortName(), getBladeId(context),
 				                              context.getEventType(), this.chartConfiguration);
 
@@ -359,7 +359,7 @@ public class ActionStatInfo {
 		return chart;
 	}
 
-	public void generateCharts(File rootDir) {
+	public void generateCharts(final File rootDir) {
 		callChart.createChart(rootDir);
 		if (movingStatChart != null) {
 			movingStatChart.createChart(rootDir);

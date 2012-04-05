@@ -20,6 +20,7 @@
  */
 package org.ow2.clif.jenkins.chart;
 
+import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -51,13 +52,16 @@ public abstract class AbstractChart {
 	}
 
 	private void saveImageFile(File imageFile, BufferedImage bImage) {
+		OutputStream os = null;
 		try {
-			OutputStream os = new FileOutputStream(imageFile);
+			os = new FileOutputStream(imageFile);
 			ImageIO.write(bImage, "png", os);
-			os.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+		}
+		finally {
+			IOUtils.closeQuietly(os);
 		}
 	}
 

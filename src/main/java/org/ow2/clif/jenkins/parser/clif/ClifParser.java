@@ -168,10 +168,10 @@ public class ClifParser {
 		return report;
 	}
 
-	protected void analyzeTestPlan(BladeFilter blade_filter)
+	protected void analyzeTestPlan(BladeFilter bladeFilter)
 			throws ClifException {
 		logger.println("Analyzing measures from test " + context.getTest().getName());
-		BladeDescriptor[] blades = this.storageRead.getTestPlan(context.getTest().getName(), blade_filter);
+		BladeDescriptor[] blades = this.storageRead.getTestPlan(context.getTest().getName(), bladeFilter);
 		if (blades.length > 0) {
 			TestPlan testPlan = new TestPlan(context.getTestPlanShortName(), context.getTest().getDate());
 			report.addTestplan(testPlan);
