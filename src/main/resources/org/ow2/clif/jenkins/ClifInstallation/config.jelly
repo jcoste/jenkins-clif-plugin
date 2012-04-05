@@ -10,17 +10,21 @@
 		<f:textbox default="launchWithHudson"/>
 	</f:entry>
 	<f:entry title="${%ProActive Installation}" help="/plugin/jenkins-clif-plugin/help-clifInstallation-proactive.html">
-		<table>
+		<table width="100%">
 			<f:optionalBlock name="clifProActiveConfig" title="${%Yes}" checked="${instance.proactiveInstallation}">
 				<f:entry title="${%Scheduler URL}">
 					<f:textbox name="schedulerURL" value="${instance.clifProActiveConfig.schedulerURL}"/>
 				</f:entry>
 				<f:entry title="${%Scheduler credentials file}">
-					<f:textbox name="schedulerCredentialsFile" value="${instance.clifProActiveConfig.schedulerCredentialsFile}"/>
+					<f:textbox name="schedulerCredentialsFile"
+					           value="${instance.clifProActiveConfig.schedulerCredentialsFile}"/>
 				</f:entry>
 				<f:entry title="${%Fork props}">
 					<f:textbox name="forkProps" value="${instance.clifProActiveConfig.forkProps}"/>
 				</f:entry>
+				<f:validateButton
+						title="${%Check installation}" progress="${%Testing...}"
+						method="checkInstallation" with="home,schedulerURL,schedulerCredentialsFile"/>
 			</f:optionalBlock>
 		</table>
 	</f:entry>

@@ -9,19 +9,17 @@
 	<f:advanced>
 		<f:entry title="${%Action Aliases}" help="/plugin/jenkins-clif-plugin/help-projectConfig-alias.html">
 			<f:repeatable var="inst" items="${instance.alias}">
-				<table>
+				<table width="100%">
 					<tr>
 						<td>${%Pattern}</td>
 						<td>
 							<f:textbox name="clif.alias.pattern"
-							           value="${inst.pattern}"
-									/>
+							           value="${inst.pattern}"/>
 						</td>
 						<td>${%Alias}</td>
 						<td>
 							<f:textbox name="clif.alias.value"
-							           value="${inst.value}"
-									/>
+							           value="${inst.value}"/>
 						</td>
 						<td>
 							<f:repeatableDeleteButton/>
@@ -35,7 +33,7 @@
 		<f:entry title="${%Action success configuration}"
 		         help="/plugin/jenkins-clif-plugin/help-projectConfig-actionSuccess.html">
 			<f:repeatable var="inst" items="${instance.successPatterns}">
-				<table>
+				<table width="100%">
 					<tr>
 						<td>${%Action type}</td>
 						<td>

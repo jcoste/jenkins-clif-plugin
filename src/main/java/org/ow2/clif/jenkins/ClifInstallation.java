@@ -21,17 +21,19 @@
 package org.ow2.clif.jenkins;
 
 import hudson.*;
-import hudson.model.*;
+import hudson.model.EnvironmentSpecific;
+import hudson.model.Hudson;
+import hudson.model.Node;
+import hudson.model.TaskListener;
 import hudson.remoting.Callable;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
 import hudson.util.FormValidation;
-import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +64,6 @@ public final class ClifInstallation
 	public String getClifHudsonTarget() {
 		return clifHudsonTarget;
 	}
-
 
 
 	public ClifProActiveConfig getClifProActiveConfig() {
@@ -213,6 +214,57 @@ public final class ClifInstallation
 				return FormValidation.error(Messages.Clif_SchedulerCredentialsFileRequired());
 			}
 			return FormValidation.ok();
+		}
+
+		/**
+		 *
+		 */
+		public FormValidation doCheckInstallation(
+				@QueryParameter File home,
+				@QueryParameter String schedulerURL,
+				@QueryParameter File schedulerCredentialsFile) {
+			try {
+				System.out.println("home=" + home);
+				System.out.println("schedulerCredentialsFile=" + schedulerCredentialsFile);
+
+				if (!Hudson.getInstance().hasPermission(Hudson.ADMINISTER)) {
+					return FormValidation.ok();
+				}
+
+				if (home.getPath().equals("")) {
+					return FormValidation.ok();
+				}
+
+				if (!home.isDirectory()) {
+					return FormValidation.error(Messages.Clif_NotADirectory(home));
+				}
+
+				File clifJar = new File(home, "lib/clif-core.jar");
+				if (!clifJar.exists()) {
+					return FormValidation.error(Messages.Clif_NotClifDirectory(home));
+				}
+				File proactiveJar = new File(home, "lib" + File.separator + "ProActive" + File.separator + "ProActive.jar");
+          		if (!proactiveJar.exists()) {
+					return FormValidation.error(Messages.ClifInstallation_BadProactiveInstallation());
+				}
+
+				if (schedulerCredentialsFile == null) {
+					return FormValidation.error(Messages.ClifInstallation_CredentialsFileMissing());
+
+				}
+				if (!schedulerCredentialsFile.exists()) {
+					return FormValidation.error(Messages.ClifInstallation_CredentialsFileNotFound());
+				}
+				if (StringUtils.isBlank(schedulerURL)) {
+					return FormValidation.error(Messages.ClifInstallation_SchedulerURLMissing());
+				}
+
+				return FormValidation.ok(Messages.ClifInstallation_ProactiveInstallationValid());
+			}
+			catch (Exception e) {
+				//return FormValidation.errorWithMarkup("<p>"+Messages.Mailer_FailedToSendEmail()+"</p><pre>"+Util.escape(Functions.printThrowable(e))+"</pre>");
+				return FormValidation.error(Messages.ClifInstallation_BadProactiveInstallation());
+			}
 		}
 	}
 
