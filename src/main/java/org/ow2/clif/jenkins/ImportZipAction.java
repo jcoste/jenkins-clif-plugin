@@ -37,7 +37,7 @@ public class ImportZipAction implements RootAction {
 	}
 
 	public String getIconFileName() {
-		return "/plugin/jenkins-clif-plugin/images/clif-22x22.png";
+		return "/plugin/jenkins-clif-plugin/images/clif-24x24.png";
 	}
 
 	public String getDisplayName() {
