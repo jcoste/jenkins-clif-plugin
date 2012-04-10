@@ -52,16 +52,23 @@ public class ClifPlugin extends Plugin {
 
 
 	@Override
-	public void configure(StaplerRequest req, JSONObject formData)
+	public void configure(final StaplerRequest req,final JSONObject formData)
 			throws IOException, ServletException, Descriptor.FormException {
 		setClifRootDir(formData.getString("clifRootDir").trim());
 		save();
 	}
 
-    @Override
-    public void start() throws Exception {
-        load();
-    }
+	@Override
+	public void start() throws Exception {
+		load();
+		setDefaultClifRootDirIfNecessary();
+	}
+
+	private void setDefaultClifRootDirIfNecessary() {
+		if (StringUtils.isBlank(this.clifRootDir)) {
+			this.clifRootDir = DEFAULT_ROOT_DIR;
+		}
+	}
 
 	/**
 	 * @return The configured Clif root directory.
@@ -70,13 +77,9 @@ public class ClifPlugin extends Plugin {
 		return clifRootDir;
 	}
 
-	public void setClifRootDir(String clifRootDir) {
-		if (StringUtils.isNotBlank(clifRootDir)) {
-			this.clifRootDir = clifRootDir;
-		}
-		else {
-			this.clifRootDir = DEFAULT_ROOT_DIR;
-		}
+	public void setClifRootDir(final String clifRootDir) {
+		this.clifRootDir = clifRootDir;
+		setDefaultClifRootDirIfNecessary();
 	}
 
 	/**
@@ -85,7 +88,7 @@ public class ClifPlugin extends Plugin {
 	 * @return The configured clif root File object, or <JENKINS_ROOT>/clif  if this configuration has not been set.
 	 */
 	protected File getConfiguredClifRootDir() {
-		File rootFile = null;
+		final File rootFile;
 		if (clifRootDir.matches("^(/|\\\\|[a-zA-Z]:).*")) {
 			rootFile = new File(clifRootDir);
 		}

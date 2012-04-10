@@ -76,7 +76,7 @@ public class ClifPluginTest extends HudsonTestCase {
 	}
 
 	@Test
-	public void testJobConfigHistoryDefaults() {
+	public void testGetClifRootDefaults() {
 		final ClifPlugin clifPlugin = hudson.getPlugin(ClifPlugin.class);
 
 		Assert.assertNotNull("Bad default clif root dir", clifPlugin.getClifRootDir());
