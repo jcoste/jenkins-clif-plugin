@@ -161,14 +161,14 @@ public final class ClifInstallation
 			}
 
 			if (value.getPath().equals("")) {
-				return FormValidation.ok();
+				return FormValidation.error(Messages.Clif_HomeRequired());
 			}
 
 			if (!value.isDirectory()) {
 				return FormValidation.error(Messages.Clif_NotADirectory(value));
 			}
 
-			File clifJar = new File(value, "lib/clif-core.jar");
+			File clifJar = new File(value, "lib" + File.separator + "clif-core.jar");
 			if (!clifJar.exists()) {
 				return FormValidation.error(Messages.Clif_NotClifDirectory(value));
 			}
@@ -224,22 +224,19 @@ public final class ClifInstallation
 				@QueryParameter String schedulerURL,
 				@QueryParameter File schedulerCredentialsFile) {
 			try {
-				System.out.println("home=" + home);
-				System.out.println("schedulerCredentialsFile=" + schedulerCredentialsFile);
-
 				if (!Hudson.getInstance().hasPermission(Hudson.ADMINISTER)) {
 					return FormValidation.ok();
 				}
 
 				if (home.getPath().equals("")) {
-					return FormValidation.ok();
+					return FormValidation.error(Messages.Clif_HomeRequired());
 				}
 
 				if (!home.isDirectory()) {
 					return FormValidation.error(Messages.Clif_NotADirectory(home));
 				}
 
-				File clifJar = new File(home, "lib/clif-core.jar");
+				File clifJar = new File(home, "lib" + File.separator + "clif-core.jar");
 				if (!clifJar.exists()) {
 					return FormValidation.error(Messages.Clif_NotClifDirectory(home));
 				}
