@@ -25,8 +25,6 @@ import hudson.model.Run;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import java.io.IOException;
-
 /**
  * Abstract class with functionality common to all Clif actions.
  *

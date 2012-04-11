@@ -153,7 +153,7 @@ public class MovingAverageTest {
 		XYSeries res = ms.calculateMovingStat(dataset, 0, "throughput", 3, 3);
 
 		assertNotNull(res);
-		assertEquals("Bad size",3 , res.getItemCount());
+		assertEquals("Bad size", 3, res.getItemCount());
 		printSeries(res, "res");
 		System.out.println(res);
 		double[] expectedMedians = {1500, 1500, 1500};

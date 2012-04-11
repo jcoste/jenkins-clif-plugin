@@ -1,14 +1,8 @@
 package org.ow2.clif.jenkins;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import hudson.model.FreeStyleProject;
 import jenkins.model.Fake;
 import jenkins.model.Jenkins;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +11,10 @@ import org.ow2.clif.jenkins.jobs.Configurer;
 import org.ow2.clif.jenkins.jobs.FakeConfigurer;
 import org.ow2.clif.jenkins.jobs.FileSystem;
 import org.ow2.clif.jenkins.jobs.Zip;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class PreviewZipActionTest {
 	private Jenkins jenkins;
@@ -60,22 +58,22 @@ public class PreviewZipActionTest {
 	}
 
 	@Test
-  public void uninstalledJobIsDeleted() throws Exception {
+	public void uninstalledJobIsDeleted() throws Exception {
 		FreeStyleProject project = mock(FreeStyleProject.class);
 		when(jenkins.getItem("red-tomato")).thenReturn(project);
 		preview.uninstall("red/tomato.erl");
 		verify(project).delete();
-  }
+	}
 
 	@Test
-  public void redirectsToPreviewWhenZipCanNotBeExtractedSafely() throws Exception {
-	  when(zip.canBeSafelyExtractedTo(anyString())).thenReturn(false);
-	  when(zip.id()).thenReturn("123");
-	  StaplerResponse response = mock(StaplerResponse.class);
+	public void redirectsToPreviewWhenZipCanNotBeExtractedSafely() throws Exception {
+		when(zip.canBeSafelyExtractedTo(anyString())).thenReturn(false);
+		when(zip.id()).thenReturn("123");
+		StaplerResponse response = mock(StaplerResponse.class);
 
-	  preview.process(response);
+		preview.process(response);
 
-	  verify(response).sendRedirect2("previews/123");
-	  assertThat(parent.getPreviews(preview.id())).isEqualTo(preview);
-  }
+		verify(response).sendRedirect2("previews/123");
+		assertThat(parent.getPreviews(preview.id())).isEqualTo(preview);
+	}
 }

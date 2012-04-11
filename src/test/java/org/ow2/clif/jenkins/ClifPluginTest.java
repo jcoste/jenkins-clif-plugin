@@ -53,7 +53,7 @@ public class ClifPluginTest extends HudsonTestCase {
 		final ClifPlugin clifPlugin = hudson.getPlugin(ClifPlugin.class);
 		try {
 			final String relativePath = "clifPlugin.test_rel_path";
-			final File root = new File(hudson.root.getPath()+File.separator+relativePath);
+			final File root = new File(hudson.root.getPath() + File.separator + relativePath);
 			root.delete();
 
 /* En commentaire tant que Clif-core embarque un Xalan 2.5.1

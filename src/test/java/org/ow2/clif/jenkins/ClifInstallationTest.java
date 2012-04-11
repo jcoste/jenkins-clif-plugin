@@ -70,11 +70,11 @@ public class ClifInstallationTest extends HudsonTestCase {
 
 		String fileAsHome = "target/test-classes/org/ow2/clif/jenkins/ClifInstallationTest.class";
 		home = new File(fileAsHome);
-		doCheckInstallation(ERROR,Messages.Clif_NotADirectory(home));
+		doCheckInstallation(ERROR, Messages.Clif_NotADirectory(home));
 
 		String badClifInstallation = "target/test-classes/badClifInstallation";
 		home = new File(badClifInstallation);
-		doCheckInstallation(ERROR,Messages.Clif_NotClifDirectory(home));
+		doCheckInstallation(ERROR, Messages.Clif_NotClifDirectory(home));
 
 
 		String badProActiveInstallation = "target/test-classes/badProActiveInstallation";

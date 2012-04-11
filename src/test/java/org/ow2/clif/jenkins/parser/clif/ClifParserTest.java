@@ -1,14 +1,15 @@
 package org.ow2.clif.jenkins.parser.clif;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-
 import org.junit.Test;
 import org.ow2.clif.jenkins.chart.ChartConfiguration;
 import org.ow2.clif.jenkins.model.ClifReport;
 import org.ow2.clif.jenkins.model.TestPlan;
+
+import java.io.File;
+
+import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Created by IntelliJ IDEA.
  * User: bvjr5731
@@ -25,9 +26,9 @@ public class ClifParserTest {
 		File buildDir = new File("target/clif");
 		ClifParser parser = new ClifParser(reportDir.getAbsolutePath(), buildDir.getAbsoluteFile());
 
-		ChartConfiguration chartConfig =new ChartConfiguration(600, 1200, 15,50, 2);
+		ChartConfiguration chartConfig = new ChartConfiguration(600, 1200, 15, 50, 2);
 		parser.setChartConfiguration(chartConfig);
-		parser.enableDataCleanup(2,95);
+		parser.enableDataCleanup(2, 95);
 		parser.addActionAliasPattern("random", ".*dummy.*");
 
 		parser.setGenerateCharts(false);

@@ -1,10 +1,9 @@
 package org.ow2.clif.jenkins.jobs;
 
-import java.io.File;
-
 import org.apache.tools.ant.types.ZipScanner;
 import org.junit.Test;
-import org.ow2.clif.jenkins.jobs.Zip;
+
+import java.io.File;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -44,10 +43,10 @@ public class ZipTest {
 	}
 
 	@Test
-  public void basedirIsFirstEntryWhenDirectory() throws Exception {
+	public void basedirIsFirstEntryWhenDirectory() throws Exception {
 		zip = new Zip("src/test/resources/zips/nested.zip");
 		assertThat(zip.basedir()).isEqualTo("samples");
-  }
+	}
 
 	@Test
 	public void basedirIsFirstEntryLeadingDirectoryWhenFile() throws Exception {

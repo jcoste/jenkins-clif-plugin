@@ -8,7 +8,6 @@ import org.ow2.clif.jenkins.model.ClifReport;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Properties;
 
 /**
  * Action used for Clif report on build level.
@@ -34,7 +33,7 @@ public class ClifBuildAction
 		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		final CallChart chart = new CallChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
+		final CallChart chart = new CallChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -44,7 +43,8 @@ public class ClifBuildAction
 		final ClifGraphParam params = new ClifGraphParam();
 		request.bindParameters(params);
 
-		final MovingStatChart chart = new MovingStatChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
+		final MovingStatChart chart =
+				new MovingStatChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -55,8 +55,8 @@ public class ClifBuildAction
 		request.bindParameters(params);
 
 		final FixedSliceNumberDistributionChart chart =
-				new FixedSliceNumberDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null
-				                                      );
+				new FixedSliceNumberDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null
+				);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -67,7 +67,7 @@ public class ClifBuildAction
 		request.bindParameters(params);
 
 		final FixedSliceSizeDistributionChart chart =
-				new FixedSliceSizeDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
+				new FixedSliceSizeDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 
@@ -78,7 +78,7 @@ public class ClifBuildAction
 		request.bindParameters(params);
 
 		final QuantileDistributionChart chart =
-				new QuantileDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(),null);
+				new QuantileDistributionChart(params.getTestPlan(), params.getBladeId(), params.getLabel(), null);
 		chart.doPng(build.getRootDir(), request, response);
 	}
 

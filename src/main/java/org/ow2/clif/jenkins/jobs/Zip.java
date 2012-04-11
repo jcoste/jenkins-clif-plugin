@@ -1,23 +1,16 @@
 package org.ow2.clif.jenkins.jobs;
 
-import static org.apache.commons.lang.StringUtils.chop;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-
-import com.google.common.collect.Lists;
+import static org.apache.commons.lang.StringUtils.chop;
 
 public class Zip {
 	private final File file;
@@ -31,8 +24,8 @@ public class Zip {
 	}
 
 	public File getFile() {
-  	return file;
-  }
+		return file;
+	}
 
 	public String id() {
 		return file.getName();
@@ -50,7 +43,7 @@ public class Zip {
 
 		List<String> list = Lists.newArrayList();
 		Pattern re = null;
-		if(pattern != null) {
+		if (pattern != null) {
 			re = Pattern.compile(pattern);
 		}
 		ZipEntry entry;
@@ -65,6 +58,7 @@ public class Zip {
 
 	/**
 	 * syntactic sugar for all entries (entries(null))
+	 *
 	 * @return
 	 * @throws IOException
 	 */
@@ -82,7 +76,7 @@ public class Zip {
 		ZipEntry entry = zip.getNextEntry();
 		String name = entry.getName();
 
-		if(entry.isDirectory()) {
+		if (entry.isDirectory()) {
 			return chop(name);
 		}
 		int i = name.indexOf('/');
@@ -90,28 +84,27 @@ public class Zip {
 			return name.substring(0, i);
 		}
 		return "";
-  }
+	}
 
 	/**
 	 * @param location
-	 * @return 	true if all entries do not exists on file system, at location
+	 * @return true if all entries do not exists on file system, at location
 	 * @throws IOException
 	 */
 	public boolean canBeSafelyExtractedTo(String location) throws IOException {
 		for (String name : entries()) {
-	    if (new File(location + "/" + name).exists()) {
-	    	return false;
-	    }
-    }
-	  return true;
-  }
+			if (new File(location + "/" + name).exists()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * unzips to directory
 	 *
 	 * @param toDir the directory
 	 * @throws IOException
-	 *
 	 */
 	public Zip extractTo(String toDir) throws IOException {
 		FileUtils.forceMkdir(new File(toDir));
@@ -128,24 +121,24 @@ public class Zip {
 		ZipEntry zipentry;
 		ZipInputStream zip = newStream();
 		try {
-	    for (zipentry = zip.getNextEntry(); zipentry != null; zipentry = zip.getNextEntry()) {
-	    	String entryName = zipentry.getName();
+			for (zipentry = zip.getNextEntry(); zipentry != null; zipentry = zip.getNextEntry()) {
+				String entryName = zipentry.getName();
 
-	    	File dest = new File(toDir, entryName);
-	    	if (zipentry.isDirectory()) {
-	    		dest.mkdirs();
-	    	}
-	    	else {
-	    		dest.getParentFile().mkdirs();
-	    		dest.createNewFile();
-	    		writeCurrentFile(zip, buf, dest);
-	    	}
-	    	zip.closeEntry();
-	    }
-    }
+				File dest = new File(toDir, entryName);
+				if (zipentry.isDirectory()) {
+					dest.mkdirs();
+				}
+				else {
+					dest.getParentFile().mkdirs();
+					dest.createNewFile();
+					writeCurrentFile(zip, buf, dest);
+				}
+				zip.closeEntry();
+			}
+		}
 		finally {
 			zip.close();
-    }
+		}
 		return this;
 	}
 
@@ -155,17 +148,17 @@ public class Zip {
 	}
 
 	void writeCurrentFile(ZipInputStream zip, byte[] buf, File dest) throws IOException {
-	  int n;
-	  OutputStream fos = new BufferedOutputStream(new FileOutputStream(dest));
-	  try {
-	    while ((n = zip.read(buf, 0, buf.length)) > -1) {
-	    	fos.write(buf, 0, n);
-	    }
-    }
-	  finally {
-	  	fos.close();
-    }
-  }
+		int n;
+		OutputStream fos = new BufferedOutputStream(new FileOutputStream(dest));
+		try {
+			while ((n = zip.read(buf, 0, buf.length)) > -1) {
+				fos.write(buf, 0, n);
+			}
+		}
+		finally {
+			fos.close();
+		}
+	}
 
 	private ZipInputStream newStream() throws FileNotFoundException {
 		return new ZipInputStream(new FileInputStream(file));
@@ -173,11 +166,12 @@ public class Zip {
 
 	/**
 	 * diff between zip and fs, for each file matching pattern
-	 *
+	 * <p/>
 	 * matching file goes to :
 	 * - extras if in zip and not in fs
 	 * - upgrades if in both
 	 * - minus if not in zip and in fs
+	 *
 	 * @param fs
 	 * @param pattern
 	 * @param minus
@@ -187,15 +181,15 @@ public class Zip {
 	 */
 	@SuppressWarnings("unchecked")
 	public void diff(FileSystem fs,
-			String pattern,
-			List<String> minus,
-			List<String> extras,
-      List<String> upgrades) throws IOException {
-    List<String> files = fs.find(basedir(), pattern);
-    List<String> entries = entries(pattern);
+	                 String pattern,
+	                 List<String> minus,
+	                 List<String> extras,
+	                 List<String> upgrades) throws IOException {
+		List<String> files = fs.find(basedir(), pattern);
+		List<String> entries = entries(pattern);
 
-    upgrades.addAll(CollectionUtils.intersection(files, entries));
-    minus.addAll(CollectionUtils.subtract(files, entries));
-    extras.addAll(CollectionUtils.subtract(entries, files));
-  }
+		upgrades.addAll(CollectionUtils.intersection(files, entries));
+		minus.addAll(CollectionUtils.subtract(files, entries));
+		extras.addAll(CollectionUtils.subtract(entries, files));
+	}
 }

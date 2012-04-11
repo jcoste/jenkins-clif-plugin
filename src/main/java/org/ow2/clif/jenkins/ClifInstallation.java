@@ -240,8 +240,9 @@ public final class ClifInstallation
 				if (!clifJar.exists()) {
 					return FormValidation.error(Messages.Clif_NotClifDirectory(home));
 				}
-				File proactiveJar = new File(home, "lib" + File.separator + "ProActive" + File.separator + "ProActive.jar");
-          		if (!proactiveJar.exists()) {
+				File proactiveJar =
+						new File(home, "lib" + File.separator + "ProActive" + File.separator + "ProActive.jar");
+				if (!proactiveJar.exists()) {
 					return FormValidation.error(Messages.ClifInstallation_BadProactiveInstallation());
 				}
 

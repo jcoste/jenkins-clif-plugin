@@ -7,43 +7,43 @@
 			</l:tasks>
 		</l:side-panel>
 		<l:main-panel>
-      <h1>${%title}</h1>
+			<h1>${%title}</h1>
 			<f:form method="post" action="process">
 
-        <j:if test="${it.upgrades.size() > 0}">
-          <f:section title="${%title.upgrade}">
-            <j:forEach var="f" items="${it.upgrades}">
-              <f:block>
-                <f:checkbox id="${f}[upgrade]" name="${f}[upgrade]" checked="true"/>
-                <label for="${f}[upgrade]">${f}</label>
-              </f:block>
-            </j:forEach>
-          </f:section>
-        </j:if>
+				<j:if test="${it.upgrades.size() > 0}">
+					<f:section title="${%title.upgrade}">
+						<j:forEach var="f" items="${it.upgrades}">
+							<f:block>
+								<f:checkbox id="${f}[upgrade]" name="${f}[upgrade]" checked="true"/>
+								<label for="${f}[upgrade]">${f}</label>
+							</f:block>
+						</j:forEach>
+					</f:section>
+				</j:if>
 
-        <j:if test="${it.installs.size() > 0}">
-          <f:section title="${%title.install}">
-            <j:forEach var="f" items="${it.installs}">
-              <f:block>
-                <f:checkbox id="${f}[install]" name="${f}[install]" checked="true"/>
-                <label for="${f}[install]">${f}</label>
-              </f:block>
-            </j:forEach>
-          </f:section>
-        </j:if>
+				<j:if test="${it.installs.size() > 0}">
+					<f:section title="${%title.install}">
+						<j:forEach var="f" items="${it.installs}">
+							<f:block>
+								<f:checkbox id="${f}[install]" name="${f}[install]" checked="true"/>
+								<label for="${f}[install]">${f}</label>
+							</f:block>
+						</j:forEach>
+					</f:section>
+				</j:if>
 
-        <j:if test="${it.uninstalls.size() > 0}">
-          <f:section title="${%title.uninstall}">
-            <j:forEach var="f" items="${it.uninstalls}">
-                <f:optionalBlock id="${f}[uninstall]" name="${f}[uninstall]" checked="true" title="${f}">
-                  <f:entry>
-                    <label for="${f}[delete]">${%label.delete}</label>
-                    <f:checkbox id="${f}[delete]" name="${f}[delete]" checked="true"/>
-                  </f:entry>
-                </f:optionalBlock>
-            </j:forEach>
-          </f:section>
-        </j:if>
+				<j:if test="${it.uninstalls.size() > 0}">
+					<f:section title="${%title.uninstall}">
+						<j:forEach var="f" items="${it.uninstalls}">
+							<f:optionalBlock id="${f}[uninstall]" name="${f}[uninstall]" checked="true" title="${f}">
+								<f:entry>
+									<label for="${f}[delete]">${%label.delete}</label>
+									<f:checkbox id="${f}[delete]" name="${f}[delete]" checked="true"/>
+								</f:entry>
+							</f:optionalBlock>
+						</j:forEach>
+					</f:section>
+				</j:if>
 
 				<f:block>
 					<f:submit value="${%submit.validate}"/>

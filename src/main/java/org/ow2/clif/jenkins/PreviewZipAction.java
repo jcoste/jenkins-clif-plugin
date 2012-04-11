@@ -1,18 +1,12 @@
 package org.ow2.clif.jenkins;
 
-import static org.apache.commons.io.FilenameUtils.removeExtension;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import hudson.model.FreeStyleProject;
 import hudson.model.Item;
 import hudson.model.ItemGroup;
-import hudson.model.FreeStyleProject;
-
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import jenkins.model.Jenkins;
-
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.ow2.clif.jenkins.jobs.Configurer;
@@ -20,9 +14,13 @@ import org.ow2.clif.jenkins.jobs.FileSystem;
 import org.ow2.clif.jenkins.jobs.ParameterParser;
 import org.ow2.clif.jenkins.jobs.Zip;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 
 public class PreviewZipAction {
 	Jenkins jenkins;
@@ -42,24 +40,24 @@ public class PreviewZipAction {
 	}
 
 	public PreviewZipAction(Zip zip, FileSystem fs, String pattern) {
-	  this.zip = zip;
-	  this.pattern = pattern;
-	  this.fs = fs;
-	  this.clif = new Configurer();
-	  this.jenkins = Jenkins.getInstance();
-  }
+		this.zip = zip;
+		this.pattern = pattern;
+		this.fs = fs;
+		this.clif = new Configurer();
+		this.jenkins = Jenkins.getInstance();
+	}
 
 	public List<String> getUninstalls() {
-  	return uninstalls;
-  }
+		return uninstalls;
+	}
 
 	public List<String> getUpgrades() {
-  	return upgrades;
-  }
+		return upgrades;
+	}
 
 	public List<String> getInstalls() {
-  	return installs;
-  }
+		return installs;
+	}
 
 	public PreviewZipAction diff() throws IOException {
 		zip.diff(fs, pattern, uninstalls, installs, upgrades);
@@ -83,38 +81,38 @@ public class PreviewZipAction {
 			}
 		}
 		zip.extractTo(fs.dir()).delete();
-	  res.sendRedirect2("/");
+		res.sendRedirect2("/");
 	}
 
 	// boilerplate
 	@SuppressWarnings("rawtypes")
-  Map<String, Set<String>> parse(StaplerRequest req) {
+	Map<String, Set<String>> parse(StaplerRequest req) {
 		Map<String, Set<String>> results = Maps.newHashMap();
 		ParameterParser parser = new ParameterParser();
-	  for (Enumeration names = req.getParameterNames(); names.hasMoreElements();) {
-	  	Map<String, String> p = parser.parse((String) names.nextElement());
-	  	for (Map.Entry<String, String> e : p.entrySet()) {
-	  		Set<String> set = results.get(e.getKey());
-	  		if (set == null) {
-	  			set = Sets.newHashSet(e.getValue());
-	  			results.put(e.getKey(), set);
-	  		}
-	  		else {
-	  			set.add(e.getValue());
-	  		}
-	  	}
-	  }
-	  return results;
-  }
+		for (Enumeration names = req.getParameterNames(); names.hasMoreElements(); ) {
+			Map<String, String> p = parser.parse((String) names.nextElement());
+			for (Map.Entry<String, String> e : p.entrySet()) {
+				Set<String> set = results.get(e.getKey());
+				if (set == null) {
+					set = Sets.newHashSet(e.getValue());
+					results.put(e.getKey(), set);
+				}
+				else {
+					set.add(e.getValue());
+				}
+			}
+		}
+		return results;
+	}
 
 	public PreviewZipAction with(ImportZipAction parent) {
 		this.parent = parent;
-	  return this;
-  }
+		return this;
+	}
 
 	public boolean shouldShow() throws IOException {
 		return !zip.canBeSafelyExtractedTo(fs.dir());
-  }
+	}
 
 	public PreviewZipAction process(StaplerResponse res)
 			throws IOException, InterruptedException {
@@ -122,8 +120,8 @@ public class PreviewZipAction {
 		diff();
 
 		if (shouldShow()) {
-		  parent.addPreview(this);
-		  res.sendRedirect2("previews/" + zip.id());
+			parent.addPreview(this);
+			res.sendRedirect2("previews/" + zip.id());
 		}
 		else {
 			for (String entry : installs) {
@@ -132,8 +130,8 @@ public class PreviewZipAction {
 
 			zip.extractTo(fs.dir()).delete();
 
-		  parent.removePreview(id());
-		  res.sendRedirect2("/");
+			parent.removePreview(id());
+			res.sendRedirect2("/");
 		}
 
 		return this;
@@ -142,15 +140,15 @@ public class PreviewZipAction {
 
 	FreeStyleProject install(String entry)
 			throws IOException, InterruptedException {
-	  FreeStyleProject project = newProject(entry);
+		FreeStyleProject project = newProject(entry);
 		jenkins().putItem(project);
 		return project;
-  }
+	}
 
 	FreeStyleProject uninstall(String entry)
 			throws IOException, InterruptedException {
 		FreeStyleProject project =
-				(FreeStyleProject)jenkins().getItem(toProjectName(entry));
+				(FreeStyleProject) jenkins().getItem(toProjectName(entry));
 		if (project != null) {
 			project.delete();
 		}
@@ -181,6 +179,6 @@ public class PreviewZipAction {
 	}
 
 	public String id() {
-	  return zip.id();
-  }
+		return zip.id();
+	}
 }

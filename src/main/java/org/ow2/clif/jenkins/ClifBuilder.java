@@ -403,8 +403,8 @@ public class ClifBuilder
 		}
 
 		@Override
-    @SuppressWarnings("rawtypes")
-    public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+		@SuppressWarnings("rawtypes")
+		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
 			return true;
 		}
 
@@ -414,7 +414,7 @@ public class ClifBuilder
 		}
 
 		@Override
-    public String getDisplayName() {
+		public String getDisplayName() {
 			return Messages.Clif_DisplayName();
 		}
 

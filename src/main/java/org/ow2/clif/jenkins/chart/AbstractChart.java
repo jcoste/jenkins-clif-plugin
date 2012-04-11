@@ -42,7 +42,8 @@ public abstract class AbstractChart {
 
 	protected final ChartConfiguration chartConfiguration;
 
-	public AbstractChart(String chartType, String bladeId, String testplan, String event, ChartConfiguration chartConfiguration) {
+	public AbstractChart(String chartType, String bladeId, String testplan, String event,
+	                     ChartConfiguration chartConfiguration) {
 		this.chartId = new ChartId(chartType, testplan, bladeId, event);
 		this.chartConfiguration = chartConfiguration;
 	}
@@ -146,7 +147,8 @@ public abstract class AbstractChart {
 		JFreeChart chart = createChart();
 
 		File imageFile = getImageFile(rootDir);
-		BufferedImage bImage = chart.createBufferedImage(this.chartConfiguration.getChartWidth(), this.chartConfiguration.getChartHeight());
+		BufferedImage bImage = chart.createBufferedImage(this.chartConfiguration.getChartWidth(),
+		                                                 this.chartConfiguration.getChartHeight());
 		saveImageFile(imageFile, bImage);
 
 	}

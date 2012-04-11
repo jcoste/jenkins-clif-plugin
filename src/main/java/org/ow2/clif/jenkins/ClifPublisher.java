@@ -88,9 +88,9 @@ public class ClifPublisher
 	public ClifPublisher(String clifReportDirectory) {
 		// duplication of default values of
 		// src/main/resources/org/ow2/clif/jenkins/ClifPublisher/config.jelly
-	  this(clifReportDirectory, false, "", "", 1200, 600, 50, 15, 5);
-	  this.dataCleanupConfig = new ClifDataCleanup();
-  }
+		this(clifReportDirectory, false, "", "", 1200, 600, 50, 15, 5);
+		this.dataCleanupConfig = new ClifDataCleanup();
+	}
 
 	@DataBoundConstructor
 	public ClifPublisher(String clifReportDirectory, boolean dateFiltering, String minTimestamp,
@@ -122,7 +122,9 @@ public class ClifPublisher
 					FilePath reportDir = build.getWorkspace().child(this.clifReportDirectory);
 					ClifParser parser = new ClifParser(reportDir.getRemote(), build.getRootDir());
 
-					ChartConfiguration chartConfig = new ChartConfiguration(this.chartHeight, this.chartWidth,this.distributionSliceNumber,this.distributionSliceSize,this.statisticalPeriod);
+					ChartConfiguration chartConfig =
+							new ChartConfiguration(this.chartHeight, this.chartWidth, this.distributionSliceNumber,
+							                       this.distributionSliceSize, this.statisticalPeriod);
 					parser.setChartConfiguration(chartConfig);
 
 					if (this.dateFiltering) {
@@ -209,7 +211,7 @@ public class ClifPublisher
 		}
 
 		@Override
-    public String getDisplayName() {
+		public String getDisplayName() {
 			return Messages.Publisher_DisplayName();
 		}
 

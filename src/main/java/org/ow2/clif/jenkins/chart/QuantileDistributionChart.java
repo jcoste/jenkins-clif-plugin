@@ -41,7 +41,8 @@ public class QuantileDistributionChart
 
 	protected final DefaultCategoryDataset data;
 
-	public QuantileDistributionChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
+	public QuantileDistributionChart(String testplan, String bladeId, String event,
+	                                 ChartConfiguration chartConfiguration) {
 		super("QuantileDistribution", bladeId, testplan, event, chartConfiguration);
 
 		this.data = new DefaultCategoryDataset();

@@ -49,7 +49,8 @@ public class FixedSliceSizeDistributionChart
 
 	protected final SimpleHistogramDataset data;
 
-	public FixedSliceSizeDistributionChart(String testplan, String bladeId, String event, ChartConfiguration chartConfiguration) {
+	public FixedSliceSizeDistributionChart(String testplan, String bladeId, String event,
+	                                       ChartConfiguration chartConfiguration) {
 		super("FixedSliceSizeDistribution", bladeId, testplan, event, chartConfiguration);
 
 		this.data = new SimpleHistogramDataset(this.chartId.getEvent());
@@ -121,7 +122,7 @@ public class FixedSliceSizeDistributionChart
 			this.serie = serie;
 		}
 
-		@SuppressWarnings({ "rawtypes", "unchecked" })
+		@SuppressWarnings({"rawtypes", "unchecked"})
 		@Override
 		protected java.util.List refreshTicksHorizontal(Graphics2D g2, Rectangle2D dataArea, RectangleEdge edge) {
 			java.util.List result = new ArrayList();

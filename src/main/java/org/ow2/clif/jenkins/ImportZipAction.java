@@ -1,13 +1,8 @@
 package org.ow2.clif.jenkins;
 
+import com.google.common.collect.Maps;
 import hudson.Extension;
 import hudson.model.RootAction;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -18,7 +13,10 @@ import org.ow2.clif.jenkins.jobs.FileSystem;
 import org.ow2.clif.jenkins.jobs.Workspaces;
 import org.ow2.clif.jenkins.jobs.Zip;
 
-import com.google.common.collect.Maps;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 
 @Extension
@@ -29,12 +27,12 @@ public class ImportZipAction implements RootAction {
 	final Map<String, PreviewZipAction> previews = Maps.newHashMap();
 
 	public void setZipFilePath(String filePath) {
-  	this.zip = new Zip(filePath);
-  }
+		this.zip = new Zip(filePath);
+	}
 
 	public String getZipFilePath() {
-  	return zip.getFile().getAbsolutePath();
-  }
+		return zip.getFile().getAbsolutePath();
+	}
 
 	public ImportZipAction() {
 		pattern = "(.*)\\.ctp$";
@@ -56,8 +54,8 @@ public class ImportZipAction implements RootAction {
 			throws IOException, InterruptedException, FileUploadException {
 		zip = new Zip(readZipFile(req));
 		new PreviewZipAction(zip, new FileSystem(location()), pattern)
-			.with(this)
-			.process(res);
+				.with(this)
+				.process(res);
 	}
 
 	public String location() {
@@ -68,18 +66,19 @@ public class ImportZipAction implements RootAction {
 	private File readZipFile(StaplerRequest req)
 			throws IOException, FileUploadException {
 		List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory())
-			.parseRequest(req);
-	  File file = File.createTempFile("zip", null);
+				.parseRequest(req);
+		File file = File.createTempFile("zip", null);
 		try {
-	    items.get(0).write(file);
-    } catch (Exception e) {
-	    throw new IOException(e);
-    }
+			items.get(0).write(file);
+		}
+		catch (Exception e) {
+			throw new IOException(e);
+		}
 		return file;
-  }
+	}
 
 	public PreviewZipAction getPreviews(String id) {
-		 return previews.get(id);
+		return previews.get(id);
 	}
 
 	public PreviewZipAction addPreview(PreviewZipAction preview) {

@@ -27,7 +27,7 @@ package org.ow2.clif.jenkins.parser.clif;
  */
 public class ClifParserException
 		extends Exception {
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	public ClifParserException(String message) {
 		super(message);
