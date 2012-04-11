@@ -5,7 +5,6 @@ import hudson.model.Item;
 import hudson.model.ItemGroup;
 import hudson.model.FreeStyleProject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
@@ -155,13 +154,13 @@ public class PreviewZipAction {
 		if (project != null) {
 			project.delete();
 		}
-		fs.rm(entry);
+		fs.rm(removeExtension(entry) + "*");
 		return project;
 	}
 
 	void deleteTestData(String entry) throws IOException {
 		String s = entry.replace(zip.basedir() + "/", zip.basedir() + "/report/");
-		fs.rm_dir(removeExtension(s) + ".*");
+		fs.rm_rf(removeExtension(s) + "*");
 	}
 
 	private Jenkins jenkins() {

@@ -1,16 +1,14 @@
 package org.ow2.clif.jenkins.jobs;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.tools.ant.DirectoryScanner;
 
 import com.google.common.collect.Lists;
 
@@ -54,39 +52,39 @@ public class FileSystem {
   }
 
   /**
-   * removes dirs matching pattern from dir
+   * removes dirs matching glob from dir
    *
-   * @param pattern
+   * @param glob
    * @throws IOException
    */
-  public void rm_dir(String pattern) throws IOException {
-		List<File> files = Lists.newArrayList();
-		File d = new File(dir);
-		files = files(d, null, files);
-		Pattern re = Pattern.compile(d.getPath() + "/" + pattern);
-		for (File f : files) {
-			if (re.matcher(f.getPath()).matches()) {
-				FileUtils.deleteDirectory(f);
-			}
+  public void rm_rf(String glob) {
+  	DirectoryScanner scanner = scan(glob);
+		for (String f : scanner.getIncludedDirectories()) {
+			_rm_f(f);
+		}
+		for (String f : scanner.getIncludedFiles()) {
+			_rm_f(f);
 		}
   }
 
-  /**
-   * deletes files from dir
-   * @param file
-   * @throws IOException
-   */
-  public void rm(String file) throws IOException {
-  	FileUtils.forceDelete(new File(dir + "/" + file));
+
+  public void rm(String glob) {
+  	for (String f : scan(glob).getIncludedFiles()) {
+			_rm_f(f);
+		}
   }
 
-	public static List<File> files(File d, String glob, List<File> acc) {
-	  File[] dirs = d.listFiles((FileFilter)DirectoryFileFilter.DIRECTORY);
-	  for (File child : dirs) {
-	  	acc.add(child);
-	  	files(child, glob, acc);
-	  }
-	  return acc;
+
+  private void _rm_f(String file) {
+  	FileUtils.deleteQuietly(new File(dir + "/" + file));
+  }
+
+  private DirectoryScanner scan(String glob) {
+	  DirectoryScanner scanner = new DirectoryScanner();
+		scanner.setBasedir(dir());
+		scanner.setIncludes(new String[] {glob});
+		scanner.scan();
+	  return scanner;
   }
 
 	public String dir() {
