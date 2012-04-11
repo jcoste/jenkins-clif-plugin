@@ -20,6 +20,7 @@
  */
 package org.ow2.clif.jenkins;
 
+import hudson.Util;
 import hudson.util.FormValidation;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -59,47 +60,44 @@ public class ClifInstallationTest extends HudsonTestCase {
 
 	@Test
 	public void testDoCheckInstallationGoodInstall() {
-		doCheckInstallation(OK, "Cette installation Clif ProActive est valide.");
+		doCheckInstallation(OK, Messages.ClifInstallation_ProactiveInstallationValid());
 	}
 
 	@Test
 	public void testDoCheckInstallationBadHome() {
 		home = new File("");
-		doCheckInstallation(ERROR, "Champ obligatoire");
+		doCheckInstallation(ERROR, Messages.Clif_HomeRequired());
 
 		String fileAsHome = "target/test-classes/org/ow2/clif/jenkins/ClifInstallationTest.class";
 		home = new File(fileAsHome);
-		doCheckInstallation(ERROR,
-		                    fileNameWithOSFileSep(fileAsHome) + " n&#039;est pas un répertoire");
+		doCheckInstallation(ERROR,Messages.Clif_NotADirectory(home));
 
 		String badClifInstallation = "target/test-classes/badClifInstallation";
 		home = new File(badClifInstallation);
-		doCheckInstallation(ERROR,
-		                    fileNameWithOSFileSep(badClifInstallation) + " ne semble pas être un répertoire Clif");
+		doCheckInstallation(ERROR,Messages.Clif_NotClifDirectory(home));
+
 
 		String badProActiveInstallation = "target/test-classes/badProActiveInstallation";
 		home = new File(badProActiveInstallation);
-		doCheckInstallation(ERROR, "Cette installation Clif ProActive est invalide.");
+		doCheckInstallation(ERROR, Messages.ClifInstallation_BadProactiveInstallation());
 	}
 
 	@Test
 	public void testDoCheckInstallationBadURL() {
 		schedulerURL = null;
-		doCheckInstallation(ERROR,
-		                    "L&#039;URL du scheduler est obligatoire pour une installation Clif ProActive.");
+		doCheckInstallation(ERROR, Messages.ClifInstallation_SchedulerURLMissing());
 
 		schedulerURL = " ";
-		doCheckInstallation(ERROR,
-		                    "L&#039;URL du scheduler est obligatoire pour une installation Clif ProActive.");
+		doCheckInstallation(ERROR, Messages.ClifInstallation_SchedulerURLMissing());
 	}
 
 	@Test
 	public void testDoCheckInstallationBadCredentialsFile() {
 		schedulerCredentialsFile = new File("");
-		doCheckInstallation(ERROR, "Fichier d&#039;accréditation obligatoire.");
+		doCheckInstallation(ERROR, Messages.ClifInstallation_CredentialsFileMissing());
 
 		schedulerCredentialsFile = new File("target/test-classes/unknownFile");
-		doCheckInstallation(ERROR, "Fichier d&#039;accréditation non trouvé.");
+		doCheckInstallation(ERROR, Messages.ClifInstallation_CredentialsFileNotFound());
 	}
 
 	private String fileNameWithOSFileSep(final String fileAsHome) {
@@ -109,7 +107,7 @@ public class ClifInstallationTest extends HudsonTestCase {
 	private void doCheckInstallation(final FormValidation.Kind expectedKind, final String expectedMessage) {
 		final FormValidation res = desc.doCheckInstallation(home, schedulerURL, schedulerCredentialsFile);
 		assertThat(res.kind).isEqualTo(expectedKind);
-		assertThat(res.getMessage()).isEqualTo(expectedMessage);
+		assertThat(res.getMessage()).isEqualTo(Util.escape(expectedMessage));
 	}
 
 }
