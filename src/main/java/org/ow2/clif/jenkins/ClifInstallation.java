@@ -245,7 +245,7 @@ public final class ClifInstallation
 					return FormValidation.error(Messages.ClifInstallation_BadProactiveInstallation());
 				}
 
-				if (schedulerCredentialsFile == null) {
+				if (schedulerCredentialsFile == null || schedulerCredentialsFile.getPath().equals("")) {
 					return FormValidation.error(Messages.ClifInstallation_CredentialsFileMissing());
 
 				}
