@@ -84,7 +84,7 @@ public abstract class AbstractMovingStat {
 							finished = true;
 						}
 					}
-					addMovingStatForPeriod(result, lastXEndPeriod);
+					addMovingStatForPeriod(result, lastXEndPeriod-(period/2));
 					i -= offset - 1;
 				}
 			}
