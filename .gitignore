@@ -4,3 +4,6 @@
 
 target/
 work/
+jenkins-clif-plugin.ipr
+jenkins-clif-plugin.iws
+jenkins-clif-plugin.iml
