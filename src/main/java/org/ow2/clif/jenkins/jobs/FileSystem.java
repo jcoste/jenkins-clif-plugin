@@ -3,6 +3,7 @@ package org.ow2.clif.jenkins.jobs;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.DirectoryScanner;
 
 import java.io.File;
@@ -45,7 +46,8 @@ public class FileSystem {
 		ArrayList<String> list = Lists.newArrayListWithCapacity(files.size());
 		for (Object o : files) {
 			File f = (File) o;
-			list.add(f.getAbsolutePath().substring(prefix.length() + 1));
+			String filename = f.getAbsolutePath().substring(prefix.length() + 1);
+			list.add(StringUtils.replaceChars(filename,File.separatorChar, '/'));
 		}
 		return list;
 	}
