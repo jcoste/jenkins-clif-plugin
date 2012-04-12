@@ -20,15 +20,13 @@
  */
 package org.ow2.clif.jenkins;
 
+import hudson.Extension;
 import hudson.model.Job;
 import hudson.model.JobProperty;
+import hudson.model.JobPropertyDescriptor;
 
 /**
- * Created by IntelliJ IDEA.
- * User: bvjr5731
- * Date: 12/04/12
- * Time: 16:20
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class ClifJobProperty extends JobProperty<Job<?, ?>> {
 
@@ -44,5 +42,14 @@ public class ClifJobProperty extends JobProperty<Job<?, ?>> {
 
 	public void setDeleteReport(boolean deleteReport) {
 		this.deleteReport = deleteReport;
+	}
+
+	@Extension
+	public static class DescriptorImpl extends JobPropertyDescriptor {
+
+		@Override
+		public String getDisplayName() {
+			return "ClifJobProperty";
+		}
 	}
 }
