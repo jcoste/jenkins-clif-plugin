@@ -149,14 +149,14 @@ public class MovingAverageTest {
 		dataSeries.add(9, 4);
 		dataSeries.add(10, 3);
 
-		AbstractMovingStat ms = new MovingThroughputStat();
+		AbstractMovingStat ms = new MovingThroughputStat(3);
 		XYSeries res = ms.calculateMovingStat(dataset, 0, "throughput", 3, 3);
 
 		assertNotNull(res);
 		assertEquals("Bad size", 3, res.getItemCount());
 		printSeries(res, "res");
 		System.out.println(res);
-		double[] expectedMedians = {1500, 1500, 1500};
+		double[] expectedMedians = {1000, 1000, 1000};
 		for (int i = 0; i < expectedMedians.length; i++) {
 			assertEquals("Bad throughput at index " + i, expectedMedians[i], res.getY(i));
 		}

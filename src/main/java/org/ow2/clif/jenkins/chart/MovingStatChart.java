@@ -107,7 +107,7 @@ public class MovingStatChart
 	}
 
 	private XYSeriesCollection calculateThroughputDataset(XYSeriesCollection coreDataset, long periodMs) {
-		MovingStdDevStat throughputStat = new MovingStdDevStat();
+		MovingThroughputStat throughputStat = new MovingThroughputStat(periodMs);
 		XYSeries throughputSeries =
 				throughputStat.calculateMovingStat(coreDataset, 0, MovingChart_MovingThroughput(), periodMs, 0);
 		XYSeriesCollection throughputDataset = new XYSeriesCollection();
