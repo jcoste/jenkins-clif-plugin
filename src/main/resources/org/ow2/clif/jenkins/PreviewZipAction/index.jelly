@@ -9,9 +9,18 @@
 		<l:main-panel>
 			<h1>${%title}</h1>
 			<f:form method="post" action="process">
+				<f:section title="">
 
-				<j:if test="${it.upgrades.size() > 0}">
-					<f:section title="${%title.upgrade}">
+					<j:if test="${it.upgrades.size() > 0}">
+						<f:block>
+							<div style="height:20px"/>
+							<div class="section-header">
+								<img src='${imagesURL}/24x24/refresh.png' height='16' width='16'/>
+								${%title.upgrade}
+							</div>
+
+						</f:block>
+
 						<j:forEach var="f" items="${it.upgrades}">
 							<f:block>
 								<p>
@@ -21,22 +30,32 @@
 								<label for="${f}[create]">${%label.purge}</label>
 							</f:block>
 						</j:forEach>
-					</f:section>
-				</j:if>
+					</j:if>
 
-				<j:if test="${it.installs.size() > 0}">
-					<f:section title="${%title.install}">
+					<j:if test="${it.installs.size() > 0}">
+						<f:block>
+							<div style="height:20px"/>
+							<div class="section-header">
+								<img src='${imagesURL}/24x24/new-package.png' height='16' width='16'/>
+								${%title.install}
+							</div>
+						</f:block>
 						<j:forEach var="f" items="${it.installs}">
 							<f:block>
 								<f:checkbox id="${f}[create]" name="${f}[create]" checked="true"/>
 								<label for="${f}[create]">${f}</label>
 							</f:block>
 						</j:forEach>
-					</f:section>
-				</j:if>
+					</j:if>
 
-				<j:if test="${it.uninstalls.size() > 0}">
-					<f:section title="${%title.uninstall}">
+					<j:if test="${it.uninstalls.size() > 0}">
+						<f:block>
+							<div style="height:20px"/>
+							<div class="section-header">
+								<img src='${imagesURL}/24x24/edit-delete.png' height='16' width='16'/>
+								${%title.uninstall}
+							</div>
+						</f:block>
 						<j:forEach var="f" items="${it.uninstalls}">
 							<f:optionalBlock id="${f}[delete]" name="${f}[delete]" checked="true" title="${f}">
 								<f:entry>
@@ -45,12 +64,13 @@
 								</f:entry>
 							</f:optionalBlock>
 						</j:forEach>
-					</f:section>
-				</j:if>
+					</j:if>
 
-				<f:block>
-					<f:submit value="${%submit.validate}"/>
-				</f:block>
+					<f:block>
+						<div style="height:20px"/>
+						<f:submit value="${%submit.validate}"/>
+					</f:block>
+				</f:section>
 			</f:form>
 		</l:main-panel>
 	</l:layout>
