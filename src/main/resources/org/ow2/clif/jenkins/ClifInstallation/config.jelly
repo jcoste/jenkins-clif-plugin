@@ -20,7 +20,7 @@
 					           value="${instance.clifProActiveConfig.schedulerCredentialsFile}"/>
 				</f:entry>
 				<f:entry title="${%Fork props}">
-					<f:textbox name="forkProps" value="${instance.clifProActiveConfig.forkProps}"/>
+					<f:textbox name="forkProps" value="${instance.clifProActiveConfig.forkProps}" default="-Dproactive.communication.protocol=rmi -Dclif.fileserver.impl=proactive -Dclif.codeserver.impl=proactive -Dproactive.useIPaddress=true"/>
 				</f:entry>
 				<f:validateButton
 						title="${%Check installation}" progress="${%Testing...}"
