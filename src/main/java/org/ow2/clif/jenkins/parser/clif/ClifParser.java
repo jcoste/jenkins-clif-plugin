@@ -25,6 +25,7 @@ import org.ow2.clif.jenkins.chart.ChartConfiguration;
 import org.ow2.clif.jenkins.model.*;
 import org.ow2.clif.storage.api.*;
 import org.ow2.clif.storage.lib.filestorage.ConsoleFileStorageImpl;
+import org.ow2.clif.storage.lib.filestorage.FileStorageReader;
 import org.ow2.clif.storage.lib.util.DateEventFilter;
 import org.ow2.clif.supervisor.api.ClifException;
 
@@ -88,7 +89,7 @@ public class ClifParser {
 
 	protected final List<String> eventTypeToExclude = Arrays.asList("lifecycle", ALARM_EVENT_TYPE);
 
-	protected final StorageRead storageRead;
+	protected StorageRead storageRead;
 
 	protected PrintStream logger;
 
@@ -102,7 +103,6 @@ public class ClifParser {
 	public ClifParser(String clifReportDirectory, File ouputDirectory) {
 		this.clifReportDirectory = clifReportDirectory;
 		this.ouputDirectory = ouputDirectory;
-		this.storageRead = new ConsoleFileStorageImpl();
 	}
 
 	// --------------- Configuration methods -------------------
@@ -147,9 +147,10 @@ public class ClifParser {
 	public ClifReport parse(PrintStream logger)
 			throws ClifParserException {
 		this.logger = logger;
-		System.setProperty("clif.filestorage.dir", this.clifReportDirectory);
-		report = new ClifReport();
+		this.report = new ClifReport();
+
 		try {
+			this.storageRead = new FileStorageReader(this.clifReportDirectory, false);
 			TestDescriptor[] tests = this.storageRead.getTests(null);
 			TestDescriptor latestTest = tests[0];
 			for (TestDescriptor testDesc : tests) {
@@ -165,7 +166,7 @@ public class ClifParser {
 			e.printStackTrace();
 			throw new ClifParserException("Error during parsing of CLIF report directory");
 		}
-		return report;
+		return this.report;
 	}
 
 	protected void analyzeTestPlan(BladeFilter bladeFilter)
