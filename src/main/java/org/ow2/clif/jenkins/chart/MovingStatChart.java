@@ -145,7 +145,7 @@ public class MovingStatChart
 	}
 
 	private void attachThroughputDatasetToDedicatedAxis(XYSeriesCollection throughputDataset, XYPlot plot) {
-		NumberAxis throughputAxis = new NumberAxis("Throughput (req/s)");
+		NumberAxis throughputAxis = new NumberAxis(Messages.MovingChart_Throughput());
 		plot.setRangeAxis(1, throughputAxis);
 		plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
 		plot.setDataset(1, throughputDataset);
