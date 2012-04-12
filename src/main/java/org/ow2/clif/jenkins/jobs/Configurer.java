@@ -5,6 +5,7 @@ import hudson.model.FreeStyleProject;
 import java.io.IOException;
 
 import org.ow2.clif.jenkins.ClifBuilder;
+import org.ow2.clif.jenkins.ClifJobProperty;
 import org.ow2.clif.jenkins.ClifPublisher;
 
 public class Configurer {
@@ -21,20 +22,21 @@ public class Configurer {
 		job.getBuildersList().add(newClifBuilder(p));
 		job.getPublishersList().add(newClifPublisher(dir));
 		job.setCustomWorkspace(dir);
+		job.addProperty(new ClifJobProperty(true));
 		return job;
 	}
 
 	ClifPublisher newClifPublisher(String dir) {
-	  return new ClifPublisher(dir + "/report");
-  }
+		return new ClifPublisher(dir + "/report");
+	}
 
 	ClifBuilder newClifBuilder(String plan) {
-	  String clifName = installations.getFirstClifName();
+		String clifName = installations.getFirstClifName();
 		String antName = installations.getFirstAntName();
 		ClifBuilder builder = new ClifBuilder(
 				clifName, antName, null, null, plan, "report"
 		);
-	  return builder;
-  }
+		return builder;
+	}
 
 }
