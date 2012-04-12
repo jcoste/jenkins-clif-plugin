@@ -23,21 +23,21 @@ public class PreviewZipAction {
 	ImportZipAction parent;
 
 	private final Zip zip;
-	private final FileSystem fs;
+	private final String clifWorkspaceDir;
 	private final String pattern;
 
 	List<String> uninstalls;
 	List<String> upgrades;
 	List<String> installs;
 
-	public PreviewZipAction(Zip zip, FileSystem fs) {
-		this(zip, fs, null);
+	public PreviewZipAction(Zip zip, String clifWorkspaceDir) {
+		this(zip, clifWorkspaceDir, null);
 	}
 
-	public PreviewZipAction(Zip zip, FileSystem fs, String pattern) {
+	public PreviewZipAction(Zip zip, String clifWorkspaceDir, String pattern) {
 		this.zip = zip;
 		this.pattern = pattern;
-		this.fs = fs;
+		this.clifWorkspaceDir = clifWorkspaceDir;
 		this.clif = new Configurer();
 		this.jenkins = Jenkins.getInstance();
 	}
@@ -102,7 +102,7 @@ public class PreviewZipAction {
 				delete(plan);
 			}
 		}
-		zip.extractTo(fs.dir()).delete();
+		zip.extractTo(clifWorkspaceDir).delete();
 		res.sendRedirect2("/");
 	}
 

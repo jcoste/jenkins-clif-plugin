@@ -53,7 +53,7 @@ public class ImportZipAction implements RootAction {
 	public void doImport(StaplerRequest req, StaplerResponse res)
 			throws IOException, InterruptedException, FileUploadException {
 		zip = new Zip(readZipFile(req));
-		new PreviewZipAction(zip, new FileSystem(location()), pattern)
+		new PreviewZipAction(zip, location(), pattern)
 				.with(this)
 				.process(res);
 	}

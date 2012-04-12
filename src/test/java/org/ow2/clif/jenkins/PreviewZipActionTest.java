@@ -24,7 +24,6 @@ public class PreviewZipActionTest {
 	private Jenkins jenkins;
 	private PreviewZipAction preview;
 	private Zip zip;
-	private FileSystem fs;
 	private Configurer configurer;
 	private ImportZipAction parent;
 
@@ -34,9 +33,8 @@ public class PreviewZipActionTest {
 		configurer = new FakeConfigurer();
 
 		zip = mock(Zip.class);
-		fs = mock(FileSystem.class);
 		parent = new ImportZipAction();
-		preview = new PreviewZipAction(zip, fs);
+		preview = new PreviewZipAction(zip, null);
 		preview.parent = parent;
 		preview.clif = configurer;
 		preview.jenkins = jenkins;
