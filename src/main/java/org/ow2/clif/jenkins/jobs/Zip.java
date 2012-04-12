@@ -1,16 +1,22 @@
 package org.ow2.clif.jenkins.jobs;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
+import static org.apache.commons.lang.StringUtils.chop;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static org.apache.commons.lang.StringUtils.chop;
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.collect.Lists;
 
 public class Zip {
 	private final File file;
@@ -87,18 +93,6 @@ public class Zip {
 	}
 
 	/**
-	 * @param location
-	 * @return true if all entries do not exists on file system, at location
-	 * @throws IOException
-	 */
-	public boolean canBeSafelyExtractedTo(String location) throws IOException {
-		for (String name : entries()) {
-			if (new File(location + "/" + name).exists()) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	/**
 	 * unzips to directory
@@ -164,32 +158,4 @@ public class Zip {
 		return new ZipInputStream(new FileInputStream(file));
 	}
 
-	/**
-	 * diff between zip and fs, for each file matching pattern
-	 * <p/>
-	 * matching file goes to :
-	 * - extras if in zip and not in fs
-	 * - upgrades if in both
-	 * - minus if not in zip and in fs
-	 *
-	 * @param fs
-	 * @param pattern
-	 * @param minus
-	 * @param extras
-	 * @param upgrades
-	 * @throws IOException
-	 */
-	@SuppressWarnings("unchecked")
-	public void diff(FileSystem fs,
-	                 String pattern,
-	                 List<String> minus,
-	                 List<String> extras,
-	                 List<String> upgrades) throws IOException {
-		List<String> files = fs.find(basedir(), pattern);
-		List<String> entries = entries(pattern);
-
-		upgrades.addAll(CollectionUtils.intersection(files, entries));
-		minus.addAll(CollectionUtils.subtract(files, entries));
-		extras.addAll(CollectionUtils.subtract(entries, files));
-	}
 }

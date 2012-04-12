@@ -1,14 +1,14 @@
 package org.ow2.clif.jenkins.jobs;
 
 
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.io.File;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 public class ZipExtractTest {
 	private Zip zip;
@@ -17,7 +17,7 @@ public class ZipExtractTest {
 
 	@Before
 	public void setUp() throws Exception {
-		path = "src/test/resources/workspaces";
+		path = "target/workspaces";
 		workspaces = new File(path);
 		FileUtils.forceMkdir(workspaces);
 	}
@@ -33,20 +33,5 @@ public class ZipExtractTest {
 		zip.extractTo(path);
 		assertThat(new File(workspaces + "/samples")).isDirectory();
 		assertThat(new File(workspaces + "/samples/post.ctp")).isFile();
-	}
-
-	@Test
-	public void canBeExtractedSafelyWhenNoFileMatchesEntry() throws Exception {
-		zip = new Zip("src/test/resources/zips/nested.zip");
-		assertThat(zip.canBeSafelyExtractedTo(path)).isTrue();
-	}
-
-	@Test
-	public void canNotBeExtractedSafelyWhenDirExists() throws Exception {
-		zip = new Zip("src/test/resources/zips/nested.zip");
-		FileUtils.forceMkdir(new File(path + "/samples"));
-		FileUtils.touch(new File(path + "/samples/post.json"));
-
-		assertThat(zip.canBeSafelyExtractedTo(path)).isFalse();
 	}
 }

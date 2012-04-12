@@ -1,15 +1,14 @@
 package org.ow2.clif.jenkins.jobs;
 
 
+import static org.fest.assertions.Assertions.assertThat;
+
+import java.io.File;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.List;
-
-import static org.fest.assertions.Assertions.assertThat;
 
 public class FileSystemTest {
 	private String path;
@@ -29,18 +28,6 @@ public class FileSystemTest {
 		FileUtils.deleteDirectory(workspaces);
 	}
 
-	@Test
-	public void findsFilesMatchingRegexp() throws Exception {
-		Zip zip = new Zip("src/test/resources/zips/clif-examples-1.zip");
-		zip.extractTo(path);
-
-		List<String> plans = fs.find(zip.basedir(), ".*ctp");
-		assertThat(plans).containsExactly(
-				"examples/dummy.ctp",
-				"examples/synchro.ctp"
-		);
-	}
-
 	File mkdir(String p) throws Exception {
 		File f = new File(fs.dir() + "/" + p);
 		FileUtils.forceMkdir(f);
@@ -54,7 +41,7 @@ public class FileSystemTest {
 	}
 
 	@Test
-	public void removesDir() throws Exception {
+  public void removesDir() throws Exception {
 		File f = mkdir("report/synchro_2012-04-11_10h53m40");
 		File monster = touch("report/synchro_2012-04-11_10h53m40.ctp");
 		touch("synchro.ctp");
@@ -62,8 +49,8 @@ public class FileSystemTest {
 
 		fs.rm_rf("**/synchro*");
 
-		assertThat(f).doesNotExist();
-		assertThat(monster).doesNotExist();
-		assertThat(elvis).exists();
-	}
+	  assertThat(f).doesNotExist();
+	  assertThat(monster).doesNotExist();
+	  assertThat(elvis).exists();
+  }
 }

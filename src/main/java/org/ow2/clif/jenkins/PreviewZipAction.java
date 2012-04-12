@@ -1,18 +1,10 @@
 package org.ow2.clif.jenkins;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import hudson.model.FreeStyleProject;
+import static org.apache.commons.io.FilenameUtils.removeExtension;
+import static com.google.common.collect.Lists.*;
+
 import hudson.model.Item;
-import hudson.model.ItemGroup;
-import jenkins.model.Jenkins;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-import org.ow2.clif.jenkins.jobs.Configurer;
-import org.ow2.clif.jenkins.jobs.FileSystem;
-import org.ow2.clif.jenkins.jobs.ParameterParser;
-import org.ow2.clif.jenkins.jobs.Zip;
+import hudson.model.FreeStyleProject;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -20,7 +12,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.apache.commons.io.FilenameUtils.removeExtension;
+import jenkins.model.Jenkins;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.FileSystem;
+import org.ow2.clif.jenkins.jobs.Jobs;
+import org.ow2.clif.jenkins.jobs.ParameterParser;
+import org.ow2.clif.jenkins.jobs.Zip;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class PreviewZipAction {
 	Jenkins jenkins;
@@ -31,133 +36,149 @@ public class PreviewZipAction {
 	private final FileSystem fs;
 	private final String pattern;
 
-	private final List<String> uninstalls = Lists.newArrayList();
-	private final List<String> upgrades = Lists.newArrayList();
-	private final List<String> installs = Lists.newArrayList();
+	List<String> uninstalls;
+	List<String> upgrades;
+	List<String> installs;
 
 	public PreviewZipAction(Zip zip, FileSystem fs) {
 		this(zip, fs, null);
 	}
 
 	public PreviewZipAction(Zip zip, FileSystem fs, String pattern) {
-		this.zip = zip;
-		this.pattern = pattern;
-		this.fs = fs;
-		this.clif = new Configurer();
-		this.jenkins = Jenkins.getInstance();
-	}
+	  this.zip = zip;
+	  this.pattern = pattern;
+	  this.fs = fs;
+	  this.clif = new Configurer();
+	  this.jenkins = Jenkins.getInstance();
+  }
 
 	public List<String> getUninstalls() {
-		return uninstalls;
-	}
+  	return uninstalls;
+  }
 
 	public List<String> getUpgrades() {
-		return upgrades;
-	}
+  	return upgrades;
+  }
 
 	public List<String> getInstalls() {
-		return installs;
-	}
+  	return installs;
+  }
 
-	public PreviewZipAction diff() throws IOException {
-		zip.diff(fs, pattern, uninstalls, installs, upgrades);
+	@SuppressWarnings("unchecked")
+  PreviewZipAction diff() throws IOException {
+		List<String> newPlans = zip.entries(pattern);
+		String dir = zip.basedir();
+
+		List<String> oldPlans = Lists.newArrayList();
+		for (Item item : jenkins.getAllItems()) {
+			String name = item.getName();
+			if (name.startsWith(dir + "-")) {
+				oldPlans.add(Jobs.toPlan(name));
+			}
+		}
+
+		installs =  newArrayList();
+		uninstalls = newArrayList();
+		upgrades = newArrayList();
+
+    installs.addAll(CollectionUtils.subtract(newPlans, oldPlans));
+    uninstalls.addAll(CollectionUtils.subtract(oldPlans, newPlans));
+    upgrades.addAll(CollectionUtils.intersection(newPlans, oldPlans));
+
 		return this;
 	}
 
+	/**
+	 * responds to POST /clif/previews/12345
+	 *
+	 * @param req
+	 * @param res
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public void doProcess(StaplerRequest req, StaplerResponse res)
 			throws IOException, InterruptedException {
 		Map<String, Set<String>> actions = parse(req);
 		for (Map.Entry<String, Set<String>> e : actions.entrySet()) {
-			String entry = e.getKey();
+			String plan = e.getKey();
 			Set<String> verbs = e.getValue();
-			if (verbs.contains("install") || verbs.contains("upgrade")) {
-				install(entry);
+			if (verbs.contains("create")) {
+				create(plan);
 			}
-			if (verbs.contains("uninstall")) {
-				uninstall(entry);
-				if (verbs.contains("delete")) {
-					deleteTestData(entry);
+			if (verbs.contains("update")) {
+				rm(plan);
+				create(plan);
+			}
+			if (verbs.contains("delete")) {
+				delete(plan);
+				if (verbs.contains("rm")) {
+					rm(plan);
 				}
 			}
 		}
 		zip.extractTo(fs.dir()).delete();
-		res.sendRedirect2("/");
+	  res.sendRedirect2("/");
 	}
 
 	// boilerplate
 	@SuppressWarnings("rawtypes")
-	Map<String, Set<String>> parse(StaplerRequest req) {
+  Map<String, Set<String>> parse(StaplerRequest req) {
 		Map<String, Set<String>> results = Maps.newHashMap();
 		ParameterParser parser = new ParameterParser();
-		for (Enumeration names = req.getParameterNames(); names.hasMoreElements(); ) {
-			Map<String, String> p = parser.parse((String) names.nextElement());
-			for (Map.Entry<String, String> e : p.entrySet()) {
-				Set<String> set = results.get(e.getKey());
-				if (set == null) {
-					set = Sets.newHashSet(e.getValue());
-					results.put(e.getKey(), set);
-				}
-				else {
-					set.add(e.getValue());
-				}
-			}
-		}
-		return results;
-	}
+	  for (Enumeration names = req.getParameterNames(); names.hasMoreElements();) {
+	  	Map<String, String> p = parser.parse((String) names.nextElement());
+	  	for (Map.Entry<String, String> e : p.entrySet()) {
+	  		Set<String> set = results.get(e.getKey());
+	  		if (set == null) {
+	  			set = Sets.newHashSet(e.getValue());
+	  			results.put(e.getKey(), set);
+	  		}
+	  		else {
+	  			set.add(e.getValue());
+	  		}
+	  	}
+	  }
+	  return results;
+  }
 
 	public PreviewZipAction with(ImportZipAction parent) {
 		this.parent = parent;
-		return this;
-	}
-
-	public boolean shouldShow() throws IOException {
-		return !zip.canBeSafelyExtractedTo(fs.dir());
-	}
+	  return this;
+  }
 
 	public PreviewZipAction process(StaplerResponse res)
 			throws IOException, InterruptedException {
 
 		diff();
 
-		if (shouldShow()) {
-			parent.addPreview(this);
-			res.sendRedirect2("previews/" + zip.id());
-		}
-		else {
-			for (String entry : installs) {
-				install(entry);
-			}
-
-			zip.extractTo(fs.dir()).delete();
-
-			parent.removePreview(id());
-			res.sendRedirect2("/");
-		}
+	  parent.addPreview(this);
+	  res.sendRedirect2("previews/" + id());
 
 		return this;
 	}
 
-
-	FreeStyleProject install(String entry)
+	FreeStyleProject create(String plan)
 			throws IOException, InterruptedException {
-		FreeStyleProject project = newProject(entry);
+	  FreeStyleProject project = newProject(plan);
 		jenkins().putItem(project);
 		return project;
-	}
+  }
 
-	FreeStyleProject uninstall(String entry)
+	FreeStyleProject delete(String plan)
 			throws IOException, InterruptedException {
-		FreeStyleProject project =
-				(FreeStyleProject) jenkins().getItem(toProjectName(entry));
-		if (project != null) {
-			project.delete();
+		FreeStyleProject job =
+				(FreeStyleProject)jenkins().getItem(Jobs.toJob(plan));
+		if (job != null) {
+			job.delete();
 		}
-		fs.rm(removeExtension(entry) + "*");
-		return project;
+		fs.rm(removeExtension(plan) + "*");
+		return job;
 	}
 
-	void deleteTestData(String entry) throws IOException {
-		String s = entry.replace(zip.basedir() + "/", zip.basedir() + "/report/");
+	void rm(String plan) throws IOException {
+		// FIXME grab job and its clif builder
+		// and look for report directory attribute
+		String s = plan.replace(zip.basedir() + "/", zip.basedir() + "/report/");
 		fs.rm_rf(removeExtension(s) + "*");
 	}
 
@@ -165,20 +186,13 @@ public class PreviewZipAction {
 		return jenkins;
 	}
 
-	FreeStyleProject newProject(String fileName)
+	FreeStyleProject newProject(String plan)
 			throws IOException, InterruptedException {
-		FreeStyleProject project = new FreeStyleProject(
-				(ItemGroup<? extends Item>) jenkins(),
-				toProjectName(fileName)
-		);
-		return clif.configure(project, fileName);
-	}
-
-	public static String toProjectName(String fileName) {
-		return removeExtension(fileName.replace('/', '-'));
+		FreeStyleProject project = Jobs.newJob(jenkins, Jobs.toJob(plan));
+		return clif.configure(project, plan);
 	}
 
 	public String id() {
-		return zip.id();
-	}
+	  return zip.id();
+  }
 }

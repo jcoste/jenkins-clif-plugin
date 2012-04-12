@@ -1,17 +1,20 @@
 package org.ow2.clif.jenkins.jobs;
 
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.Builder;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.ow2.clif.jenkins.ClifBuilder;
 import org.ow2.clif.jenkins.ClifPublisher;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.Installations;
 
 public class ConfigurerTest {
 
@@ -26,22 +29,22 @@ public class ConfigurerTest {
 		configurer = new Configurer();
 		configurer.installations = installations;
 
-		project = mock(FreeStyleProject.class);
-		DescribableList<Builder, Descriptor<Builder>> builders =
-				mock(DescribableList.class);
-		when(project.getBuildersList()).thenReturn(builders);
+	  project = mock(FreeStyleProject.class);
+	  DescribableList<Builder, Descriptor<Builder>> builders =
+	  		mock(DescribableList.class);
+	  when(project.getBuildersList()).thenReturn(builders);
 
-		DescribableList<Publisher, Descriptor<Publisher>> publishers =
-				mock(DescribableList.class);
-		when(project.getPublishersList()).thenReturn(publishers);
+	  DescribableList<Publisher, Descriptor<Publisher>> publishers =
+	  		mock(DescribableList.class);
+	  when(project.getPublishersList()).thenReturn(publishers);
 	}
 
 	@Test
 	public void configureAddsOneClifBuilderToProjectBuilderList()
 			throws Exception {
-		configurer.configure(project, null);
-		verify(project.getBuildersList()).add(any(ClifBuilder.class));
-	}
+	  configurer.configure(project, null);
+	  verify(project.getBuildersList()).add(any(ClifBuilder.class));
+  }
 
 	@Test
 	public void configurePublisher() throws Exception {
@@ -70,9 +73,10 @@ public class ConfigurerTest {
 	}
 
 	@Test
-	public void newClifPublisherHasReportDirectory() throws Exception {
+  public void newClifPublisherHasReportDirectory() throws Exception {
 		ClifPublisher publisher = configurer.newClifPublisher("/var/clif/examples");
-		assertThat(publisher.getClifReportDirectory())
-				.isEqualTo("/var/clif/examples/report");
-	}
+	  assertThat(publisher.getClifReportDirectory())
+	  	.isEqualTo("/var/clif/examples/report");
+  }
+
 }
