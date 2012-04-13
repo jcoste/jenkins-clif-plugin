@@ -1,5 +1,6 @@
 package org.ow2.clif.jenkins;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
@@ -23,7 +24,7 @@ public class PreviewZipAction {
 	ImportZipAction parent;
 
 	private final Zip zip;
-	String dir;
+	File dir;
 	String pattern;
 
 	List<String> uninstalls;
@@ -31,10 +32,10 @@ public class PreviewZipAction {
 	List<String> installs;
 
 	public PreviewZipAction(Zip zip) {
-		this(zip, Workspaces.location());
+		this(zip, Workspaces.dir());
 	}
 
-	public PreviewZipAction(Zip zip, String dir) {
+	public PreviewZipAction(Zip zip, File dir) {
 		this.zip = zip;
 		this.pattern = "(.*)\\.ctp$";;
 		this.dir = dir;
@@ -174,7 +175,7 @@ public class PreviewZipAction {
 	FreeStyleProject newProject(String plan)
 			throws IOException, InterruptedException {
 		FreeStyleProject project = Jobs.newJob(jenkins, Jobs.toJob(plan));
-		return clif.configure(project, plan);
+		return clif.configure(project, dir, plan);
 	}
 
 	public String id() {

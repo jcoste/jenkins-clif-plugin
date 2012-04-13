@@ -2,6 +2,7 @@ package org.ow2.clif.jenkins.jobs;
 
 import hudson.model.FreeStyleProject;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.ow2.clif.jenkins.ClifBuilder;
@@ -12,16 +13,16 @@ public class Configurer {
 	Installations installations = new Installations();
 
 	public FreeStyleProject
-	configure(FreeStyleProject job, String plan) throws IOException {
-		String dir = Workspaces.location(), p = null;
+	configure(FreeStyleProject job, File dir, String plan) throws IOException {
+		String directory = dir.getPath(), p = null;
 		if (plan != null) {
 			String[] strings = plan.split("/");
-			dir += "/" + strings[0];
+			directory += "/" + strings[0];
 			p = strings[1];
 		}
 		job.getBuildersList().add(newClifBuilder(p));
-		job.getPublishersList().add(newClifPublisher(dir));
-		job.setCustomWorkspace(dir);
+		job.getPublishersList().add(newClifPublisher(directory));
+		job.setCustomWorkspace(directory);
 		job.addProperty(new ClifJobProperty(true));
 		return job;
 	}

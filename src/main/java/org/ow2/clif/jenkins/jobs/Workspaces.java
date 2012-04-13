@@ -8,10 +8,6 @@ import jenkins.model.Jenkins;
 
 public class Workspaces {
 
-	public static String location() {
-		return dir().getPath();
-	}
-
 	public static File dir() {
 		return Jenkins.getInstance().getPlugin(ClifPlugin.class).dir();
 	}
