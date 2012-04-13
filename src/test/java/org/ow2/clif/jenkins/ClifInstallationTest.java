@@ -20,19 +20,18 @@
  */
 package org.ow2.clif.jenkins;
 
+import static hudson.util.FormValidation.Kind.ERROR;
+import static hudson.util.FormValidation.Kind.OK;
+import static org.fest.assertions.Assertions.assertThat;
 import hudson.Util;
 import hudson.util.FormValidation;
-import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
-import org.jvnet.localizer.LocaleProvider;
 
 import java.io.File;
 import java.util.Locale;
 
-import static hudson.util.FormValidation.Kind.ERROR;
-import static hudson.util.FormValidation.Kind.OK;
-import static org.fest.assertions.Assertions.assertThat;
+import org.junit.Test;
+import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.localizer.LocaleProvider;
 
 
 public class ClifInstallationTest extends HudsonTestCase {
@@ -98,10 +97,6 @@ public class ClifInstallationTest extends HudsonTestCase {
 
 		schedulerCredentialsFile = new File("target/test-classes/unknownFile");
 		doCheckInstallation(ERROR, Messages.ClifInstallation_CredentialsFileNotFound());
-	}
-
-	private String fileNameWithOSFileSep(final String fileAsHome) {
-		return StringUtils.replaceChars(fileAsHome, '/', File.separatorChar);
 	}
 
 	private void doCheckInstallation(final FormValidation.Kind expectedKind, final String expectedMessage) {

@@ -1,7 +1,13 @@
 package org.ow2.clif.jenkins.jobs;
 
+import org.ow2.clif.jenkins.ClifPlugin;
+
+import jenkins.model.Jenkins;
+
 public class Workspaces {
 
-	public static final String DEFAULT_LOCATION = System.getProperty("user.home") + "/clif";
+	public static String location() {
+		return Jenkins.getInstance().getPlugin(ClifPlugin.class).getClifRootDir();
+	}
 
 }

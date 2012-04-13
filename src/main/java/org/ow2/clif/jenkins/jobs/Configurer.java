@@ -13,7 +13,7 @@ public class Configurer {
 
 	public FreeStyleProject
 	configure(FreeStyleProject job, String plan) throws IOException {
-		String dir = Workspaces.DEFAULT_LOCATION, p = null;
+		String dir = Workspaces.location(), p = null;
 		if (plan != null) {
 			String[] strings = plan.split("/");
 			dir += "/" + strings[0];

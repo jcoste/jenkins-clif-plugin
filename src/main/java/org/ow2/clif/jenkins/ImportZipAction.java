@@ -1,22 +1,23 @@
 package org.ow2.clif.jenkins;
 
-import com.google.common.collect.Maps;
 import hudson.Extension;
 import hudson.model.RootAction;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.ow2.clif.jenkins.jobs.FileSystem;
 import org.ow2.clif.jenkins.jobs.Workspaces;
 import org.ow2.clif.jenkins.jobs.Zip;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 
 @Extension
@@ -53,13 +54,9 @@ public class ImportZipAction implements RootAction {
 	public void doImport(StaplerRequest req, StaplerResponse res)
 			throws IOException, InterruptedException, FileUploadException {
 		zip = new Zip(readZipFile(req));
-		new PreviewZipAction(zip, location(), pattern)
+		new PreviewZipAction(zip, Workspaces.location(), pattern)
 				.with(this)
 				.process(res);
-	}
-
-	public String location() {
-		return Workspaces.DEFAULT_LOCATION;
 	}
 
 	@SuppressWarnings("unchecked")

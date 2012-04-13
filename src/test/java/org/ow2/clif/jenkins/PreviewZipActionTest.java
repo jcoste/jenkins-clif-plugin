@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.kohsuke.stapler.StaplerResponse;
 import org.ow2.clif.jenkins.jobs.Configurer;
 import org.ow2.clif.jenkins.jobs.FakeConfigurer;
-import org.ow2.clif.jenkins.jobs.FileSystem;
 import org.ow2.clif.jenkins.jobs.Zip;
 
 public class PreviewZipActionTest {

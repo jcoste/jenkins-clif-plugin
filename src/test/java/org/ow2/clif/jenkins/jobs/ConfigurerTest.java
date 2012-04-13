@@ -2,6 +2,8 @@ package org.ow2.clif.jenkins.jobs;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import jenkins.model.Fake;
+import jenkins.model.Jenkins;
 
 import hudson.model.Descriptor;
 import hudson.model.FreeStyleProject;
@@ -9,9 +11,11 @@ import hudson.tasks.Builder;
 import hudson.tasks.Publisher;
 import hudson.util.DescribableList;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.ow2.clif.jenkins.ClifBuilder;
+import org.ow2.clif.jenkins.ClifPlugin;
 import org.ow2.clif.jenkins.ClifPublisher;
 import org.ow2.clif.jenkins.jobs.Configurer;
 import org.ow2.clif.jenkins.jobs.Installations;
@@ -21,10 +25,13 @@ public class ConfigurerTest {
 	private Installations installations;
 	private Configurer configurer;
 	private FreeStyleProject project;
+	private Jenkins jenkins;
+	private ClifPlugin plugin;
 
 	@Before
 	@SuppressWarnings("unchecked")
 	public void setUp() {
+		jenkins = Fake.install();
 		installations = mock(Installations.class);
 		configurer = new Configurer();
 		configurer.installations = installations;
@@ -37,6 +44,15 @@ public class ConfigurerTest {
 	  DescribableList<Publisher, Descriptor<Publisher>> publishers =
 	  		mock(DescribableList.class);
 	  when(project.getPublishersList()).thenReturn(publishers);
+
+	  plugin = mock(ClifPlugin.class);
+		when(jenkins.getPlugin(ClifPlugin.class)).thenReturn(plugin);
+		when(plugin.getClifRootDir()).thenReturn("target/workspaces");
+	}
+
+	@After
+	public void tearDown() {
+		Fake.uninstall();
 	}
 
 	@Test
@@ -55,9 +71,7 @@ public class ConfigurerTest {
 	@Test
 	public void configurePrivateWorkspace() throws Exception {
 		configurer.configure(project, "examples/http.ctp");
-		verify(project).setCustomWorkspace(
-				System.getProperty("user.home") + "/clif/examples"
-		);
+		verify(project).setCustomWorkspace("target/workspaces/examples");
 	}
 
 	@Test
