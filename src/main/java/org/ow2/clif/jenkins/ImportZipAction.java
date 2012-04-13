@@ -14,7 +14,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.ow2.clif.jenkins.jobs.Workspaces;
 import org.ow2.clif.jenkins.jobs.Zip;
 
 import com.google.common.collect.Maps;
@@ -22,21 +21,9 @@ import com.google.common.collect.Maps;
 
 @Extension
 public class ImportZipAction implements RootAction {
-	String pattern;
-
-	private Zip zip;
 	final Map<String, PreviewZipAction> previews = Maps.newHashMap();
 
-	public void setZipFilePath(String filePath) {
-		this.zip = new Zip(filePath);
-	}
-
-	public String getZipFilePath() {
-		return zip.getFile().getAbsolutePath();
-	}
-
 	public ImportZipAction() {
-		pattern = "(.*)\\.ctp$";
 	}
 
 	public String getIconFileName() {
@@ -53,10 +40,7 @@ public class ImportZipAction implements RootAction {
 
 	public void doImport(StaplerRequest req, StaplerResponse res)
 			throws IOException, InterruptedException, FileUploadException {
-		zip = new Zip(readZipFile(req));
-		new PreviewZipAction(zip, Workspaces.location(), pattern)
-				.with(this)
-				.process(res);
+		new PreviewZipAction(new Zip(readZipFile(req))).with(this).process(res);
 	}
 
 	@SuppressWarnings("unchecked")

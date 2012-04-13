@@ -36,7 +36,7 @@ public class ClifPluginTest extends HudsonTestCase {
 */
 			// En attendant, on change le test
 			clifPlugin.setClifRootDir(absolutePath);
-			assertEquals("Verify clif root configured at absolute path.", root, clifPlugin.getConfiguredClifRootDir());
+			assertEquals("Verify clif root configured at absolute path.", root, clifPlugin.dir());
 
 			root.delete();
 			// not really needed, but helpful so we don't clutter the test host with unnecessary files
@@ -65,7 +65,7 @@ public class ClifPluginTest extends HudsonTestCase {
 */
 			// En attendant, on change le test
 			clifPlugin.setClifRootDir(relativePath);
-			assertEquals("Verify clif root configured at relative path.", root, clifPlugin.getConfiguredClifRootDir());
+			assertEquals("Verify clif root configured at relative path.", root, clifPlugin.dir());
 
 		}
 		catch (Exception e) {

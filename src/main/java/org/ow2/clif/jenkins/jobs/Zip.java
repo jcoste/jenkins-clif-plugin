@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -19,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.common.collect.Lists;
 
 public class Zip {
+	private static final Logger logger = Logger.getLogger(Zip.class.getName());
 	private final File file;
 
 	public Zip(File file) {
@@ -92,16 +95,20 @@ public class Zip {
 		return "";
 	}
 
-	/**
-
+	public Zip extractTo(String dir) throws IOException {
+		return extractTo(new File(dir));
+	}
 	/**
 	 * unzips to directory
 	 *
-	 * @param toDir the directory
+	 * @param dir the directory
 	 * @throws IOException
 	 */
-	public Zip extractTo(String toDir) throws IOException {
-		FileUtils.forceMkdir(new File(toDir));
+	public Zip extractTo(File dir) throws IOException {
+		FileUtils.forceMkdir(dir);
+		if (logger.isLoggable(Level.INFO)) {
+			logger.info("extracting " + file + " to " + dir.getAbsolutePath());
+		}
 		// many options to do that
 		// 1- apache commons compress
 		// 	is not a dependency of jenkins
@@ -118,7 +125,7 @@ public class Zip {
 			for (zipentry = zip.getNextEntry(); zipentry != null; zipentry = zip.getNextEntry()) {
 				String entryName = zipentry.getName();
 
-				File dest = new File(toDir, entryName);
+				File dest = new File(dir, entryName);
 				if (zipentry.isDirectory()) {
 					dest.mkdirs();
 				}
@@ -142,6 +149,9 @@ public class Zip {
 	}
 
 	void writeCurrentFile(ZipInputStream zip, byte[] buf, File dest) throws IOException {
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("writing " + dest.getAbsolutePath());
+		}
 		int n;
 		OutputStream fos = new BufferedOutputStream(new FileOutputStream(dest));
 		try {

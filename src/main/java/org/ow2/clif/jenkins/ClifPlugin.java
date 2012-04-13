@@ -87,7 +87,7 @@ public class ClifPlugin extends Plugin {
 	 *
 	 * @return The configured clif root File object, or <JENKINS_ROOT>/clif  if this configuration has not been set.
 	 */
-	protected File getConfiguredClifRootDir() {
+	public File dir() {
 		final File rootFile;
 		if (clifRootDir.matches("^(/|\\\\|[a-zA-Z]:).*")) {
 			rootFile = new File(clifRootDir);

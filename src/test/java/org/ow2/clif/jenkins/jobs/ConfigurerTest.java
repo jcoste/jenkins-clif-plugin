@@ -2,6 +2,9 @@ package org.ow2.clif.jenkins.jobs;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+
+import java.io.File;
+
 import jenkins.model.Fake;
 import jenkins.model.Jenkins;
 
@@ -47,7 +50,7 @@ public class ConfigurerTest {
 
 	  plugin = mock(ClifPlugin.class);
 		when(jenkins.getPlugin(ClifPlugin.class)).thenReturn(plugin);
-		when(plugin.getClifRootDir()).thenReturn("target/workspaces");
+		when(plugin.dir()).thenReturn(new File("target/workspaces"));
 	}
 
 	@After
