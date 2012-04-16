@@ -1,27 +1,37 @@
 package org.ow2.clif.jenkins;
 
+import static com.google.common.collect.Lists.newArrayList;
+import hudson.model.Item;
+import hudson.model.FreeStyleProject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import jenkins.model.Jenkins;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.ow2.clif.jenkins.jobs.*;
+import org.ow2.clif.jenkins.jobs.Configurer;
+import org.ow2.clif.jenkins.jobs.Installations;
+import org.ow2.clif.jenkins.jobs.Jobs;
+import org.ow2.clif.jenkins.jobs.ParameterParser;
+import org.ow2.clif.jenkins.jobs.Workspaces;
+import org.ow2.clif.jenkins.jobs.Zip;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import hudson.model.FreeStyleProject;
-import hudson.model.Item;
-import jenkins.model.Jenkins;
-import static com.google.common.collect.Lists.newArrayList;
 
 public class PreviewZipAction {
 	Jenkins jenkins;
 	Configurer clif;
 	ImportZipAction parent;
+	Installations installations;
 
 	private final Zip zip;
 	File dir;
@@ -41,8 +51,8 @@ public class PreviewZipAction {
 		this.dir = dir;
 		this.clif = new Configurer();
 		this.jenkins = Jenkins.getInstance();
+		installations = new Installations();
 	}
-
 
 	public List<String> getUninstalls() {
 		return uninstalls;
@@ -90,6 +100,8 @@ public class PreviewZipAction {
 	 */
 	public void doProcess(StaplerRequest req, StaplerResponse res)
 			throws IOException, InterruptedException {
+		clif.use(req.getParameter("clif"));
+
 		Map<String, Set<String>> actions = parse(req);
 		for (Map.Entry<String, Set<String>> e : actions.entrySet()) {
 			String plan = e.getKey();
@@ -180,5 +192,9 @@ public class PreviewZipAction {
 
 	public String id() {
 		return zip.id();
+	}
+
+	public ClifInstallation[] clifs() {
+		return installations.all(ClifInstallation.DescriptorImpl.class);
 	}
 }

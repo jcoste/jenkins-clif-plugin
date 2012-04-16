@@ -9,7 +9,15 @@
 		<l:main-panel>
 			<h1>${%title}</h1>
 			<f:form method="post" action="process">
-				<f:section title="">
+				<f:section title="${%label.version}">
+  				<f:entry title="${%input.clif}">
+      			<select class="setting-input" name="clif">
+      				<j:forEach var="clif" items="${it.clifs()}">
+      					<f:option value="${clif.name}">${clif.name}</f:option>
+      				</j:forEach>
+      			</select>
+      		</f:entry>
+				</f:section>
 
 					<j:if test="${it.upgrades.size() > 0}">
 						<f:block>
@@ -70,7 +78,6 @@
 						<div style="height:20px"/>
 						<f:submit value="${%submit.validate}"/>
 					</f:block>
-				</f:section>
 			</f:form>
 		</l:main-panel>
 	</l:layout>

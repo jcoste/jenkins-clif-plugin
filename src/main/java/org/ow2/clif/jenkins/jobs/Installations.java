@@ -1,35 +1,41 @@
 package org.ow2.clif.jenkins.jobs;
 
-import hudson.tasks.Ant.AntInstallation;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import jenkins.model.Jenkins;
-import org.ow2.clif.jenkins.ClifInstallation;
 
 /**
  * boilerplate
  */
 public class Installations {
-	Jenkins jenkins = Jenkins.getInstance();
 
-	String getFirstClifName() {
-		return firstName(getInstallations(ClifInstallation.DescriptorImpl.class));
+	public Installations() {
 	}
 
-	String getFirstAntName() {
-		return firstName(getInstallations(AntInstallation.DescriptorImpl.class));
+	public <I extends ToolInstallation> I[]
+			all(Class<? extends ToolDescriptor<I>> descriptor) {
+		return Jenkins.getInstance().getDescriptorByType(descriptor).getInstallations();
 	}
 
-	@SuppressWarnings("rawtypes")
-	private ToolInstallation[]
-	getInstallations(Class<? extends ToolDescriptor> descriptor) {
-		return jenkins.getDescriptorByType(descriptor).getInstallations();
-	}
-
-	private String firstName(ToolInstallation[] installations) {
-		if (installations.length == 0) {
-			return null;
+	public <I extends ToolInstallation> I
+		first(Class<? extends ToolDescriptor<I>> descriptor, String name) {
+		for (I installation : all(descriptor)) {
+			if (name == null || name.equals(installation.getName())) {
+				return installation;
+			}
 		}
-		return installations[0].getName();
+		return null;
 	}
+
+	public <I extends ToolInstallation> I
+	first(Class<? extends ToolDescriptor<I>> descriptor) {
+		return first(descriptor, null);
+	}
+
+	public <I extends ToolInstallation> String
+	firstName(Class<? extends ToolDescriptor<I>> descriptor) {
+		I install = first(descriptor, null);
+		return install == null ? null : install.getName();
+	}
+
 }

@@ -1,16 +1,19 @@
 package org.ow2.clif.jenkins.jobs;
 
 import hudson.model.FreeStyleProject;
+import hudson.tasks.Ant.AntInstallation;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.ow2.clif.jenkins.ClifBuilder;
+import org.ow2.clif.jenkins.ClifInstallation;
 import org.ow2.clif.jenkins.ClifJobProperty;
 import org.ow2.clif.jenkins.ClifPublisher;
 
 public class Configurer {
 	Installations installations = new Installations();
+	private String version;
 
 	public FreeStyleProject
 	configure(FreeStyleProject job, File dir, String plan) throws IOException {
@@ -32,12 +35,21 @@ public class Configurer {
 	}
 
 	ClifBuilder newClifBuilder(String plan) {
-		String clifName = installations.getFirstClifName();
-		String antName = installations.getFirstAntName();
+		String clifName = version == null
+				? installations.firstName(ClifInstallation.DescriptorImpl.class)
+				: version;
+		String antName =
+				installations.firstName(AntInstallation.DescriptorImpl.class);
 		ClifBuilder builder = new ClifBuilder(
 				clifName, antName, null, null, plan, "report"
 		);
 		return builder;
 	}
+
+	public void use(String version) {
+		// FIXME use(ClifInstallation) could be a better prototype
+		// would require work in ClifBuilder though...
+		this.version = version;
+  }
 
 }

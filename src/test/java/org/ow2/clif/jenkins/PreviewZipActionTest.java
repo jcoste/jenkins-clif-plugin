@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.kohsuke.stapler.StaplerResponse;
 import org.ow2.clif.jenkins.jobs.Configurer;
 import org.ow2.clif.jenkins.jobs.FakeConfigurer;
+import org.ow2.clif.jenkins.jobs.Installations;
 import org.ow2.clif.jenkins.jobs.Zip;
 
 public class PreviewZipActionTest {
@@ -27,7 +28,7 @@ public class PreviewZipActionTest {
 	private ImportZipAction parent;
 
 	@Before
-	public void setup() throws Exception {
+	public void setUp() throws Exception {
 		jenkins = Fake.install();
 		configurer = new FakeConfigurer();
 
@@ -37,6 +38,7 @@ public class PreviewZipActionTest {
 		preview.parent = parent;
 		preview.clif = configurer;
 		preview.jenkins = jenkins;
+		preview.installations = mock(Installations.class);
 	}
 
 	@After
