@@ -77,9 +77,9 @@ public class ConfigurerTest {
 
 	@Test
   public void newClifPublisherHasReportDirectory() throws Exception {
-		ClifPublisher publisher = configurer.newClifPublisher("/var/clif/examples");
+		ClifPublisher publisher = configurer.newClifPublisher();
 	  assertThat(publisher.getClifReportDirectory())
-	  	.isEqualTo("/var/clif/examples/report");
+	  	.isEqualTo("report");
   }
 
 }

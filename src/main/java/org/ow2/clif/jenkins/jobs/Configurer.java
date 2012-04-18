@@ -24,14 +24,14 @@ public class Configurer {
 			p = strings[1];
 		}
 		job.getBuildersList().add(newClifBuilder(p));
-		job.getPublishersList().add(newClifPublisher(directory));
+		job.getPublishersList().add(newClifPublisher());
 		job.setCustomWorkspace(directory);
 		job.addProperty(new ClifJobProperty(true));
 		return job;
 	}
 
-	ClifPublisher newClifPublisher(String dir) {
-		return new ClifPublisher(dir + "/report");
+	ClifPublisher newClifPublisher() {
+		return new ClifPublisher("report");
 	}
 
 	ClifBuilder newClifBuilder(String plan) {

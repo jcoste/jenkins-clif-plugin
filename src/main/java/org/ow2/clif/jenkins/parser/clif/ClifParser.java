@@ -20,15 +20,6 @@
  */
 package org.ow2.clif.jenkins.parser.clif;
 
-import org.apache.commons.lang.StringUtils;
-import org.ow2.clif.jenkins.chart.ChartConfiguration;
-import org.ow2.clif.jenkins.model.*;
-import org.ow2.clif.storage.api.*;
-import org.ow2.clif.storage.lib.filestorage.ConsoleFileStorageImpl;
-import org.ow2.clif.storage.lib.filestorage.FileStorageReader;
-import org.ow2.clif.storage.lib.util.DateEventFilter;
-import org.ow2.clif.supervisor.api.ClifException;
-
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -37,6 +28,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.ow2.clif.jenkins.chart.ChartConfiguration;
+import org.ow2.clif.jenkins.model.Alarm;
+import org.ow2.clif.jenkins.model.Blade;
+import org.ow2.clif.jenkins.model.ClifReport;
+import org.ow2.clif.jenkins.model.Injector;
+import org.ow2.clif.jenkins.model.Measure;
+import org.ow2.clif.jenkins.model.Probe;
+import org.ow2.clif.jenkins.model.TestPlan;
+import org.ow2.clif.storage.api.AlarmEvent;
+import org.ow2.clif.storage.api.BladeDescriptor;
+import org.ow2.clif.storage.api.BladeEvent;
+import org.ow2.clif.storage.api.BladeFilter;
+import org.ow2.clif.storage.api.StorageRead;
+import org.ow2.clif.storage.api.TestDescriptor;
+import org.ow2.clif.storage.lib.filestorage.FileStorageReader;
+import org.ow2.clif.storage.lib.util.DateEventFilter;
+import org.ow2.clif.supervisor.api.ClifException;
 
 /**
  * Class that parses ClifBuilder result directory to compute statistics.<br/>
