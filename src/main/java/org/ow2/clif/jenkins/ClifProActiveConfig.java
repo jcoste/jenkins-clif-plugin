@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,14 +20,13 @@
  */
 package org.ow2.clif.jenkins;
 
+import java.io.Serializable;
+import org.kohsuke.stapler.DataBoundConstructor;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
-import org.kohsuke.stapler.DataBoundConstructor;
-
-import java.io.Serializable;
 
 /**
  * @author Julien Coste

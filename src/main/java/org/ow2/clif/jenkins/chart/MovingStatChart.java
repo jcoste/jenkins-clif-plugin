@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,7 @@
  */
 package org.ow2.clif.jenkins.chart;
 
+import java.awt.*;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -32,9 +33,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 import org.ow2.clif.jenkins.chart.movingstatistics.*;
 import org.ow2.clif.jenkins.parser.clif.Messages;
-
-import java.awt.*;
-
 import static org.ow2.clif.jenkins.parser.clif.Messages.*;
 
 /**

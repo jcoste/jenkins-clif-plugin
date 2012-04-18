@@ -1,6 +1,5 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
-         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
-         xmlns:e="/org/ow2/clif/jenkins/tags">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+		>
 	<tr>
 		<j:if test="${testPlanName != null}">
 			<j:invokeStatic var="urlTest" className="hudson.Util" method="rawEncode">

@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,19 +20,18 @@
  */
 package org.ow2.clif.jenkins.chart;
 
-import org.apache.commons.io.IOUtils;
-import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import org.apache.commons.io.IOUtils;
+import org.jfree.chart.JFreeChart;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * @author Julien Coste

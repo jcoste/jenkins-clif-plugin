@@ -1,5 +1,5 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
-         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+         xmlns:l="/lib/layout">
 
 	<script type="text/javascript" src="${rootURL}/plugin/jenkins-clif-plugin/yui/utilities.js"></script>
 	<script type="text/javascript" src="${rootURL}/plugin/enkins-clif-plugin/yui/tabview-min.js"></script>

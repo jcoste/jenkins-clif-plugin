@@ -1,5 +1,5 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
 	<f:entry title="${%ClifReportDirectory}" help="/plugin/jenkins-clif-plugin/help-projectConfig-clifdir.html">
 		<f:textbox name="clif.clifReportDirectory"
 		           value="${instance.clifReportDirectory}"

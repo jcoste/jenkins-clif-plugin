@@ -20,7 +20,6 @@
  */
 package org.ow2.clif.jenkins;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
 import org.ow2.clif.jenkins.jobs.FileSystem;

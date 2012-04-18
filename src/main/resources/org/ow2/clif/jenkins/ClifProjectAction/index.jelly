@@ -1,6 +1,6 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
-         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<l:layout title="Clif Project Report" xmlns:g="/org/ow2/clif/jenkins/tags">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+         xmlns:l="/lib/layout">
+	<l:layout title="Clif Project Report">
 		<st:include it="${it.project}" page="sidepanel.jelly"/>
 		<l:main-panel>
 			<h1>${%Clif Project Report}</h1>

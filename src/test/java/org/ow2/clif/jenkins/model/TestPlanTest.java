@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,13 +20,11 @@
  */
 package org.ow2.clif.jenkins.model;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**

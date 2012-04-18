@@ -1,6 +1,5 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
-         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
-         xmlns:e="/org/ow2/clif/jenkins/tags">
+<j:jelly xmlns:j="jelly:core"
+		>
 	<thead>
 		<tr>
 			<td width="52%" class="pane-header" title="Label">${%Label}</td>

@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,10 +20,10 @@
  */
 package org.ow2.clif.jenkins;
 
-import hudson.model.Action;
-import hudson.model.Run;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import hudson.model.Action;
+import hudson.model.Run;
 
 /**
  * Abstract class with functionality common to all Clif actions.

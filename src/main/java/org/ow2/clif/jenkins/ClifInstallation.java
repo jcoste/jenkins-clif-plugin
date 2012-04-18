@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,6 +20,12 @@
  */
 package org.ow2.clif.jenkins;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 import hudson.*;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Hudson;
@@ -31,13 +37,6 @@ import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
 import hudson.util.FormValidation;
-import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Represents the Clif installation on the system.
@@ -91,7 +90,8 @@ public final class ClifInstallation
 	public String getExecutable(Launcher launcher)
 			throws IOException, InterruptedException {
 		return launcher.getChannel().call(new Callable<String, IOException>() {
-      private static final long serialVersionUID = 1L;
+			private static final long serialVersionUID = 1L;
+
 			public String call()
 					throws IOException {
 				File exe = getExeFile();

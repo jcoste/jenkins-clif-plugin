@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,28 +20,10 @@
  */
 package org.ow2.clif.jenkins;
 
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.Action;
-import hudson.model.BuildListener;
-import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Project;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Publisher;
-import hudson.tasks.Recorder;
-import hudson.util.FormValidation;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import net.sf.json.JSONObject;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -51,6 +33,16 @@ import org.ow2.clif.jenkins.chart.ChartConfiguration;
 import org.ow2.clif.jenkins.model.ClifReport;
 import org.ow2.clif.jenkins.parser.clif.ClifParser;
 import org.ow2.clif.jenkins.parser.clif.ClifParserException;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.*;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Publisher;
+import hudson.tasks.Recorder;
+import hudson.util.FormValidation;
+import net.sf.json.JSONObject;
 
 /**
  * The publisher creates the results we want from the Clif execution.
@@ -178,7 +170,7 @@ public class ClifPublisher
 		return true;
 	}
 
-  @Override
+	@Override
 	public Action getProjectAction(AbstractProject<?, ?> project) {
 		return project instanceof Project ? new ClifProjectAction((Project<?, ?>) project) : null;
 	}
@@ -223,7 +215,7 @@ public class ClifPublisher
 		}
 
 		@SuppressWarnings("rawtypes")
-    @Override
+		@Override
 		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
 			return true;
 		}

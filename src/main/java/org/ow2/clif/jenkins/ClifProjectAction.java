@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,13 +20,10 @@
  */
 package org.ow2.clif.jenkins;
 
-import hudson.model.AbstractBuild;
-import hudson.model.Project;
-import hudson.model.Result;
-import hudson.util.ChartUtil;
-import hudson.util.ChartUtil.NumberOnlyBuildLabel;
-import hudson.util.ColorPalette;
-import hudson.util.DataSetBuilder;
+import java.awt.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -43,11 +40,13 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.ow2.clif.jenkins.model.ClifReport;
 import org.ow2.clif.jenkins.model.Measure;
 import org.ow2.clif.jenkins.model.TestPlan;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
+import hudson.model.AbstractBuild;
+import hudson.model.Project;
+import hudson.model.Result;
+import hudson.util.ChartUtil;
+import hudson.util.ChartUtil.NumberOnlyBuildLabel;
+import hudson.util.ColorPalette;
+import hudson.util.DataSetBuilder;
 
 /**
  * Action used for Clif report on project level.

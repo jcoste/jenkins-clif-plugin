@@ -1,5 +1,5 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
 	<f:entry title="${%Name}" field="name">
 		<f:textbox/>
 	</f:entry>
@@ -20,7 +20,8 @@
 					           value="${instance.clifProActiveConfig.schedulerCredentialsFile}"/>
 				</f:entry>
 				<f:entry title="${%Fork props}">
-					<f:textbox name="forkProps" value="${instance.clifProActiveConfig.forkProps}" default="-Dproactive.communication.protocol=rmi -Dclif.fileserver.impl=proactive -Dclif.codeserver.impl=proactive -Dproactive.useIPaddress=true"/>
+					<f:textbox name="forkProps" value="${instance.clifProActiveConfig.forkProps}"
+					           default="-Dproactive.communication.protocol=rmi -Dclif.fileserver.impl=proactive -Dclif.codeserver.impl=proactive -Dproactive.useIPaddress=true"/>
 				</f:entry>
 				<f:validateButton
 						title="${%Check installation}" progress="${%Testing...}"

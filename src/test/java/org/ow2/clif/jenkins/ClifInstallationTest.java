@@ -1,6 +1,6 @@
 /*
  * CLIF is a Load Injection Framework
- * Copyright (C) 2004, 2008 France Telecom R&D
+ * Copyright (C) 2012 France Telecom R&D
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,18 +20,16 @@
  */
 package org.ow2.clif.jenkins;
 
-import static hudson.util.FormValidation.Kind.ERROR;
-import static hudson.util.FormValidation.Kind.OK;
-import static org.fest.assertions.Assertions.assertThat;
-import hudson.Util;
-import hudson.util.FormValidation;
-
 import java.io.File;
 import java.util.Locale;
-
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.localizer.LocaleProvider;
+import hudson.Util;
+import hudson.util.FormValidation;
+import static hudson.util.FormValidation.Kind.ERROR;
+import static hudson.util.FormValidation.Kind.OK;
+import static org.fest.assertions.Assertions.assertThat;
 
 
 public class ClifInstallationTest extends HudsonTestCase {
