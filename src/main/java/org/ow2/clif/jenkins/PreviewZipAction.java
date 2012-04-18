@@ -47,7 +47,7 @@ public class PreviewZipAction {
 
 	public PreviewZipAction(Zip zip, File dir) {
 		this.zip = zip;
-		this.pattern = "(.*)\\.ctp$";;
+		this.pattern = "([^/]*)/([^/]*)\\.ctp";
 		this.dir = dir;
 		this.clif = new Configurer();
 		this.jenkins = Jenkins.getInstance();

@@ -43,6 +43,16 @@ public class ZipTest {
 	}
 
 	@Test
+  public void nestedTestPlanCanBeFilteredUsingCleverRegularExpression()
+  		throws Exception {
+		zip = new Zip("src/test/resources/zips/nested.zip");
+		assertThat(zip.entries("(.*)\\.ctp"))
+				.containsExactly("samples/http/brute.ctp", "samples/post.ctp");
+		assertThat(zip.entries("([^/]*)/([^/]*)\\.ctp"))
+		.containsExactly("samples/post.ctp");
+  }
+
+	@Test
 	public void basedirIsFirstEntryWhenDirectory() throws Exception {
 		zip = new Zip("src/test/resources/zips/nested.zip");
 		assertThat(zip.basedir()).isEqualTo("samples");

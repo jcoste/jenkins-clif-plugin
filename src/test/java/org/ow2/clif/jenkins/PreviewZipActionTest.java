@@ -65,6 +65,11 @@ public class PreviewZipActionTest {
 	}
 
 	@Test
+  public void doesNotListNestedTestPlanInZip() throws Exception {
+	  assertThat(preview.pattern).isEqualTo("([^/]*)/([^/]*)\\.ctp");
+  }
+
+	@Test
 	public void jobNameIsDasherizedFileNameWithoutExtension() throws Exception {
 		FreeStyleProject project = preview.create("red/tomato.erl");
 		assertThat(project.getName()).isEqualTo("red-tomato");
