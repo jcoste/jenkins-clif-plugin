@@ -13,6 +13,7 @@ import hudson.util.DescribableList;
 
 import java.io.File;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ow2.clif.jenkins.ClifBuilder;
@@ -60,7 +61,8 @@ public class ConfigurerTest {
 	@Test
 	public void configurePrivateWorkspace() throws Exception {
 		configurer.configure(project, dir, "examples/http.ctp");
-		verify(project).setCustomWorkspace("target/workspaces/examples");
+		verify(project).setCustomWorkspace(new File("target/workspaces/examples").getPath());
+
 	}
 
 	@Test

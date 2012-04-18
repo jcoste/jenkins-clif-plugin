@@ -20,7 +20,7 @@ public class Configurer {
 		String directory = dir.getPath(), p = null;
 		if (plan != null) {
 			String[] strings = plan.split("/");
-			directory += "/" + strings[0];
+			directory += File.separator + strings[0];
 			p = strings[1];
 		}
 		job.getBuildersList().add(newClifBuilder(p));
